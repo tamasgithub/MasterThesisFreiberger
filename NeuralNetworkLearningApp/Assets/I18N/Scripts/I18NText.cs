@@ -6,6 +6,7 @@ namespace Honeti
 {
     public class I18NText : MonoBehaviour
     {
+        private string lastText = "";
         private string _key = "";
         private Text _text;
         private bool _initialized = false;
@@ -26,6 +27,11 @@ namespace Honeti
             if (!_initialized)
                 _init();
 
+            updateTranslation();
+        }
+        public void SetKey(string key)
+        {
+            _key = key;
             updateTranslation();
         }
 

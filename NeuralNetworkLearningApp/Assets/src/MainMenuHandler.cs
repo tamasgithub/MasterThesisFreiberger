@@ -14,6 +14,11 @@ public class MainMenuHandler : MonoBehaviour
         SceneManager.LoadSceneAsync("ChaptersOverview");
     }
 
+    public void CloseChapters()
+    {
+        SceneManager.LoadSceneAsync("MainMenu");
+    }
+
     public void OpenAchievements()
     {
         mainMenuPanel.SetActive(false);
