@@ -6,3 +6,12 @@ Language	Language	Sprache
 Neural_Networks	Neural Networks	Neuronale Netze
 Settings	Settings	Einstellungen
 Quit	Quit	Beenden
+
+Overview	Overview	Übersicht
+Chapter	Chapter	Kapitel
+DescriptionChapter1	Understand the terms input and output of a NN, being able to determine the dimensions of inputs and outputs based on the problem	DE1
+DescriptionChapter2	Familiarize oneself with nodes, edges and paths of graphs	DE2
+DescriptionChapter3	Being able to group nodes into layers and connect the layers with edges according to the general NN structure	DE3
+DescriptionChapter4	Being able to assign values to both nodes and edges and calculate the new value of a node from the weighted sum of its input nodes	DE4
+DescriptionChapter5	Understand the necessity of a hidden layer for linearly not separable problems	DE5
+DescriptionChapter6	Understand the necessity and effect of (different) activation functions	DE6
