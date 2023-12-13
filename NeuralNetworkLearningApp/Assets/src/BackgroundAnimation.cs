@@ -7,7 +7,7 @@ public class BackgroundAnimation : MonoBehaviour
     //TODO: set in settings
     Vector2 resolution = new Vector2(1920, 1080);
     //TODO: get from actual menu
-    Vector2 menuSize = new Vector2(480, 480);
+    Vector2 menuSize = new Vector2(800, 600);
 
     int lastSecondDrawn = -1;
     private GameObject startingPointGO;
@@ -33,19 +33,19 @@ public class BackgroundAnimation : MonoBehaviour
         print(lastSecondDrawn);*/
         if(sceneSeconds > lastSecondDrawn)
         {
-            switch (sceneSeconds % 8)
+            switch (sceneSeconds % 10)
             {
                 case 0:
                     DrawStartingNode();
                     break;
-                    case 1: DrawEndingNode();
-                        break;
-                    case 2: DrawConnectingLine();
-                        break;
-                    case 4: StartColorChange();
-                        break;
-                    case 7: RemoveObjects();
-                        break;
+                case 1: DrawEndingNode();
+                    break;
+                case 2: DrawConnectingLine();
+                    break;
+                case 4: StartColorChange();
+                    break;
+                case 9: RemoveObjects();
+                    break;
             }
             lastSecondDrawn = sceneSeconds;
         }
@@ -94,7 +94,7 @@ public class BackgroundAnimation : MonoBehaviour
 
     private IEnumerator ColorChange(Gradient gradient)
     {
-        float durationSeconds = 3.0f;
+        float durationSeconds = 4.5f;
         while (durationSeconds > 0)
         {
             durationSeconds -= Time.deltaTime;
@@ -110,7 +110,7 @@ public class BackgroundAnimation : MonoBehaviour
         lineGO.transform.SetSiblingIndex(0);
         Vector2 startingPoint = startingPointGO.GetComponent<RectTransform>().anchoredPosition;
         Vector2 endingPoint = endingPointGO.GetComponent<RectTransform>().anchoredPosition;
-        //lineGO.GetComponent<RectTransform>().anchoredPosition = (startingPoint + endingPoint) / 2;
+
         float angle = Vector2.SignedAngle(Vector2.right, endingPoint - startingPoint);
         lineGO.transform.Rotate(new Vector3(0, 0, angle));
         StartCoroutine(AnimateLine(startingPoint, endingPoint));
@@ -119,18 +119,18 @@ public class BackgroundAnimation : MonoBehaviour
 
     private IEnumerator AnimateLine(Vector2 startingPoint, Vector2 endingPoint)
     {
-        float durationSeconds = 1.0f;
+        float durationSeconds = 3.0f;
         RectTransform lineTransform = lineGO.GetComponent<RectTransform>();
         lineTransform.anchoredPosition = (Vector3)startingPoint + Vector3.forward;
         lineTransform.localScale = new Vector3(0, 1, 1);
         float dist = (startingPoint - endingPoint).magnitude;
-        
-        while (durationSeconds > 0)
+        float durationPassed = 0f;
+        while (durationPassed < durationSeconds)
         {
-            durationSeconds -= Time.deltaTime;
-            lineTransform.anchoredPosition += (endingPoint - startingPoint) * Time.deltaTime / 2;
+            durationPassed += Time.deltaTime;
+            lineTransform.anchoredPosition += (endingPoint - startingPoint) * (Time.deltaTime / durationSeconds) / 2;
             // initial length = 100, local scale == dist / 100 means full length
-            lineTransform.localScale += new Vector3(dist / 100 * Time.deltaTime, 0, 0);
+            lineTransform.localScale += new Vector3(dist / 100 * (Time.deltaTime / durationSeconds), 0, 0);
             
             yield return null;
         }
