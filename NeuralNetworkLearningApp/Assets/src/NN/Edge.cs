@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,7 +56,12 @@ public class Edge : MonoBehaviour
 
     public void SetSecondNode(Node node)
     {
-        if (transform.position.x < node.gameObject.transform.position.x)
+        // only allow edges between neighboring layers
+        if (Mathf.Abs(leftNode.GetLayerIndex() - node.GetLayerIndex()) != 1)
+        {
+            return;
+        }
+        if (leftNode.GetLayerIndex() < node.GetLayerIndex())
         {
             rightNode = node;
         } else
@@ -64,6 +70,15 @@ public class Edge : MonoBehaviour
             leftNode = node;
             rightNode = temp;
         }
+        // duplicate edge (expression should yield true && true or false && false if everything works correctly
+        if (leftNode.HasOutgoingEdge(rightNode.GetNodeIndex()) && rightNode.HasIncomingEdge(leftNode.GetNodeIndex()))
+        {
+            Destroy(gameObject);
+            return;
+        }
+        transform.parent = rightNode.transform;
+        // TODO: maybe sort inside the hierarchy
+        leftNode.SetOutgoingEdge(this, rightNode.GetNodeIndex());
+        rightNode.SetIncomingEdge(this, leftNode.GetNodeIndex());
     }
-
 }

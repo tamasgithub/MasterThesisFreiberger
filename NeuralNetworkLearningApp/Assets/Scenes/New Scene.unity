@@ -236,11 +236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e78975d903c2b71449b9672d901d8826, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layer: {fileID: 6930578083705968278, guid: a72053bfb4020e34295f6c5eefc26ea0, type: 3}
+  layerPrefab: {fileID: 6930578083705968278, guid: a72053bfb4020e34295f6c5eefc26ea0, type: 3}
   numLayers: 1
   layerSizes: 
-  layerDistance: 0
-  nodeDistance: 0
+  layerDistance: 2
+  nodeDistance: 2
   fullyConnected: 1
 --- !u!4 &1175244841
 Transform:

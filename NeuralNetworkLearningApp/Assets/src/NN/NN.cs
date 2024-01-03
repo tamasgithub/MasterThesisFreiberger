@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class NN : MonoBehaviour
 {
-    public GameObject layer;
+    public GameObject layerPrefab;
 
     // these are just helpers to modifiy the nn from the editor
     [Range(0, 10)]
@@ -19,6 +20,33 @@ public class NN : MonoBehaviour
     List<Layer> layers = new List<Layer>();
 
     public bool fullyConnected = false;
+
+    public int GetLayerSize(int index)
+    {
+        if (index < 0 || index >= layers.Count)
+        {
+            return 0;
+        }
+        return layers[index].GetSize();
+    }
+
+    public void UpdateEdgeListsOfLayer(int layerIndex)
+    {
+        if (layerIndex < 0 || layerIndex >= layers.Count)
+        {
+            return;
+        }
+        // check whether to update incoming or outgoing edges or both
+        if (layerIndex > 0)
+        {
+            layers[layerIndex].SetNodesIncomingSizes(layers[layerIndex - 1].GetSize());
+        }
+        if (layerIndex < layers.Count - 1)
+        {
+            layers[layerIndex].SetNodesOutgoingSizes(layers[layerIndex + 1].GetSize());
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -73,11 +101,13 @@ public class NN : MonoBehaviour
             {
                 layerSizes.Add(1);
 
-                GameObject newLayer = Instantiate(layer, transform);
+                GameObject newLayer = Instantiate(layerPrefab, transform);
                 newLayer.name = "layer" + i;
-                Layer newLayerComponent = newLayer.GetComponent<Layer>();
-                layers.Add(newLayerComponent);
-                newLayerComponent.SetSize(1);
+                Layer layer = newLayer.GetComponent<Layer>();
+                layers.Add(layer);
+                layer.SetLayerIndex(i);
+                layer.SetSize(1);
+                layer.SetNodeDistance(nodeDistance);
                 //TODO: newLayerComponent.SetFullyConnected(true);
                 PositionLayer(i);
             }
