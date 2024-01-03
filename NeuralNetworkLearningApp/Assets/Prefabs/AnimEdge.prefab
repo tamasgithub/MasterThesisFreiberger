@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7565857338690964044}
   - component: {fileID: 968082379806469895}
   m_Layer: 5
-  m_Name: Line
+  m_Name: AnimEdge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

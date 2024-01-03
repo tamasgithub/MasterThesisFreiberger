@@ -28,9 +28,6 @@ public class BackgroundAnimation : MonoBehaviour
     void Update()
     {
         int sceneSeconds = (int)Time.timeSinceLevelLoad;
-        /*print("next frame");
-        print(sceneSeconds);
-        print(lastSecondDrawn);*/
         if(sceneSeconds > lastSecondDrawn)
         {
             switch (sceneSeconds % 10)
@@ -68,9 +65,6 @@ public class BackgroundAnimation : MonoBehaviour
         while ((col2 = lineColors[Random.Range(0, lineColors.Length)]) == col1) { };
         Color col3 = new Color();
         while ((col3 = lineColors[Random.Range(0, lineColors.Length)]) == col1 || col3 == col2) { };
-        print(col1);
-        print(col2);
-        print(col3);
 
         gradient = new Gradient()
         {
