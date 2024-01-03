@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2db75f6aca955db4a90f529f33c3e958, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  edge: {fileID: 214758128186768929, guid: 29765390854547946ae5ab8f5902f009, type: 3}
+  edgePrefab: {fileID: 214758128186768929, guid: 29765390854547946ae5ab8f5902f009, type: 3}
   manuallyConnectable: 1
 --- !u!58 &3652386297086177193
 CircleCollider2D:

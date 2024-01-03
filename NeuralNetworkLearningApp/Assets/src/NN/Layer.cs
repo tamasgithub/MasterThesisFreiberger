@@ -4,63 +4,92 @@ using UnityEngine;
 
 public class Layer : MonoBehaviour
 {
-    int size = 0;
-    float nodeDistance = 1.0f;
-    bool fullyConnected = false;
-    public GameObject node;
+    private int layerIndex;
+    private float nodeDistance = 1.0f;
+    //private bool fullyConnected = false;
+    public GameObject nodePrefab;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    private List<Node> nodes = new List<Node>();
+    private NN nn;
 
     // TODO: fancy c# property instead
     public int GetSize()
     {
-        return size;
+        return nodes.Count;
     }
-    public void SetSize(int i)
+    public void SetSize(int size)
     {
-        if (i < size)
+        if (size == nodes.Count)
         {
-            for (int j = size - 1; j >= i; j--)
+            return;
+        }
+        nn = transform.parent.GetComponent<NN>();
+        if (size < nodes.Count)
+        {
+            for (int i = nodes.Count - 1; i >= size; i--)
             {
-                // destroy last child of layer i
-                Destroy(transform.GetChild(j).gameObject);
-                size--;
+                Node node = nodes[i];
+                nodes.RemoveAt(i);
+                Destroy(node.gameObject);
             }
         }
-        else if (i > size)
+        else if (size > nodes.Count)
         {
-            for (int j = size; j < i; j++)
+            int leftLayerSize = nn.GetLayerSize(layerIndex - 1);
+            int rightLayerSize = nn.GetLayerSize(layerIndex + 1);
+            for (int i = nodes.Count; i < size; i++)
             {
-                GameObject newNode = Instantiate(node, transform);
-                newNode.name = "node" + j;
-                size++;
-                if (fullyConnected)
+                GameObject newNode = Instantiate(nodePrefab, transform);
+                newNode.name = "node" + i;
+                Node node = newNode.GetComponent<Node>();
+                nodes.Add(node);
+                node.SetLayer(this);
+                node.SetNodeIndex(i);
+                node.SetIncomingSize(leftLayerSize);
+                node.SetOutgoingSize(rightLayerSize);
+                /*if (fullyConnected)
                 {
                     //TODO: newNode.GetComponent<Node>().fullyConnect();
-                }
+                }*/
             }
         }
 
-        for (int j = 0; j < size; j++)
+        // reposition all nodes according to the new size of the layer (and the node distance)
+        foreach (Node node in nodes)
         {
-            PositionNode(j);
+            PositionNode(node);
+        }
+
+
+        // for all nodes from the left layer, set outgoing size to size
+        // for all nodes from the right layer, set incoming size to size
+        // TODO: maybe just get the references of the layers and directly call the set...size methods on them?
+        nn.UpdateEdgeListsOfLayer(layerIndex - 1);
+        nn.UpdateEdgeListsOfLayer(layerIndex + 1);
+    }
+
+    public void SetNodesIncomingSizes(int size)
+    {
+        if (nodes[0].GetIncomingSize() == size)
+        {
+            return;
+        }
+        foreach (Node node in nodes)
+        {
+            node.SetIncomingSize(size);
         }
     }
 
-    private void PositionNode(int i)
+    public void SetNodesOutgoingSizes(int size)
     {
-        transform.Find("node" + i).localPosition = Vector2.down * nodeDistance * (i - (size - 1) / 2.0f);
+        if (nodes[0].GetOutgoingSize() == size)
+        {
+            return;
+        }
+        foreach (Node node in nodes)
+        {
+            node.SetOutgoingSize(size);
+        }
     }
 
     public void SetNodeDistance(float nodeDistance)
@@ -70,9 +99,26 @@ public class Layer : MonoBehaviour
             return;
         }
         this.nodeDistance = nodeDistance;
-        for (int i = 0; i < size; i++)
+        foreach (Node node in nodes)
         {
-            PositionNode(i);
+            PositionNode(node);
         }
     }
+
+    public void SetLayerIndex(int index)
+    {
+        layerIndex = index;
+    }
+
+    public int GetLayerIndex()
+    {
+        return layerIndex;
+    }
+
+    private void PositionNode(Node node)
+    {
+        node.transform.localPosition = Vector2.down * nodeDistance * (nodes.IndexOf(node) - (nodes.Count - 1) / 2.0f);
+    }
+
+
 }
