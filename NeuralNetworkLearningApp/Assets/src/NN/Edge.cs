@@ -20,33 +20,37 @@ public class Edge : MonoBehaviour
     {
         if (isManuallyConnecting)
         {
-            Vector2 rightAnchor = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            UpdatePosition(leftNode.transform.position, rightAnchor);
+            Vector2 secondAnchor = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (secondAnchor.x < leftNode.transform.position.x)
+            {
+                UpdatePosition(secondAnchor, leftNode.transform.position);
+            }
+            else
+            {
+                UpdatePosition(leftNode.transform.position, secondAnchor);
+            }
             return;
         }
-        
-        if (leftNode == null || rightNode == null) {
+
+        if (leftNode == null || rightNode == null)
+        {
             print("Self destruction");
             Destroy(gameObject);
-        } else
+        }
+        else
         {
             UpdatePosition(leftNode.transform.position, rightNode.transform.position);
+            if (Input.GetMouseButtonDown(1))
+            {
+                RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
+                if (hit.collider != null && hit.collider.gameObject == gameObject)
+                {
+                    leftNode.RemoveOutgoingEdge(rightNode.GetNodeIndex());
+                    rightNode.RemoveIncomingEdge(leftNode.GetNodeIndex());
+                    Destroy(gameObject);
+                }
+            }
         }
-    }
-
-    private void UpdatePosition(Vector2 leftAnchor, Vector2 rightAnchor)
-    {
-        if (rightAnchor.x < leftAnchor.x)
-        {
-            Vector2 temp = leftAnchor;
-            leftAnchor = rightAnchor;
-            rightAnchor = temp;
-        }
-
-        transform.position = new Vector2((leftAnchor.x + rightAnchor.x) / 2, (leftAnchor.y + rightAnchor.y) / 2);
-        transform.localScale = new Vector3(Vector2.Distance(leftAnchor, rightAnchor), transform.localScale.y, transform.localScale.z);
-        transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.right, rightAnchor - leftAnchor);
-
     }
 
     public void SetFirstNode(Node node)
@@ -77,8 +81,17 @@ public class Edge : MonoBehaviour
             return;
         }
         transform.parent = rightNode.transform;
+        GetComponent<BoxCollider2D>().enabled = true;
         // TODO: maybe sort inside the hierarchy
         leftNode.SetOutgoingEdge(this, rightNode.GetNodeIndex());
         rightNode.SetIncomingEdge(this, leftNode.GetNodeIndex());
+    }
+
+    private void UpdatePosition(Vector2 leftAnchor, Vector2 rightAnchor)
+    {
+        // set z to 1 so that nodes are in foreground and take priority for clicks
+        transform.position = new Vector3((leftAnchor.x + rightAnchor.x) / 2, (leftAnchor.y + rightAnchor.y) / 2, 1);
+        transform.localScale = new Vector3(Vector2.Distance(leftAnchor, rightAnchor), transform.localScale.y, transform.localScale.z);
+        transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.right, rightAnchor - leftAnchor);
     }
 }

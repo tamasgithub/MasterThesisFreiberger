@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   layerPrefab: {fileID: 6930578083705968278, guid: a72053bfb4020e34295f6c5eefc26ea0, type: 3}
-  numLayers: 1
+  numLayers: 3
   layerSizes: 
   layerDistance: 2
   nodeDistance: 2
