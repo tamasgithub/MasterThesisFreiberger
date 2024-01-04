@@ -17,9 +17,9 @@ public class NN : MonoBehaviour
     public float nodeDistance = 1.0f;
     private float _nodeDistance = 1;
 
-    List<Layer> layers = new List<Layer>();
-
     public bool fullyConnected = false;
+
+    List<Layer> layers = new List<Layer>();
 
     public int GetLayerSize(int index)
     {
@@ -45,6 +45,16 @@ public class NN : MonoBehaviour
         {
             layers[layerIndex].SetNodesOutgoingSizes(layers[layerIndex + 1].GetSize());
         }
+    }
+
+    public void ConnectEdgeToSource(Edge edge, int sourceLayer, int sourceNode, int destinationNode)
+    {
+        layers[sourceLayer].ConnectEdgeToSource(edge, sourceLayer, sourceNode, destinationNode);
+    }
+
+    public void ConnectEdgeToDestination(Edge edge, int destinationLayer, int destinationNode, int sourceNode)
+    {
+        layers[destinationLayer].ConnectEdgeToDestination(edge, destinationLayer, destinationNode, sourceNode);
     }
 
     // Start is called before the first frame update
@@ -81,6 +91,11 @@ public class NN : MonoBehaviour
             }
             _nodeDistance = nodeDistance;
         }
+
+        foreach (Layer layer in layers)
+        {
+            layer.SetFullyConnected(fullyConnected);
+        }
     }
 
     private void SetLayerCount(int layerCount)
@@ -89,10 +104,14 @@ public class NN : MonoBehaviour
         {
             for (int i = layers.Count - 1; i >= layerCount; i--)
             {
+                // set size of the layer to 0 first, so that the neigboring layers are updated correctly
+                // (i.e. the outgoing edge list of the left neighboring layer is cleared)
+                layers[i].SetSize(0);
+                Destroy(layers[i].gameObject);
                 // destroy the last layer
                 layerSizes.RemoveAt(i);
                 layers.RemoveAt(i);
-                Destroy(transform.Find("layer" + i).gameObject);
+                
             }
         }
         else if (layerCount > layerSizes.Count)
@@ -108,7 +127,7 @@ public class NN : MonoBehaviour
                 layer.SetLayerIndex(i);
                 layer.SetSize(1);
                 layer.SetNodeDistance(nodeDistance);
-                //TODO: newLayerComponent.SetFullyConnected(true);
+                layer.SetFullyConnected(fullyConnected);
                 PositionLayer(i);
             }
         }

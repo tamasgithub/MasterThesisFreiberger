@@ -57,6 +57,16 @@ public class Node : MonoBehaviour
         outgoingEdges[destinationIndex] = edge;
     }
 
+    public void RemoveIncomingEdge(int sourceIndex)
+    {
+        incomingEdges[sourceIndex] = null;
+    }
+
+    public void RemoveOutgoingEdge(int destinationIndex)
+    {
+        outgoingEdges[destinationIndex] = null;
+    }
+
     public void SetLayer(Layer layer)
     {
         this.layer = layer;
@@ -75,6 +85,44 @@ public class Node : MonoBehaviour
     public bool HasOutgoingEdge(int destination)
     {
         return outgoingEdges[destination] != null;
+    }
+
+    public void FullyConnect()
+    {
+        for (int i = 0; i < incomingEdges.Count; i++)
+        {
+            if (incomingEdges[i] == null)
+            {
+                Edge edge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
+                edge.SetFirstNode(this);
+                layer.ConnectEdgeToSource(edge, layer.GetLayerIndex() - 1, i, nodeIndex);
+                
+                edge.transform.name = "edge";
+            }
+        }
+        for (int i = 0; i < outgoingEdges.Count; i++)
+        {
+            if (outgoingEdges[i] == null)
+            {
+                Edge edge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
+                edge.SetFirstNode(this);
+                layer.ConnectEdgeToDestination(edge, layer.GetLayerIndex() + 1, i, nodeIndex);
+                
+                edge.transform.name = "edge";
+            }
+        }
+    }
+
+    public void ConnectOutgoingEdge(Edge edge, int destination)
+    {
+        edge.SetSecondNode(this);
+        outgoingEdges[destination] = edge;
+    }
+
+    public void ConnectIncomingEdge(Edge edge, int source)
+    {
+        edge.SetSecondNode(this);
+        incomingEdges[source] = edge;
     }
 
     // Start is called before the first frame update
@@ -129,8 +177,6 @@ public class Node : MonoBehaviour
 
     private void OnMouseUp()
     {
-        print("Mouse up");
-        //RaycastHit2D hit = Physics2D.Raycast(Input.mousePosition, -Vector2.up);
         RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
         if(hit.collider != null)
         {
