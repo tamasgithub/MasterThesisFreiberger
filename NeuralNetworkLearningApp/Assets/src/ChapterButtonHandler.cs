@@ -12,7 +12,7 @@ public class ChapterButtonHandler : MonoBehaviour, IPointerEnterHandler, IPointe
     public void OnPointerEnter(PointerEventData eventData)
     {
         chapterDescription.GetComponentInChildren<I18NText>()
-            .SetKey("DescriptionChapter" + GetComponentsInChildren<Text>()[1].text);
+            .SetKey("DescriptionChapter" + GetComponentInChildren<Text>().text.Substring(GetComponentInChildren<Text>().text.Length-1));
         chapterDescription.SetActive(true);
         
     }
