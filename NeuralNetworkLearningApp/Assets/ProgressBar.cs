@@ -5,18 +5,13 @@ using UnityEngine.UI;
 
 public class ProgressBar : MonoBehaviour
 {
-    public GameObject[] chapterButtons;
-    private int completedChapters = 0;
+    private List<int> completedChapters = new List<int>();
     // Start is called before the first frame update
     public void CompleteChapter(int chapterId)
     {
-        if (chapterId == completedChapters + 1) { 
-            completedChapters++;
-            if (completedChapters < chapterButtons.Length)
-            {
-                chapterButtons[completedChapters].GetComponent<Button>().interactable = true;
-            }
-            transform.GetChild(0).GetComponent<RectTransform>().localScale += new Vector3(1, 0, 0);
+        if (!completedChapters.Contains(chapterId)) {
+            completedChapters.Add(chapterId);
+            transform.GetChild(0).GetComponent<RectTransform>().localScale = new Vector3(completedChapters.Count, 1, 0);
         }
         
     }
