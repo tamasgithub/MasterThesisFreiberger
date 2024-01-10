@@ -2,17 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Edge : MonoBehaviour
 {
     public bool isManuallyConnecting;
+    public GameObject labelPrefab;
+    public Gradient gradient;
+    public float weight;
+
     private Node leftNode;
     private Node rightNode;
+    private GameObject tempLabel;
+    private SpriteRenderer renderer;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        weight = UnityEngine.Random.value * 2 - 1;
+        renderer = transform.GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -40,6 +48,7 @@ public class Edge : MonoBehaviour
         else
         {
             UpdatePosition(leftNode.transform.position, rightNode.transform.position);
+            renderer.color = gradient.Evaluate(weight);
             if (Input.GetMouseButtonDown(1))
             {
                 RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
@@ -50,7 +59,22 @@ public class Edge : MonoBehaviour
                     Destroy(gameObject);
                 }
             }
+            if (tempLabel != null)
+            {
+                // TODO: this is duplicate logic with the nodes' display of their bias
+                tempLabel.transform.position = Input.mousePosition + Vector3.up * 30;
+            }
         }
+    }
+
+    public float GetWeight()
+    {
+        return weight;
+    }
+
+    public float GetLeftNodeValue()
+    {
+        return leftNode.GetValue();
     }
 
     public void SetFirstNode(Node node)
@@ -93,5 +117,25 @@ public class Edge : MonoBehaviour
         transform.position = new Vector3((leftAnchor.x + rightAnchor.x) / 2, (leftAnchor.y + rightAnchor.y) / 2, 1);
         transform.localScale = new Vector3(Vector2.Distance(leftAnchor, rightAnchor), transform.localScale.y, transform.localScale.z);
         transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.right, rightAnchor - leftAnchor);
+    }
+
+    private void OnMouseEnter()
+    {
+        tempLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
+        tempLabel.GetComponent<RectTransform>().position = Input.mousePosition;
+        tempLabel.GetComponent<Text>().text = "Weight:\n" + weight.ToString("0.00");
+    }
+
+    private void OnMouseExit()
+    {
+        Destroy(tempLabel);
+    }
+
+    private void OnDestroy()
+    {
+        if (tempLabel != null)
+        {
+            Destroy(tempLabel);
+        }
     }
 }

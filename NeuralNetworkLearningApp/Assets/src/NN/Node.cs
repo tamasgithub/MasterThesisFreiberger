@@ -2,11 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Node : MonoBehaviour
 {
     public GameObject edgePrefab;
+    public GameObject labelPrefab;
     public bool manuallyConnectable = true;
+    public float inputValue;
+    public ActivationFunction activationFunction;
+    public Gradient gradient;
+    public float value;
 
     private Layer layer;
     private Edge manuallyConnectingEdge;
@@ -15,6 +21,10 @@ public class Node : MonoBehaviour
     private List<Edge> outgoingEdges = new List<Edge>();
     // inside its layer
     private int nodeIndex;
+
+    private float bias;
+    private GameObject tempLabel;
+    private Camera cam;
 
     public int GetIncomingSize()
     {
@@ -125,16 +135,28 @@ public class Node : MonoBehaviour
         incomingEdges[source] = edge;
     }
 
+    public float GetValue()
+    {
+        return value;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-
+        cam = Camera.main;
+        bias = UnityEngine.Random.value * 2 - 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (tempLabel != null)
+        {
+            tempLabel.transform.position = Input.mousePosition + Vector3.up * 30;
+        }
+        transform.GetChild(0).GetComponent<RectTransform>().position = cam.WorldToScreenPoint(transform.position);
+
+        ComputeValue(); 
     }
 
     private void SetEdgeListSize(List<Edge> list, int size)
@@ -157,6 +179,44 @@ public class Node : MonoBehaviour
                 list.Add(null);
             }
         }
+    }
+
+    private void ComputeValue()
+    {
+        Text text = transform.GetChild(0).GetComponent<Text>();
+        if (GetLayerIndex() == 0)
+        {
+            value = inputValue;
+            // assign already here for early return
+            text.text = value.ToString("0.00");
+            return;
+        }
+
+        value = 0f;
+        foreach (Edge incoming in incomingEdges)
+        {
+            // check for null bc not existing edges are still in the list as null values
+            if (incoming != null)
+            {
+                value += incoming.GetWeight() * incoming.GetLeftNodeValue();
+            }
+        }
+        value += bias;
+
+        switch (activationFunction)
+        {
+            
+            case ActivationFunction.SIGMOID:
+                value = 1 / (1 + Mathf.Exp(-value));
+                break;
+
+            // in case of identity or unknow function, do nothing
+            case ActivationFunction.IDENTITY:
+            default:
+                break;
+        }
+        text.text = value.ToString("0.00");
+        text.color = gradient.Evaluate(value);
     }
 
     private void OnMouseDown()
@@ -184,5 +244,30 @@ public class Node : MonoBehaviour
         }
         manuallyConnectingEdge.isManuallyConnecting = false;
         manuallyConnectingEdge = null;
+    }
+    private void OnMouseEnter()
+    {
+        if (GetLayerIndex() > 0)
+        {
+            tempLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
+            tempLabel.GetComponent<RectTransform>().position = Input.mousePosition;
+            tempLabel.GetComponent<Text>().text = "Bias:\n" + bias.ToString("0.00");
+        }   
+    }
+
+    private void OnMouseExit()
+    {
+        if (tempLabel != null)
+        {
+            Destroy(tempLabel);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (tempLabel != null)
+        {
+            Destroy(tempLabel);
+        }
     }
 }
