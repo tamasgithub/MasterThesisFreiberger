@@ -1,12 +1,10 @@
-Shader "Custom/NodeShader"
+Shader "Custom/CircleShader"
 {
     Properties
     {
-        _Color("Color", Color) = (1,1,1,1)
+        _InsideColor("Inside Color", Color) = (1,1,1,1)
         _BorderColor("Border Color", Color) = (0,0,0,1)
         _BorderWidth("Border Width", Range(0, 0.5)) = 0.1
-        _Disabled("Disabled", Range(0,1)) = 0
-        _DisabledAlpha("Disabled Alpha", Range(0,1.0)) = 0.5
     }
         SubShader
     {
@@ -37,11 +35,9 @@ Shader "Custom/NodeShader"
                 float4 vertex : SV_POSITION;
             };
 
-            fixed4 _Color;
+            fixed4 _InsideColor;
             fixed4 _BorderColor;
             float _BorderWidth;
-            bool _Disabled;
-            bool _DisabledAlpha;
 
             v2f vert(appdata v)
             {
@@ -62,17 +58,11 @@ Shader "Custom/NodeShader"
                 if (distFromCenter <= 0.5)
                 {
                     col = _BorderColor;
-                    if (_Disabled == 1) {
-                        col.a = _DisabledAlpha;
-                    }
-                }
 
-                // Check inside the border
-                if (distFromCenter < 0.5 - _BorderWidth)
-                {
-                    col = _Color;
-                    if (_Disabled == 1) {
-                        col.a = _DisabledAlpha;
+                    // Check inside the border
+                    if (distFromCenter < 0.5 - _BorderWidth)
+                    {
+                        col = _InsideColor;
                     }
                 }
 

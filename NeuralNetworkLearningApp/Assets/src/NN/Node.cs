@@ -12,6 +12,7 @@ public class Node : MonoBehaviour
     public float inputValue;
     public ActivationFunction activationFunction;
     public Gradient gradient;
+
     public float value;
 
     private Layer layer;
@@ -187,34 +188,33 @@ public class Node : MonoBehaviour
         if (GetLayerIndex() == 0)
         {
             value = inputValue;
-            // assign already here for early return
-            text.text = value.ToString("0.00");
-            return;
-        }
-
-        value = 0f;
-        foreach (Edge incoming in incomingEdges)
+        } else
         {
-            // check for null bc not existing edges are still in the list as null values
-            if (incoming != null)
+            value = 0f;
+            foreach (Edge incoming in incomingEdges)
             {
-                value += incoming.GetWeight() * incoming.GetLeftNodeValue();
+                // check for null bc not existing edges are still in the list as null values
+                if (incoming != null)
+                {
+                    value += incoming.GetWeight() * incoming.GetLeftNodeValue();
+                }
+            }
+            value += bias;
+
+            switch (activationFunction)
+            {
+
+                case ActivationFunction.SIGMOID:
+                    value = 1 / (1 + Mathf.Exp(-value));
+                    break;
+
+                // in case of identity or unknow function, do nothing
+                case ActivationFunction.IDENTITY:
+                default:
+                    break;
             }
         }
-        value += bias;
 
-        switch (activationFunction)
-        {
-            
-            case ActivationFunction.SIGMOID:
-                value = 1 / (1 + Mathf.Exp(-value));
-                break;
-
-            // in case of identity or unknow function, do nothing
-            case ActivationFunction.IDENTITY:
-            default:
-                break;
-        }
         text.text = value.ToString("0.00");
         text.color = gradient.Evaluate(value);
     }
