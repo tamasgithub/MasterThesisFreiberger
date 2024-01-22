@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ChapterManager : MonoBehaviour
 {
+    public int chapterIndex = 0;
     private int taskIndex = 0;
     //private Dictionary<, GameObject> instructions;
     
@@ -14,6 +16,12 @@ public class ChapterManager : MonoBehaviour
         {
             transform.GetChild(taskIndex).gameObject.SetActive(true);
             transform.GetChild(taskIndex).GetComponent<TaskHandler>().StartTask();
+        } else
+        {
+            if (Progress.CompleteChapter(chapterIndex))
+            {
+                GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.CHAPTERS_COMPLETED, 1);
+            }
         }
     }
     
@@ -22,5 +30,10 @@ public class ChapterManager : MonoBehaviour
     void Start()
     {
         transform.GetChild(0).GetComponent<TaskHandler>().StartTask();
+    }
+
+    public void BackToChapterOverview()
+    {
+        SceneManager.LoadScene("ChaptersOverview");
     }
 }

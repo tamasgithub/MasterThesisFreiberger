@@ -8,11 +8,18 @@ Settings	Settings	Einstellungen
 Quit	Quit	Beenden
 
 Overview	Overview	Übersicht
-Chapter	Chapter	Kapitel
-DescriptionChapter1	Understand the terms input and output of a NN, being able to determine the dimensions of inputs and outputs based on the problem	DE1
-DescriptionChapter2	Familiarize oneself with nodes, edges and paths of graphs	DE2
-DescriptionChapter3	Being able to group nodes into layers and connect the layers with edges according to the general NN structure	DE3
-DescriptionChapter4	Being able to assign values to both nodes and edges and calculate the new value of a node from the weighted sum of its input nodes	DE4
-DescriptionChapter5	Understand the necessity of a hidden layer for linearly not separable problems	DE5
-DescriptionChapter6	Understand the necessity and effect of (different) activation functions	DE6
+Chapter 1	Chapter 1	Kapitel 1
+Chapter 2	Chapter 2	Kapitel 2
+Chapter 3	Chapter 3	Kapitel 3
+Chapter 4	Chapter 4	Kapitel 4
+Chapter 5	Chapter 5	Kapitel 5
+Chapter 6	Chapter 6	Kapitel 6
+Chapter 7	Chapter 7	Kapitel 7
+DescriptionChapter1	The terms input and output of a NN are introduced and you learn that NNs are functions that generate outputs from inputs. At the end of this chapter you will be able to determine the dimensions of inputs and outputs based on the problem	DE
+DescriptionChapter2	Decision boundaries are introduced and you learn how to classify data using one. The calculation performed here is the basis for the NN's structure.	DE
+DescriptionChapter3	In this chapter you learn how the structure of a NN resembles the computation done via decision boundaries. At the end of a chapter your first functional NN will be able to classify simple data.	DE
+DescriptionChapter4	EN	DE
+DescriptionChapter5	EN	DE
+DescriptionChapter6	EN	DE
+DescriptionChapter7	EN	DE
 Progress:	Progress:	Fortschritt:

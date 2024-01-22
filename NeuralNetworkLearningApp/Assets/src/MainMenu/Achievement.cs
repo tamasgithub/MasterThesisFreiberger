@@ -14,19 +14,19 @@ public class Achievement
         this.requirement = requirement;
     }
 
-    public bool CheckCompletion()
+    public bool CheckNewCompletion()
     {
         if (complete)
         {
-            return true;
+            return false;
         }
 
-        if (requirement.Invoke(null))
-        {
-            // show completion on screen,
-            Debug.Log("Achievement " + title + " complete.");
-            complete = true;
-        }
+        complete = requirement.Invoke(null);
         return complete;
+    }
+
+    public string GetTitle()
+    {
+        return title;
     }
 }
