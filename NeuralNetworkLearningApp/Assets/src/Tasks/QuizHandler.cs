@@ -57,7 +57,7 @@ public class QuizHandler : TaskHandler
 
     public void Next()
     {
-        GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqTypes.QUIZES_SOLVED, 1);
+        GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.QUIZES_SOLVED, 1);
         gameObject.SetActive(false);
         TaskFinished();
     }

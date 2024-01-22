@@ -215,8 +215,9 @@ public class Node : MonoBehaviour
             }
         }
 
+        // format the value to two decimals
         text.text = value.ToString("0.00");
-        text.color = gradient.Evaluate(value);
+        text.color = gradient.Evaluate((value + 1) / 2f);
     }
 
     private void OnMouseDown()
