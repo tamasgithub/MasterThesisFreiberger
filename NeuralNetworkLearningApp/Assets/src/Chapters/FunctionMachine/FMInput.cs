@@ -14,6 +14,7 @@ public class FMInput : MonoBehaviour
     private Camera cam;
     private Rigidbody2D rb;
     private bool dragging = false;
+    private bool inputAccepted;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +42,7 @@ public class FMInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isPickupable = true;
         if (IsInsideInputBucket())
         {
             isPickupable = true;
@@ -110,15 +112,27 @@ public class FMInput : MonoBehaviour
         transform.Translate(Vector3.forward * 3);
     }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (inputAccepted)
+        {
+            Destroy(gameObject);
+        } 
+    }
+
+    public void AcceptInput()
+    {
+        inputAccepted = true;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         FMInputHole inputHole = collision.transform.GetComponent<FMInputHole>();
-        if (inputHole == null && (collision.transform.tag != "Input" 
-            || IsInsideInputBucket() || collision.transform.position.y > transform.position.y))
+        if (inputHole == null)
         {
             return;
         }
-        if (inputHole != null && inputHole.GetInputType() == type)
+        if (inputHole.GetInputType() == type)
         {
             rb.velocity = Vector3.zero;
         }

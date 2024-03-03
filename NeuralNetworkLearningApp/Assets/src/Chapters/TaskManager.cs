@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ChapterManager : MonoBehaviour
+public class TaskManager : MonoBehaviour
 {
     public int chapterIndex = 0;
     private int taskIndex = 0;
@@ -22,6 +22,7 @@ public class ChapterManager : MonoBehaviour
             {
                 GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.CHAPTERS_COMPLETED, 1);
             }
+            SceneManager.LoadScene("World");
         }
     }
     
@@ -34,6 +35,6 @@ public class ChapterManager : MonoBehaviour
 
     public void BackToChapterOverview()
     {
-        SceneManager.LoadScene("ChaptersOverview");
+        SceneManager.LoadScene("World");
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.EventSystems.StandaloneInputModule;
 
@@ -9,6 +10,7 @@ public class FMInputHole : MonoBehaviour
     public string inputType;
     private Type type;
     private FMInput inputInHole = null;
+    private FunctionMachine functionMachine;
 
     private void Awake()
     {
@@ -17,6 +19,7 @@ public class FMInputHole : MonoBehaviour
         {
             Debug.LogError("Input type " + inputType + " could not be parsed. Use the fully qualified name e.g. \"System.Int32\""!);
         }
+        functionMachine = transform.parent.GetComponentInChildren<FunctionMachine>();
     }
 
     public Type GetInputType() { 
@@ -35,34 +38,27 @@ public class FMInputHole : MonoBehaviour
 
     public object LetInputIn()
     {
-        GetComponent<BoxCollider2D>().isTrigger = true;
-        GetComponentInChildren<PolygonCollider2D>().isTrigger = true;
+        /*GetComponent<BoxCollider2D>().isTrigger = true;
+        GetComponentInChildren<PolygonCollider2D>().isTrigger = true;*/
+        inputInHole.GetComponent<Collider2D>().isTrigger = true;
         return inputInHole.GetValue();
     }
 
     private void OnCollisionEnter2D(Collision2D collider)
     {
         FMInput collidingInput = collider.transform.GetComponent<FMInput>();
-        if (!GetComponent<BoxCollider2D>().isTrigger)
+        if (!functionMachine.IsProcessingInputs())
         {
-            inputInHole = collidingInput.GetInputType() == type ? collidingInput : null;
+            if (collidingInput.GetInputType() == type) {
+                inputInHole = collidingInput;
+                collidingInput.AcceptInput();
+            }
+        } else
+        {
+            collider.rigidbody.AddForce(Vector2.up*2, ForceMode2D.Impulse);
         }
-        
-        print("collision: inputInHole = " + inputInHole);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        // inputs of wrong type and in case of multiple inüuts in one hole,
-        // inputs are thrown out of the hole in an upwards direction
-        // these inputs should not be disabled
-        if (collision.GetComponent<Rigidbody2D>().velocity.y > 0) {
-            return;
-        }
-        collision.gameObject.SetActive(false);
-        GetComponent<BoxCollider2D>().isTrigger = false;
-        GetComponentInChildren<PolygonCollider2D>().isTrigger = false;
-    }
 
 
 }

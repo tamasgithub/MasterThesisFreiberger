@@ -9,11 +9,11 @@ public class FunctionMachine : MonoBehaviour
 
     private FMInputHole[] inputHoles;
     public GameObject[] outputHoles;
-    public GameObject[] outputDataPrefabs;
-    public GameObject intDataPrefab;
+    private DataPrefabHolder dataPrefabHolder;
 
     public Function function;
     private float gearsRotatedThisFrame;
+    private bool processingInputs = false;
     
     // Start is called before the first frame update
     void Start()
@@ -32,15 +32,17 @@ public class FunctionMachine : MonoBehaviour
             Debug.LogError("The input types of the input holes and the" +
                 "input types of the performing function don't match!");
         }
+        dataPrefabHolder = FindObjectOfType<DataPrefabHolder>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        gears[0].GetChild(0).gameObject.SetActive(!gearsTurning);
+        gears[0].GetChild(0).GetChild(0).gameObject.SetActive(!gearsTurning);
         if (gearsTurning)
         {
-            RotateGears(Time.deltaTime * 100);
+            RotateGears(Time.deltaTime * 200);
         }
 
         if (AllInputsFilled())
@@ -62,10 +64,12 @@ public class FunctionMachine : MonoBehaviour
             gears[i].Rotate(new Vector3(0, 0, angle * 2 * (i % 2 - 0.5f)));
         }
         gearsRotatedThisFrame = angle;
-        
-        print("gears rot frame: " + gearsRotatedThisFrame);
     }
 
+    public bool IsProcessingInputs()
+    {
+        return processingInputs;
+    }
 
     private bool AllInputsFilled()
     {
@@ -81,6 +85,7 @@ public class FunctionMachine : MonoBehaviour
 
     private void ProcessInputs()
     {
+        processingInputs = true;
         object[] inputValues = new object[inputHoles.Length];
         for (int i = 0; i < inputHoles.Length; i++)
         {
@@ -104,25 +109,24 @@ public class FunctionMachine : MonoBehaviour
         }
         for (int i = 0; i < outputValues.Length; i++)
         {
-            /*Type outputType = FunctionDetails.GetFunctionOutputTypes(function)[i];
-            GameObject outputPrefab = null;
-            foreach(GameObject dataPrefab in outputDataPrefabs) {
-                if (GetComponent<FMInput>().GetInputType() == outputType)
-                {
-                    outputPrefab = dataPrefab;
-                    break;
-                }
-            }
-            if (outputPrefab == null) {
-                Debug.LogError("No output prefab for the output type " + outputType 
-                    + " of the function " + function + " was provided!");
-                return;
-            }*/
-            GameObject resultData = Instantiate(intDataPrefab, outputHoles[i].transform.position, Quaternion.identity);
-            resultData.transform.Translate(Vector3.forward * 2);
-            resultData.GetComponentInChildren<TextMesh>().text = outputValues[i].ToString();
-            print("popped out an output");
+            Type outputType = FunctionDetails.GetFunctionOutputTypes(function)[i];
+            GameObject outputPrefab = dataPrefabHolder.GetDataPrefabForType(outputType);
+
+            GameObject outputData = Instantiate(outputPrefab, outputHoles[i].transform.position, Quaternion.identity);
+            outputData.transform.Translate(Vector3.forward * 2 + Vector3.right * UnityEngine.Random.Range(-.1f, .1f));
+            outputData.GetComponentInChildren<TextMesh>().text = outputValues[i].ToString();
         }
-        
+        processingInputs = false;
+    }
+
+    private void OnMouseEnter()
+    {
+        print("mouse enter");
+        transform.GetChild(0).gameObject.SetActive(true);
+    }
+
+    private void OnMouseExit()
+    {
+        transform.GetChild(0).gameObject.SetActive(false);
     }
 }
