@@ -14,7 +14,7 @@ public class Edge : MonoBehaviour
     private Node leftNode;
     private Node rightNode;
     private GameObject tempLabel;
-    private SpriteRenderer renderer;
+    new private SpriteRenderer renderer;
 
     // Start is called before the first frame update
     void Start()
