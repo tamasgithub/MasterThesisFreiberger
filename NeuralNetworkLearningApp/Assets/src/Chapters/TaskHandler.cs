@@ -8,6 +8,6 @@ public abstract class TaskHandler : MonoBehaviour
 
     public void TaskFinished()
     {
-        transform.parent.GetComponent<ChapterManager>().TaskFinished();
+        transform.parent.GetComponent<TaskManager>().TaskFinished();
     }
 }

@@ -31,7 +31,7 @@ public class FMHandle : MonoBehaviour
             //print(worldPos);
             float angleToRotate = Vector2.SignedAngle(mouseWorldPos - (Vector2)gear.position,
                 (Vector2)transform.position - (Vector2)gear.position);
-            if (angleToRotate > 0 && angleToRotate < 15) {
+            if (angleToRotate > 0 && angleToRotate < 30) {
                 machine.RotateGears(angleToRotate);
             }
             
