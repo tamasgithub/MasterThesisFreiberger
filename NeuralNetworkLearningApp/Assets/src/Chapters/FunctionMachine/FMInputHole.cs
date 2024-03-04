@@ -52,6 +52,15 @@ public class FMInputHole : MonoBehaviour
             if (collidingInput.GetInputType() == type) {
                 inputInHole = collidingInput;
                 collidingInput.AcceptInput();
+                if (type == typeof(string))
+                {
+                    float zRotation = collider.transform.rotation.eulerAngles.z;
+                    print(zRotation);
+                    print(Mathf.Sign(zRotation));
+                    collider.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 
+                        Mathf.Sign(180 - zRotation) *  90));
+                    collider.rigidbody.angularVelocity = 0;
+                }
             }
         } else
         {

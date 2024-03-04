@@ -9,9 +9,9 @@ public class LoadSceneInteraction : Interaction
     public Sprite newTask;
     public Sprite completedTask;
     public GameObject taskDescriptionUI;
-    public Vector3 taskDescriptionOffset;
     public string chapterToLoad;
     public string taskDescription;
+    private bool displayingDescription;
     protected override void Start()
     {
         base.Start();
@@ -22,17 +22,20 @@ public class LoadSceneInteraction : Interaction
     protected override void Update()
     {
         base.Update();
-        if (GetDistanceFromPlayer() > 3f)
+        if (displayingDescription && GetDistanceFromPlayer() > 3f)
         {
             StopInteraction();
         }
     }
     public override void StartInteraction()
     {
-        if (!taskDescriptionUI.activeSelf)
+        print("StartInteraction of " + transform.name);
+        if (!displayingDescription)
         {
+            print("taskDescriptionUI activating");
             taskDescriptionUI.SetActive(true);
             taskDescriptionUI.GetComponentInChildren<Text>().text = taskDescription.Replace("\\n", "\n");
+            displayingDescription = true;
         }
         else
         {
@@ -42,6 +45,9 @@ public class LoadSceneInteraction : Interaction
 
     public override void StopInteraction()
     {
+        print("StopInteraction of " + transform.name);
+        taskDescriptionUI.GetComponentInChildren<Text>().text = "";
         taskDescriptionUI.SetActive(false);
+        displayingDescription = false;
     }
 }

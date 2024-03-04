@@ -41,7 +41,6 @@ public abstract class Interaction : MonoBehaviour
 
     public void DisplayUIToInteract()
     {
-        print(transform.name + " displays interaction ui");
         interactUI.position = cam.WorldToScreenPoint(transform.TransformPoint(interactUIOffset));
         interactUI.GetComponentInChildren<Text>().text = keyToInteract.ToString();
         interactable = true;

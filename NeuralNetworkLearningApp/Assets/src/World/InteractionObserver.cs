@@ -15,7 +15,6 @@ public class InteractionObserver : MonoBehaviour
             subscribers = new List<Interaction>();
         }
         subscribers.Add(interaction);
-        print(interaction + " subscribed");
     }
 
     public void Unsubscribe(Interaction interaction)
@@ -39,17 +38,20 @@ public class InteractionObserver : MonoBehaviour
                 minDistanceInteraction = interaction;
             }
         }
-        print("mindistance: " + minDistance);
+
+        transform.GetChild(0).gameObject.SetActive(minDistance < interactionRange);
         
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(minDistance < interactionRange);
-        }
         if (minDistance < interactionRange)
         {
             minDistanceInteraction.DisplayUIToInteract();
         }
-        
-        
+        foreach (Interaction interaction in subscribers)
+        {
+            if (interaction == minDistanceInteraction)
+            {
+                continue;
+            }
+            interaction.RemoveUIToInteract();
+        }
     }
 }

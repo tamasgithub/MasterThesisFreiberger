@@ -110,6 +110,10 @@ public class FunctionMachine : MonoBehaviour
         for (int i = 0; i < outputValues.Length; i++)
         {
             Type outputType = FunctionDetails.GetFunctionOutputTypes(function)[i];
+            if (outputType == typeof(string) && ((string)outputValues[i]).Length == 1)
+            {
+                outputType = typeof(char);
+            }
             GameObject outputPrefab = dataPrefabHolder.GetDataPrefabForType(outputType);
 
             GameObject outputData = Instantiate(outputPrefab, outputHoles[i].transform.position, Quaternion.identity);
