@@ -35,8 +35,10 @@ public class FMInput : MonoBehaviour
         {
             print("Successfully converted: value = " + value);
         }
+
         cam = Camera.main;
         rb = GetComponent<Rigidbody2D>();
+
     }
 
     // Update is called once per frame
