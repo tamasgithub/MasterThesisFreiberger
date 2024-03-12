@@ -14,7 +14,8 @@ public class WagonController: MonoBehaviour
     void Update()
     {
         float locTrackProgress = locController.GetTrackProgress();
-        float wagonTrackProgress = locTrackProgress - locController.GetDirection() * transform.GetSiblingIndex() * wagonLength / trackPieceLength / 25;
+        float wagonToTrackRatio = wagonLength / trackPieceLength / 25f;
+        float wagonTrackProgress = locTrackProgress - locController.GetDirection() * (transform.GetSiblingIndex() * wagonToTrackRatio + 0.003f);
         transform.position = trackController.GetPositionOnTrack(wagonTrackProgress) + heightAboveGround * Vector3.up;
         transform.rotation = trackController.GetRotationOnTrack(wagonTrackProgress);
         transform.Rotate(Vector3.up * 90);

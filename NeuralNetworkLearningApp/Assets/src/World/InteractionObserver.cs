@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class InteractionObserver : MonoBehaviour
 {
-    public float interactionRange = 3f;
     private List<Interaction> subscribers;
 
 
@@ -38,10 +37,9 @@ public class InteractionObserver : MonoBehaviour
                 minDistanceInteraction = interaction;
             }
         }
-
-        transform.GetChild(0).gameObject.SetActive(minDistance < interactionRange);
+        transform.GetChild(0).gameObject.SetActive(minDistance < minDistanceInteraction.GetRange());
         
-        if (minDistance < interactionRange)
+        if (minDistance < minDistanceInteraction.GetRange())
         {
             minDistanceInteraction.DisplayUIToInteract();
         }

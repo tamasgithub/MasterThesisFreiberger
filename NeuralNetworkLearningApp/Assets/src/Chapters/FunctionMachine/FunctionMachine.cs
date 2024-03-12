@@ -6,15 +6,20 @@ public class FunctionMachine : MonoBehaviour
 {
     public bool gearsTurning = true;
     public Transform[] gears = new Transform[3];
+    public GameObject[] outputHoles;
+    public Function function;
+    public bool outputDecodable = false;
+
+    // events the FM fires
+    public event Action hoverEvent;
+    public event Action inputsAcceptedEvent;
+    public event Action inputsProcessedEvent;
 
     private FMInputHole[] inputHoles;
-    public GameObject[] outputHoles;
     private DataPrefabHolder dataPrefabHolder;
-
-    public Function function;
     private float gearsRotatedThisFrame;
     private bool processingInputs = false;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +37,12 @@ public class FunctionMachine : MonoBehaviour
             Debug.LogError("The input types of the input holes and the" +
                 "input types of the performing function don't match!");
         }
+
+        if (outputHoles.Length != FunctionDetails.GetFunctionOutputTypes(function).Length)
+        {
+            Debug.LogError("The number of output holes doesn't match the number" +
+                " of outputs of the function");
+        }
         dataPrefabHolder = FindObjectOfType<DataPrefabHolder>();
     }
 
@@ -39,7 +50,6 @@ public class FunctionMachine : MonoBehaviour
     void Update()
     {
         gears[0].GetChild(0).gameObject.SetActive(!gearsTurning);
-        gears[0].GetChild(0).GetChild(0).gameObject.SetActive(!gearsTurning);
         if (gearsTurning)
         {
             RotateGears(Time.deltaTime * 200);
@@ -47,6 +57,11 @@ public class FunctionMachine : MonoBehaviour
 
         if (AllInputsFilled())
         {
+            if (inputsAcceptedEvent != null)
+            {
+                inputsAcceptedEvent();
+            }
+            
             ProcessInputs();
         }
     }
@@ -119,14 +134,26 @@ public class FunctionMachine : MonoBehaviour
             GameObject outputData = Instantiate(outputPrefab, outputHoles[i].transform.position, Quaternion.identity);
             outputData.transform.Translate(Vector3.forward * 2 + Vector3.right * UnityEngine.Random.Range(-.1f, .1f));
             outputData.GetComponentInChildren<TextMesh>().text = outputValues[i].ToString();
+            if (outputType == typeof(int) && outputDecodable)
+            {
+                outputData.AddComponent<IntFMOutputDecoder>();
+            }
+        }
+        if (inputsProcessedEvent != null)
+        {
+            inputsProcessedEvent();
         }
         processingInputs = false;
     }
 
     private void OnMouseEnter()
     {
-        print("mouse enter");
         transform.GetChild(0).gameObject.SetActive(true);
+        if (hoverEvent != null)
+        {
+            hoverEvent();
+        }
+        
     }
 
     private void OnMouseExit()

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class QuizHandler : TaskHandler
+public class QuizTask : Task
 {
     public GameObject answerPrefab;
     public string[] answers;

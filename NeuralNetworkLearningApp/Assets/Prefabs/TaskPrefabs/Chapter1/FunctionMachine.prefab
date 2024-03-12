@@ -210,7 +210,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2898525274433174871
 Transform:
   m_ObjectHideFlags: 0
@@ -755,3 +755,4 @@ MonoBehaviour:
   outputHoles:
   - {fileID: 0}
   function: 0
+  outputDecodable: 0

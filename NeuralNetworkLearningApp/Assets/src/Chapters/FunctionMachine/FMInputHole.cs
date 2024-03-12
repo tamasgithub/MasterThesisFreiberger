@@ -8,6 +8,8 @@ using static UnityEngine.EventSystems.StandaloneInputModule;
 public class FMInputHole : MonoBehaviour
 {
     public string inputType;
+    public event Action inputRejectedEvent;
+
     private Type type;
     private FMInput inputInHole = null;
     private FunctionMachine functionMachine;
@@ -41,6 +43,7 @@ public class FMInputHole : MonoBehaviour
         /*GetComponent<BoxCollider2D>().isTrigger = true;
         GetComponentInChildren<PolygonCollider2D>().isTrigger = true;*/
         inputInHole.GetComponent<Collider2D>().isTrigger = true;
+        inputInHole.AcceptInput();
         return inputInHole.GetValue();
     }
 
@@ -51,16 +54,30 @@ public class FMInputHole : MonoBehaviour
         {
             if (collidingInput.GetInputType() == type) {
                 inputInHole = collidingInput;
-                collidingInput.AcceptInput();
+                collider.rigidbody.velocity = Vector2.zero;
                 if (type == typeof(string))
                 {
                     float zRotation = collider.transform.rotation.eulerAngles.z;
-                    print(zRotation);
-                    print(Mathf.Sign(zRotation));
                     collider.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 
                         Mathf.Sign(180 - zRotation) *  90));
                     collider.rigidbody.angularVelocity = 0;
                 }
+            } else
+            {
+                collider.rigidbody.AddForce(Vector3.up * 6
+                + (UnityEngine.Random.value > 0.5f ? Vector3.right : Vector3.right) * 0.3f, ForceMode2D.Impulse);
+                collider.transform.GetComponent<CircleCollider2D>().enabled = false;
+                collidingInput.SetInForegroundAfter(1);
+
+                if (inputRejectedEvent != null)
+                {
+                    print("fire input rejected event");
+                    inputRejectedEvent();
+                } else
+                {
+                    print("event has no subscribers");
+                }
+                    
             }
         } else
         {
@@ -68,6 +85,9 @@ public class FMInputHole : MonoBehaviour
         }
     }
 
-
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        SetInputInHole(null);
+    }
 
 }

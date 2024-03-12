@@ -14,15 +14,6 @@ public class TrackController : MonoBehaviour
     void Start()
     {
         terrain = Terrain.activeTerrain;
-        // already baked into the Transforms
-        // and since this script is not perfect, I adjusted the terrain afterwards again.
-        // executing this script again adjusts the tracks to the new terrain an
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         foreach (Transform track in transform)
         {
             Quaternion existingRotation = track.localRotation;
@@ -41,6 +32,13 @@ public class TrackController : MonoBehaviour
             track.rotation = Quaternion.Euler(new Vector3(0, track.eulerAngles.y, newZRotation));
             track.localScale = new Vector3(1 / Mathf.Cos(newZRotation * Mathf.Deg2Rad), 1, 1);
         }
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 
     

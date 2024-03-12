@@ -20,7 +20,6 @@ public class TalkInteraction : Interaction
     }
     public override void StartInteraction()
     {
-        print("starting talk interaction");
         if (texts.Length <= currentTextIndex)
         {
             return;

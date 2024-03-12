@@ -27,12 +27,12 @@ public class LocomotiveController : MonoBehaviour
             return;
         }
         float lastTrackProgress = trackProgress;
-        trackProgress += Time.deltaTime * speed * direction / 10f;
+        trackProgress += Time.deltaTime * speed * direction;
         if (trackProgress < 0 || trackProgress >= 1)
         {
             // reset the track progress to last frame's value so that the wagons reading the value
             // and then using it to get their position, don't get an OOBE
-            trackProgress -= Time.deltaTime * speed * direction / 10f;
+            trackProgress -= Time.deltaTime * speed * direction;
             halting = true;
             StartCoroutine(WaitToLeaveStation());
             return;

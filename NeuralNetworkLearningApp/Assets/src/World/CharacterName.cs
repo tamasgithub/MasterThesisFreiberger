@@ -14,7 +14,6 @@ public class CharacterName : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.LookAt(transform.position - 2 * player.position);
-        print("yo");
+        transform.LookAt(2 * transform.position - player.position);
     }
 }

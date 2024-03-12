@@ -15,14 +15,14 @@ public class TaskManager : MonoBehaviour
         if (taskIndex < transform.childCount)
         {
             transform.GetChild(taskIndex).gameObject.SetActive(true);
-            transform.GetChild(taskIndex).GetComponent<TaskHandler>().StartTask();
+            transform.GetChild(taskIndex).GetComponent<Task>().StartTask();
         } else
         {
             if (Progress.CompleteChapter(chapterIndex))
             {
                 GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.CHAPTERS_COMPLETED, 1);
             }
-            SceneManager.LoadScene("World");
+            //SceneManager.LoadScene("World");
         }
     }
     
@@ -30,7 +30,7 @@ public class TaskManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.GetChild(0).GetComponent<TaskHandler>().StartTask();
+        transform.GetChild(0).GetComponent<Task>().StartTask();
     }
 
     public void BackToChapterOverview()
