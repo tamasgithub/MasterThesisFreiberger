@@ -9,7 +9,7 @@ public abstract class Interaction : MonoBehaviour
 {
     public Transform player;
     public KeyCode keyToInteract;
-    private float triggerDistance = 3f;
+    public float interanctionRange = 3f;
     public Vector3 interactUIOffset;
     protected Camera cam;
     public Transform interactUI;
@@ -21,6 +21,7 @@ public abstract class Interaction : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
+        player = GameObject.Find("Player").transform;
         cam = player.GetComponentInChildren<Camera>();
         interactUI.GetComponent<InteractionObserver>().Subscribe(this);
     }
@@ -54,4 +55,9 @@ public abstract class Interaction : MonoBehaviour
     public abstract void StartInteraction();
 
     public virtual void StopInteraction() { }
+
+    public float GetRange()
+    {
+        return interanctionRange;
+    }
 }

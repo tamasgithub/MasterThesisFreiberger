@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class TaskHandler : MonoBehaviour
+public abstract class Task : MonoBehaviour
 {
     public abstract void StartTask();
 
-    public void TaskFinished()
+    public virtual void TaskFinished()
     {
         transform.parent.GetComponent<TaskManager>().TaskFinished();
     }

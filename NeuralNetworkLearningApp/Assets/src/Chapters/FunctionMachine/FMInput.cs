@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FMInput : MonoBehaviour
@@ -31,9 +32,6 @@ public class FMInput : MonoBehaviour
         {
             Debug.LogError("Converting the value " + stringValue + " to the specified type " + type.FullName + " failed. Make sure the" +
                 " value can be converted to the type using \"Convert.ChangeType(value, type);\"");
-        } else
-        {
-            print("Successfully converted: value = " + value);
         }
 
         cam = Camera.main;
@@ -79,20 +77,27 @@ public class FMInput : MonoBehaviour
         return value;
     }
 
+    public void SetValue(string stringValue)
+    {
+        value = Convert.ChangeType(stringValue, type);
+        GetComponentInChildren<TextMesh>().text = stringValue;
+    }
+
     private void OnMouseUp()
     {
-        dragging = false;
-        GetComponent<CircleCollider2D>().enabled = true;
-        EnsureNotInCollision();
-        if (isPickupable)
+        print("mouse up");
+        if (dragging)
         {
+            GetComponent<CircleCollider2D>().enabled = true;
+            EnsureNotInCollision();
             rb.velocity = Vector3.zero;
         }
-        isPickupable = false;
+        dragging = false;
     }
 
     private void OnMouseDown()
     {
+        print("mouse down");
         transform.rotation = Quaternion.identity;
         rb.angularVelocity = 0;
         if (isPickupable)
@@ -125,9 +130,10 @@ public class FMInput : MonoBehaviour
     public void AcceptInput()
     {
         inputAccepted = true;
+        isPickupable = false;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    /*private void OnCollisionEnter2D(Collision2D collision)
     {
         FMInputHole inputHole = collision.transform.GetComponent<FMInputHole>();
         if (inputHole == null)
@@ -140,16 +146,18 @@ public class FMInput : MonoBehaviour
         }
         else
         {
-            GetComponent<Rigidbody2D>().AddForce(Vector3.up * 6
-                + (UnityEngine.Random.value > 0.5f ? Vector3.right : Vector3.right) * 0.3f, ForceMode2D.Impulse);
-            StartCoroutine(SetInForeground());
-            GetComponent<CircleCollider2D>().enabled = false;
+            
         }
+    }*/
+
+    public void SetInForegroundAfter(float seconds)
+    {
+        StartCoroutine(SetInForeground(seconds));
     }
 
-    IEnumerator SetInForeground()
+    IEnumerator SetInForeground(float seconds)
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(seconds);
         transform.Translate(Vector3.back * 5);
     }
 
