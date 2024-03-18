@@ -4,59 +4,36 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class LocomotiveController : MonoBehaviour
+public class LocomotiveController : VehicleController
 {
-    public Transform track;
-    public TrackController trackController;
+    private Transform track;
+    private TrackController trackController;
     public float heightAboveGround = 0;
-    public int direction = 1;
-    public float remainingHaltingTime = 5f;
-    public float speed = 1;
-    private bool halting = false;
-    private float trackProgress = 0.1f;
+    private float locToTrackRatio;
+    public float locLength;
 
-    private void Start()
+    private void Awake()
     {
+        track = GameObject.Find("Track").transform;
         trackController = track.GetComponent<TrackController>();
+        startEvent += () => HandleStartEvent();
+        locToTrackRatio = locLength / trackController.GetTrackPieceLength() / trackController.transform.childCount;
     }
     // Update is called once per frame
-    void Update()
+    protected override void ProgressTo(float progress)
     {
-        if (halting)
-        {
-            return;
-        }
-        float lastTrackProgress = trackProgress;
-        trackProgress += Time.deltaTime * speed * direction;
-        if (trackProgress < 0 || trackProgress >= 1)
-        {
-            // reset the track progress to last frame's value so that the wagons reading the value
-            // and then using it to get their position, don't get an OOBE
-            trackProgress -= Time.deltaTime * speed * direction;
-            halting = true;
-            StartCoroutine(WaitToLeaveStation());
-            return;
-        }
-
-        transform.position = trackController.GetPositionOnTrack(trackProgress) + heightAboveGround * Vector3.up;
-        transform.rotation = trackController.GetRotationOnTrack(trackProgress);
+        transform.position = trackController.GetPositionOnTrack(progress) + heightAboveGround * Vector3.up;
+        transform.rotation = trackController.GetRotationOnTrack(progress);
 
         if (direction == -1)
         {
             transform.Rotate(180 * Vector3.up);
         }
 
-        
-    }
-
-    public int GetDirection()
-    {
-        return direction;
-    }
-
-    public float GetTrackProgress()
-    {
-        return trackProgress;
+        for (int i = 1; i < transform.parent.childCount; i++)
+        {
+            transform.parent.GetChild(i).GetComponent<WagonController>().FollowLocAt(progress, direction);
+        }
     }
 
     public TrackController GetTrackController()
@@ -64,20 +41,15 @@ public class LocomotiveController : MonoBehaviour
         return trackController;
     }
 
-    IEnumerator WaitToLeaveStation()
+    private void HandleStartEvent()
     {
-        while (remainingHaltingTime > 0)
-        {
-            remainingHaltingTime -= Time.deltaTime;
-            yield return null;
-        }
-        remainingHaltingTime = 5;
-        halting = false;
         float numberOfWagons = transform.parent.childCount - 1;
-        float startProgress = numberOfWagons / (track.childCount-1);
-        direction *= -1;
-        trackProgress = direction > 0 ? startProgress : 1 - startProgress;
-        
+        float startProgress = locToTrackRatio;
+        for (int i = 1; i < transform.parent.childCount; i++)
+        {
+            startProgress += transform.parent.GetChild(i).GetComponent<WagonController>().GetWagonToTrackRatio();
+        }
+        SetProgress(direction > 0 ? startProgress : 1 - startProgress);
     }
 }
 

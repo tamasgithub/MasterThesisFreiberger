@@ -7,23 +7,36 @@ using UnityEngine.UI;
 
 public abstract class Interaction : MonoBehaviour
 {
-    public Transform player;
+    protected Transform player;
     public KeyCode keyToInteract;
     public float interanctionRange = 3f;
     public Vector3 interactUIOffset;
     protected Camera cam;
-    public Transform interactUI;
+    protected Transform interactUI;
 
     // not interactable in general, but in the sense of "could interaction in this exact frame trigger
     // on this object because this is the closest Interaction holding gameobject in the scene
     // that is subscribed to InteractionObserver"
     private bool interactable = false;
     // Start is called before the first frame update
+    private void Awake()
+    {
+        interactUI = GameObject.Find("InteractUI").transform;
+    }
+    private void OnEnable()
+    {
+        interactUI.GetComponent<InteractionObserver>().Subscribe(this);
+    }
+
+    private void OnDisable()
+    {
+        interactUI.GetComponent<InteractionObserver>().Unsubscribe(this);
+    }
+
     protected virtual void Start()
     {
         player = GameObject.Find("Player").transform;
         cam = player.GetComponentInChildren<Camera>();
-        interactUI.GetComponent<InteractionObserver>().Subscribe(this);
     }
 
     // Update is called once per frame
@@ -34,6 +47,8 @@ public abstract class Interaction : MonoBehaviour
             StartInteraction();
         }   
     }
+
+    
 
     public float GetDistanceFromPlayer()
     {

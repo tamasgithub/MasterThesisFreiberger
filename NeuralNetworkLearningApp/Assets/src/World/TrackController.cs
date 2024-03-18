@@ -8,7 +8,7 @@ public class TrackController : MonoBehaviour
 {
     public float heightAboveGround = 0f;
     private Terrain terrain;
-    public float trackLength = 24f;
+    public float trackPieceLength = 23.9f;
 
     // Start is called before the first frame update
     void Start()
@@ -20,9 +20,9 @@ public class TrackController : MonoBehaviour
 
 
             Vector3 trackPosition = track.position;
-            float leftHeight = terrain.SampleHeight(trackPosition + track.TransformDirection(trackLength / 2 * Vector3.left));
-            float rightHeight = terrain.SampleHeight(trackPosition + track.TransformDirection(trackLength / 2 * Vector3.right));
-            float gradient = (leftHeight - rightHeight) / trackLength;
+            float leftHeight = terrain.SampleHeight(trackPosition + track.TransformDirection(trackPieceLength / 2 * Vector3.left));
+            float rightHeight = terrain.SampleHeight(trackPosition + track.TransformDirection(trackPieceLength / 2 * Vector3.right));
+            float gradient = (leftHeight - rightHeight) / trackPieceLength;
             trackPosition.y = (leftHeight + rightHeight) / 2 + heightAboveGround;
             track.position = trackPosition;
             // Calculate the new z-axis rotation based on the terrain slope
@@ -41,6 +41,10 @@ public class TrackController : MonoBehaviour
         
     }
 
+    public float GetTrackPieceLength()
+    {
+        return trackPieceLength;
+    }
     
     public Vector3 GetPositionOnTrack(float trackProgress)
     {
@@ -52,11 +56,14 @@ public class TrackController : MonoBehaviour
         return Quaternion.Euler(GetValueOnTrack(trackProgress, "rotation"));
     }
 
-    // @params trackProgress: the progress between 0 inclusive and 1 exclusive of the whole track
+    // @params trackProgress: the progress between 0 and 1 (both inclusive) of the whole track
     public Vector3 GetValueOnTrack(float trackProgress, string value) {
-        if (trackProgress < 0 || trackProgress >= 1)
+        if (trackProgress == 1)
         {
-            Debug.LogException(new Exception("trackProgress outside of [0;1) range: " + trackProgress));
+            trackProgress -= float.Epsilon;
+        } else if (trackProgress < 0 || trackProgress > 1)
+        {
+            Debug.LogException(new Exception("trackProgress outside of [0;1] range: " + trackProgress));
         }
         float mappedTrackProgress = trackProgress * (transform.childCount - 1);
         int lastTrackIndex = Mathf.FloorToInt(mappedTrackProgress);

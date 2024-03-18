@@ -2133,6 +2133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1188088015}
   - component: {fileID: 1188088016}
+  - component: {fileID: 1188088017}
   m_Layer: 0
   m_Name: Balloon2
   m_TagString: Untagged
@@ -2173,6 +2174,21 @@ MonoBehaviour:
   interanctionRange: 5
   interactUIOffset: {x: 0, y: 1.5, z: 0}
   interactUI: {fileID: 1937711001}
+--- !u!114 &1188088017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188088014}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e0c9129f209864fa691c85fdaed7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stop0: {x: 985.57007, y: 0, z: 971.673}
+  stop1: {x: 0, y: 500, z: 0}
+  speed: 0.0005
 --- !u!1001 &1200672713
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2954,9 +2970,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81e0c9129f209864fa691c85fdaed7a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stop0: {x: 0, y: 0, z: 0}
-  stop1: {x: 0, y: 0, z: 0}
-  speed: 1
+  stop0: {x: 973.98, y: 0, z: 966.06}
+  stop1: {x: 600, y: 0, z: 920}
+  speed: 0.0005
 --- !u!1001 &1912247165
 PrefabInstance:
   m_ObjectHideFlags: 0

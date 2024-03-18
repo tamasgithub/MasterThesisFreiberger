@@ -13,11 +13,20 @@ public class InteractionObserver : MonoBehaviour
         {
             subscribers = new List<Interaction>();
         }
-        subscribers.Add(interaction);
+        if (!subscribers.Contains(interaction))
+        {
+            subscribers.Add(interaction);
+            print("interaction subscribed");
+        }
+        
     }
 
     public void Unsubscribe(Interaction interaction)
     {
+        if (subscribers == null)
+        {
+            subscribers = new List<Interaction>();
+        }
         subscribers.Remove(interaction);
     }
 

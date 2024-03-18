@@ -81,6 +81,7 @@ public class PlayerControl : MonoBehaviour
     {
         transform.parent = null;
         walkingArea = null;
-        transform.Translate(-6, 0, 0);
+        transform.Translate(6 * Vector3.forward);
+        transform.Rotate(Vector3.up * 90);
     }
 }

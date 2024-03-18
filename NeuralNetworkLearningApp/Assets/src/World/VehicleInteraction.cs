@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class VehicleInteraction : Interaction
 {
     private bool insideVehicle;
+
     protected override void Update()
     {
         base.Update();
