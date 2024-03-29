@@ -9,14 +9,15 @@ public class LoadSceneInteraction : Interaction
     public Sprite newTask;
     public Sprite completedTask;
     public GameObject taskDescriptionUI;
-    public string chapterToLoad;
+    public string sceneToLoad;
     public string taskDescription;
     private bool displayingDescription;
+    public bool shortcut;
+    public GameObject[] chapterCompletionVehicles;
     protected override void Start()
     {
         base.Start();
-        // TODO: load info about task being completed and set sprite accordingly
-        GetComponent<SpriteRenderer>().sprite = newTask;
+        CheckTaskAndChapterCompletion();
     }
 
     protected override void Update()
@@ -26,26 +27,63 @@ public class LoadSceneInteraction : Interaction
         {
             StopInteraction();
         }
+
+        // shortcutting
+        if (shortcut)
+        {
+            CheckTaskAndChapterCompletion();
+        }
+    }
+
+    private void CheckTaskAndChapterCompletion()
+    {
+        bool taskCompleted = Progress.IsTaskCompleted(sceneToLoad);
+        print(sceneToLoad + " is " + (!taskCompleted ? "not" : "") + " completed");
+        GetComponent<SpriteRenderer>().sprite = taskCompleted ? completedTask : newTask;
+        if (transform.parent.GetSiblingIndex() == transform.parent.parent.childCount - 1)
+        {
+            foreach (SpriteRenderer spriteRenderer in transform.parent.parent.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (spriteRenderer.sprite != completedTask)
+                {
+                    return;
+                }
+            }
+            foreach (GameObject vehicle in chapterCompletionVehicles)
+            {
+                if (vehicle.GetComponent<VehicleController>() != null)
+                {
+                    vehicle.GetComponent<VehicleController>().enabled = true;
+                }
+                if (vehicle.GetComponent<Interaction>() != null)
+                {
+                    vehicle.GetComponent<Interaction>().enabled = true;
+                }
+            }
+        }
     }
     public override void StartInteraction()
     {
-        print("StartInteraction of " + transform.name);
         if (!displayingDescription)
         {
-            print("taskDescriptionUI activating");
             taskDescriptionUI.SetActive(true);
             taskDescriptionUI.GetComponentInChildren<Text>().text = taskDescription.Replace("\\n", "\n");
             displayingDescription = true;
         }
         else
         {
-            SceneManager.LoadScene(chapterToLoad);
+            if (shortcut && Progress.CompleteTask(sceneToLoad))
+            {
+                //GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.TASKS_COMPLETED, 1);
+                return;
+            }
+            
+            SceneManager.LoadScene(sceneToLoad);
         }
     }
 
     public override void StopInteraction()
     {
-        print("StopInteraction of " + transform.name);
         taskDescriptionUI.GetComponentInChildren<Text>().text = "";
         taskDescriptionUI.SetActive(false);
         displayingDescription = false;

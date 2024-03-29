@@ -26,7 +26,7 @@ public class FMProcessInputsTask : FMTask
     {
         inputsProcessed++;
 
-        if (processExactlyTheSpecifiedInputs && inputsProcessed >= inputs.Length)
+        if (processExactlyTheSpecifiedInputs)
         {
             bool allProcessed = true;
             foreach(FMInput input in inputs)

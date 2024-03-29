@@ -19,7 +19,6 @@ public abstract class VehicleController : MonoBehaviour
     protected virtual void Start()
     {
         remainingHaltingTime = haltingTime;
-        print(direction);
         StartCoroutine(WaitToLeaveStation());
         VehicleInteraction interaction = transform.GetComponent<VehicleInteraction>();
         if (interaction != null )
@@ -28,6 +27,7 @@ public abstract class VehicleController : MonoBehaviour
             stopEvent += () => interaction.enabled = true;
         }
     }
+
 
     private void Update()
     {
@@ -62,6 +62,7 @@ public abstract class VehicleController : MonoBehaviour
     {
         while (remainingHaltingTime > 0)
         {
+            print(remainingHaltingTime);
             remainingHaltingTime -= Time.deltaTime;
             yield return null;
         }
@@ -76,6 +77,10 @@ public abstract class VehicleController : MonoBehaviour
         
     }
 
+    public float GetProgress()
+    {
+        return progress;
+    }
     protected void SetProgress(float progress)
     {
         this.progress = progress;

@@ -9,6 +9,7 @@ public abstract class Interaction : MonoBehaviour
 {
     protected Transform player;
     public KeyCode keyToInteract;
+    public string interactionInfo;
     public float interanctionRange = 3f;
     public Vector3 interactUIOffset;
     protected Camera cam;
@@ -57,8 +58,9 @@ public abstract class Interaction : MonoBehaviour
 
     public void DisplayUIToInteract()
     {
-        interactUI.position = cam.WorldToScreenPoint(transform.TransformPoint(interactUIOffset));
-        interactUI.GetComponentInChildren<Text>().text = keyToInteract.ToString();
+        //Vector3 localPos = player.TransformPoint(transform.position - player.position + interactUIOffset);
+        interactUI.position = cam.WorldToScreenPoint(transform.position + player.TransformDirection(interactUIOffset));
+        interactUI.GetComponentInChildren<Text>().text = keyToInteract.ToString() + interactionInfo;
         interactable = true;
     }
 

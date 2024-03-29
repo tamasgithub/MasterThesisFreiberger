@@ -18,9 +18,9 @@ public class TaskManager : MonoBehaviour
             transform.GetChild(taskIndex).GetComponent<Task>().StartTask();
         } else
         {
-            if (Progress.CompleteChapter(chapterIndex))
+            if (Progress.CompleteTask(SceneManager.GetActiveScene().name))
             {
-                GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.CHAPTERS_COMPLETED, 1);
+                GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.TASKS_COMPLETED, 1);
             }
             //SceneManager.LoadScene("World");
         }

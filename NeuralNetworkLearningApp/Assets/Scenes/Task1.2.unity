@@ -448,7 +448,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6466233018966496251, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 6466233018966496251, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2882,7 +2882,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   machines:
   - {fileID: 288903326}
-  hideOnFinish: 0
   replaceOtherFMs: 0
 --- !u!114 &1003448162 stripped
 MonoBehaviour:
@@ -2963,9 +2962,9 @@ PrefabInstance:
       propertyPath: m_Text
       value: 'Inputs: 1 number
 
-        Outputs: 1 character
+        Outputs: 1 letter
 
-        This returns
+        This machine returns
         the letter of the alphabet
 
         corresponding to the input number.'
@@ -6023,7 +6022,6 @@ MonoBehaviour:
   machines:
   - {fileID: 1136102879}
   - {fileID: 288903326}
-  hideOnFinish: 0
   replaceOtherFMs: 0
   inputs:
   - {fileID: 1411411036}
@@ -6091,12 +6089,12 @@ PrefabInstance:
       objectReference: {fileID: 2022934794308580316, guid: d0176b5cff6b1be43a587bfc09ef6dea, type: 3}
     - target: {fileID: 4293985437494561793, guid: dd2669104c2c78c4d9b5a9dd852581ce, type: 3}
       propertyPath: m_Text
-      value: 'Inputs: 1 word
+      value: 'Inputs: 1 letter
 
         Outputs: 1 number
 
-        This function returns
-        the number of
+        This function
+        returns the number of
 
         the provided letter in the alphabet.'
       objectReference: {fileID: 0}

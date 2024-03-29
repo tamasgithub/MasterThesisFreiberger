@@ -25,9 +25,11 @@ public class VehicleInteraction : Interaction
         if (insideVehicle)
         {
             control.LeaveVehicle();
+            transform.GetComponentInChildren<Collider>().enabled = true;
             insideVehicle = false;
         } else
         {
+            transform.GetComponentInChildren<Collider>().enabled = false;
             control.EnterVehicle(transform.GetChild(0));
             insideVehicle = true;
         }

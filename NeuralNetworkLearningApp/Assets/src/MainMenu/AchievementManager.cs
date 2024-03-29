@@ -21,6 +21,8 @@ public class AchievementManager : MonoBehaviour
             (object o) => requirements[AchievementReqType.QUIZES_SOLVED] > 0));
         achievementList.Add(new Achievement("First chapter completed", "Complete a chapter.",
             (object o) => requirements[AchievementReqType.CHAPTERS_COMPLETED] > 0));
+        achievementList.Add(new Achievement("First task completed", "Complete a task.",
+            (object o) => requirements[AchievementReqType.TASKS_COMPLETED] > 0));
         achievementList.Add(new Achievement("First connection", "Connect two nodes of a network with an edge by hand.", 
             (object o) => requirements[AchievementReqType.MANUAL_CONNECTIONS] > 0));
         achievementList.Add(new Achievement("Large layer", "Create a layer with at least 5 nodes.",

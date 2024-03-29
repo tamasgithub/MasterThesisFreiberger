@@ -19,6 +19,12 @@ public class LocomotiveController : VehicleController
         startEvent += () => HandleStartEvent();
         locToTrackRatio = locLength / trackController.GetTrackPieceLength() / trackController.transform.childCount;
     }
+
+    private void OnEnable()
+    {
+        // activate steam particles
+        transform.GetChild(1).gameObject.SetActive(true);
+    }
     // Update is called once per frame
     protected override void ProgressTo(float progress)
     {

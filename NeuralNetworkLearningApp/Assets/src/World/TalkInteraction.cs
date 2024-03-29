@@ -9,17 +9,20 @@ public class TalkInteraction : Interaction
     public string[] texts;
     private int currentTextIndex = 0;
     public GameObject textUI;
+    private bool interacting = false;
 
     protected override void Update()
     {
         base.Update();
-        if (GetDistanceFromPlayer() > 3f)
+        if (interacting && GetDistanceFromPlayer() > 3f)
         {
             StopInteraction();
         }
     }
     public override void StartInteraction()
     {
+        interacting = true;
+        print("start interaction " + transform.name);
         if (texts.Length <= currentTextIndex)
         {
             return;
@@ -27,11 +30,12 @@ public class TalkInteraction : Interaction
         textUI.SetActive(true);
         textUI.GetComponentInChildren<Text>().text = texts[currentTextIndex++].Replace("\\n", "\n");
         
-        textUI.GetComponentInChildren<Image>().sprite = portrait;
+        textUI.transform.GetChild(0).GetComponentInChildren<Image>().sprite = portrait;
     }
 
     public override void StopInteraction()
     {
+        print("stop interaction " + transform.name);
         textUI.SetActive(false);
         currentTextIndex = 0;
 

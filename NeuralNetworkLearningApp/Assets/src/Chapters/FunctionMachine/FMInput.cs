@@ -11,7 +11,7 @@ public class FMInput : MonoBehaviour
     public string inputType;
     private Type type;
     private object value;
-    private bool isPickupable = true;
+    private bool draggable = true;
     private Camera cam;
     private Rigidbody2D rb;
     private bool dragging = false;
@@ -42,16 +42,16 @@ public class FMInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isPickupable = true;
+        draggable = true;
         if (IsInsideInputBucket())
         {
-            isPickupable = true;
+            draggable = true;
         }
 
         if (transform.position.y < -20)
         {
             transform.position = inputBucket.position;
-            isPickupable = true;
+            draggable = true;
             GetComponent<CircleCollider2D>().enabled = true;
         }
 
@@ -60,10 +60,6 @@ public class FMInput : MonoBehaviour
             Vector3 newPos = cam.ScreenToWorldPoint(Input.mousePosition);
             newPos.z = -1;
             transform.position = newPos;
-        } else if (!isPickupable)
-        {
-            //i.e. is falling somewhere outside of the bucket
-
         }
     }
 
@@ -85,7 +81,6 @@ public class FMInput : MonoBehaviour
 
     private void OnMouseUp()
     {
-        print("mouse up");
         if (dragging)
         {
             GetComponent<CircleCollider2D>().enabled = true;
@@ -97,10 +92,9 @@ public class FMInput : MonoBehaviour
 
     private void OnMouseDown()
     {
-        print("mouse down");
         transform.rotation = Quaternion.identity;
         rb.angularVelocity = 0;
-        if (isPickupable)
+        if (draggable)
         {            
             dragging = true;
             GetComponent<CircleCollider2D>().enabled = false;
@@ -130,25 +124,8 @@ public class FMInput : MonoBehaviour
     public void AcceptInput()
     {
         inputAccepted = true;
-        isPickupable = false;
+        draggable = false;
     }
-
-    /*private void OnCollisionEnter2D(Collision2D collision)
-    {
-        FMInputHole inputHole = collision.transform.GetComponent<FMInputHole>();
-        if (inputHole == null)
-        {
-            return;
-        }
-        if (inputHole.GetInputType() == type)
-        {
-            rb.velocity = Vector3.zero;
-        }
-        else
-        {
-            
-        }
-    }*/
 
     public void SetInForegroundAfter(float seconds)
     {
@@ -163,7 +140,6 @@ public class FMInput : MonoBehaviour
 
     private void EnsureNotInCollision()
     {
-        Collider2D[] allColliders = FindObjectsOfType<Collider2D>();
         // >1 because the own collider is trivially found
         while (Physics2D.OverlapCircleAll(transform.position, transform.lossyScale.x / 2f).Length > 1)
         {

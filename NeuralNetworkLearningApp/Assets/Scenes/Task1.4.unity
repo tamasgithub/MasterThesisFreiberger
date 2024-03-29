@@ -2229,15 +2229,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6868466675088653799, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: removedByClick
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6868466675088653799, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: clickRequiredToFinish
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6868466675088653799, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: removedAfterFinishedTasks
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7461798132583000117, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_Text
@@ -2448,7 +2448,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &319452654
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2555,7 +2555,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 339890624}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5, y: -0.15999997, z: 0}
+  m_LocalPosition: {x: 1.5, y: 0.70000017, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2854,7 +2854,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 373719680}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.26, y: -2.88, z: 0.08}
+  m_LocalPosition: {x: 7.26, y: -2.02, z: 0.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9785,13 +9785,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7461798132583000117, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_Text
-      value: 'Good job. You now have an abstract view how functions
+      value: 'Good job. You now have an abstract view how functions and
 
-        and
-        therefore also a Neural Network process encoded
+        therefore
+        also a Neural Network process encoded data and
 
-        data and how to
-        interpret encoded outputs of such functions.'
+        how to interpret
+        encoded outputs of such functions. Next you
+
+        should learn about how
+        the NN actually turns inputs into outputs.'
       objectReference: {fileID: 0}
     - target: {fileID: 8023599413687977937, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10101,7 +10104,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1764654096}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
