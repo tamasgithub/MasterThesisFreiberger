@@ -83,6 +83,20 @@ public class PlottableData : MonoBehaviour
         return featureValues;
     }
 
+    public void SetFeatureValue(int featureIndex, float featureValue)
+    {
+        featureValues[featureIndex] = featureValue;
+        if (colorCorrelatingToFeature >= 0 && colorCorrelatingToFeature < featureValues.Length)
+        {
+            renderer.color = gradient.Evaluate(featureValues[colorCorrelatingToFeature]);
+        }
+
+        if (sizeCorrelatingToFeature >= 0 && sizeCorrelatingToFeature < featureValues.Length)
+        {
+            transform.localScale = Vector3.one * (minSize + featureValues[sizeCorrelatingToFeature] * (maxSize - minSize));
+        }
+    }
+
     private void OnMouseUp()
     {
         if (dragging)
