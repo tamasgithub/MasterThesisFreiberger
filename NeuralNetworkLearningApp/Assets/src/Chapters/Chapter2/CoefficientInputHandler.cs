@@ -9,7 +9,8 @@ public class CoefficientInputHandler : MonoBehaviour
     public DecisionBoundary decisionBoundary;
     private InputField inputField;
     public int coefficientIndex;
-    string pattern = @"^-?((\d?([.,]\d?)?)|(\d?\d?))$";
+    public bool trailingPlusSign;
+    string pattern = @"^[-+]?((\d?([.,]\d?)?)|(\d?\d?))$";
 
     private void Start()
     {
@@ -38,24 +39,32 @@ public class CoefficientInputHandler : MonoBehaviour
     public void OnEndEdit()
     {
         string input = inputField.text;
+        print("replace dots");
+        input = input.Replace(".", ",");
+        print("input after replacing dots: " + input);
         if (input == null) return;
         if (input == "" ||  input == "-")
         {
             input = "0";
         }
         
-        if (input.StartsWith(".") || input.StartsWith(","))
+        if (input.StartsWith(","))
         {
             input = "0" + input;
         }
-        else if (input.StartsWith("-.") || input.StartsWith("-,"))
+        else if (input.StartsWith("-,"))
         {
             input = "-0." + input.Substring(2);
         }
 
-        if (input.EndsWith(".") || input.EndsWith(","))
+        if (input.EndsWith(","))
         {
             input += "0";
+        }
+
+        if (trailingPlusSign && char.IsDigit(input[0]))
+        {
+            input = "+" + input;
         }
         UpdateInputField(input);
     }
@@ -77,6 +86,7 @@ public class CoefficientInputHandler : MonoBehaviour
         
         string formattedString = value == (int)value ? value.ToString("0") : value.ToString("0.0");
         UpdateInputField(formattedString);
+        OnEndEdit();
     }
 
     public void Decrease()
@@ -97,21 +107,19 @@ public class CoefficientInputHandler : MonoBehaviour
         }
         string formattedString = value == (int)value ? value.ToString("0") : value.ToString("0.0");
         UpdateInputField(formattedString);
+        OnEndEdit();
     }
 
     private void UpdateInputField(string inputString)
     {
         inputField.SetTextWithoutNotify(inputString);
-
-        inputString = inputString.Replace(".", ",");
-        
         try
         {
             float value = float.Parse(inputString);
             decisionBoundary.SetCoefficient(coefficientIndex, value);
         } catch
         {
-            print("Unable to parse input " + inputString + ", decision boundary not updated.");
+            print("Unable to parse input " + inputString + " or no decison boundary found, decision boundary not updated.");
         }
         
     }

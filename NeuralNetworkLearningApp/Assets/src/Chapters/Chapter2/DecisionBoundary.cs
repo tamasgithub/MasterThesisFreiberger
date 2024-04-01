@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,23 +10,29 @@ public class DecisionBoundary : MonoBehaviour
 {
     public CoordinateSystem coordSys;
     public Transform functionUI;
-    private Vector2 firstAnchor;
-    private float[] coeffs;
-    private Vector2 intersection1 = Vector2.zero;
-    private Vector2 intersection2 = Vector2.zero;
-    
+    public GameObject arrows;
+    private Vector2 firstAnchor = new Vector2(0,0);
+    private Vector2 secondAnchor = new Vector2(1, 1);
+    private float[] coeffs = new float[] { 1f, -1f, 0f };
+    private Vector4 fullVisibleRanges;
+    private Vector4 visibleRanges;
 
     private void Start()
     {
         float halfEdge = coordSys.transform.localScale.x / 2f;
         float offset = coordSys.transform.localScale.x * coordSys.offset;
-        Vector4 ranges = new Vector4(coordSys.transform.position.x - (halfEdge - offset), coordSys.transform.position.x + halfEdge,
+        fullVisibleRanges = new Vector4(coordSys.transform.position.x - (halfEdge - offset), coordSys.transform.position.x + halfEdge,
             coordSys.transform.position.y - (halfEdge - offset), coordSys.transform.position.y + halfEdge);
-        transform.GetComponent<SpriteRenderer>().material.SetVector("_Ranges", ranges);
-
-        coeffs = new float[] { 1f, -1f, 0f };
+        ResetVisibleRanges();
+        arrows = Instantiate(arrows);
+        arrows.transform.parent = transform;
+        arrows.transform.localPosition = Vector3.back * 3;
         DrawDecisionBoundary();
-        UpdateFunctionUI();
+        if (functionUI != null)
+        {
+            UpdateFunctionUI();
+        }
+        
     }
     public void SetCoordSystem(CoordinateSystem coordSystem)
     {
@@ -35,24 +42,39 @@ public class DecisionBoundary : MonoBehaviour
     public void SetFirstAnchor(Vector2 anchor)
     {
         firstAnchor = anchor;
-        print(anchor);
     }
 
-    public void SetSecondAnchor(Vector2 anchor)
+    public void SetSecondAnchor(Vector2 anchor, bool isRay)
     {
-        Vector2 systemPoint1 = GetSystemPos(firstAnchor);
-        Vector2 systemPoint2 = GetSystemPos(anchor);
+        secondAnchor = anchor;  
+
         // calculate the coefficients of the straight line a x1 + b x2 + c = 0 using the two given points
-        Vector2 direction = systemPoint2 - systemPoint1;
+        Vector2 direction = secondAnchor - firstAnchor;
         Vector2 normal = new Vector2(-direction.y, direction.x).normalized;
+        if (Vector3.Dot(normal, firstAnchor) < 0)
+        {
+            normal *= -1;
+        }
         coeffs[0] = normal.x;
         coeffs[1] = normal.y;
-        coeffs[2] = -(normal.x * systemPoint1.x + normal.y * systemPoint1.y);
+        coeffs[2] = -(normal.x * firstAnchor.x + normal.y * firstAnchor.y);
         DrawDecisionBoundary();
-        UpdateFunctionUI();
+        if (functionUI != null)
+        {
+            UpdateFunctionUI();
+        }
+        if (isRay)
+        {
+            UpdateRayVisibleRange();
+        }
     }
     private void Update()
     {
+    }
+
+    public float[] GetCoefficients()
+    {
+        return coeffs;
     }
 
     public void SetCoefficient(int index, float coefficient)
@@ -61,42 +83,43 @@ public class DecisionBoundary : MonoBehaviour
         DrawDecisionBoundary();
     }
 
-    private Vector3 GetSystemPos(Vector3 localPos)
+    public void TransformIntoRay(Vector2 initialPoint)
     {
-        Vector3 scaledPos = localPos / (1 - 2 * coordSys.offset);
-        Vector3 shiftedPos = scaledPos + 0.5f * Vector3.one;
-        return shiftedPos;
-    }
-
-    private Vector3 GetLocalPos(Vector3 systemPos)
-    {
-        Vector3 shiftedPos = systemPos - 0.5f * Vector3.one;
-        Vector3 scaledPos = shiftedPos * (1 - 2 * coordSys.offset);
-        return scaledPos;
+        print(initialPoint);
+        Vector2 direction = secondAnchor - firstAnchor;
+        SetFirstAnchor(initialPoint);
+        SetSecondAnchor(initialPoint + direction, true);
     }
 
     private void DrawDecisionBoundary()
     {
-        GetComponent<SpriteRenderer>().enabled = true;
-        print("update");
-        // anchors as intersections of the line with the axis-aligned square from 0|0 to 2|2
-
-        List<Vector2> intersections = CalculateIntersections(2);
-        if (intersections.Count < 1)
+        foreach (Renderer renderer in GetComponentsInChildren<SpriteRenderer>())
         {
-            GetComponent<SpriteRenderer>().enabled = false;
+            renderer.enabled = true;
+        }
+
+        List<Vector2> intersections = CalculateIntersections((1 - coordSys.offset) / (1 - 2 * coordSys.offset));
+        if (intersections.Count < 2)
+        {
+            foreach (Renderer renderer in GetComponentsInChildren<SpriteRenderer>())
+            {
+                renderer.enabled = false;
+            }
             return;
         }
 
-        intersection1 = intersections[0];
-        intersection2 = new Vector2(intersection1.x - coeffs[1], intersection1.y + coeffs[0]);
-        intersection1 = GetLocalPos(intersection1);
-        intersection2 = GetLocalPos(intersection2);
-        transform.localPosition = new Vector3((intersection1.x + intersection2.x) / 2f, (intersection1.y + intersection2.y) / 2f, - 1);
-        transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.right, intersection2 - intersection1);
-
-
-        coordSys.HighlightWronglyClassified(coeffs);
+        Vector3 intersection1 = coordSys.SystemToLocalPoint(intersections[0]);
+        Vector3 intersection2 = coordSys.SystemToLocalPoint(intersections[1]);
+        if (intersection1.x > intersection2.x)
+        {
+            Vector2 temp = intersection1;
+            intersection1 = intersection2;
+            intersection2 = temp;
+        }
+        Vector2 centerOfLine = new Vector3((intersection1.x + intersection2.x) / 2f, (intersection1.y + intersection2.y) / 2f, -1);
+        transform.localPosition = centerOfLine;
+        transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.up, new Vector2(coeffs[0], coeffs[1]));
+        coordSys.HighlightWronglyClassified();
     }
 
     // intersections of the line with the axis-aligned square from 0|0 to Ssl|Ssl
@@ -134,9 +157,10 @@ public class DecisionBoundary : MonoBehaviour
     }
     private void UpdateFunctionUI()
     {
-        for (int i = 0; i < 3; i++)
+        InputField[] inputFields = functionUI.GetComponentsInChildren<InputField>();
+        for (int i = 0; i < inputFields.Length; i++)
         {
-            functionUI.GetChild(i + 1).GetChild(0).GetComponent<InputField>().SetTextWithoutNotify(RoundCoefficient(i));
+            inputFields[i].SetTextWithoutNotify(RoundCoefficient(i));
         }
     }
 
@@ -145,6 +169,32 @@ public class DecisionBoundary : MonoBehaviour
         float c = coeffs[index];
         return Mathf.Abs(c) < 10 ? c.ToString("0.0") : c.ToString("0");
     }
-
-
+    private void ResetVisibleRanges()
+    {
+        visibleRanges = fullVisibleRanges;
+    }
+    private void UpdateRayVisibleRange()
+    {
+        ResetVisibleRanges();
+        Vector3 initialPointWorld = coordSys.transform.TransformPoint(coordSys.SystemToLocalPoint(firstAnchor));
+        Vector2 direction = secondAnchor - firstAnchor;
+        if (direction.x > 0)
+        {
+            visibleRanges.x = initialPointWorld.x;
+        }
+        if (direction.x < 0)
+        {
+            visibleRanges.y = initialPointWorld.x;
+        }
+        if (direction.y > 0)
+        {
+            visibleRanges.z = initialPointWorld.y;
+        }
+        if (direction.y < 0)
+        {
+            visibleRanges.w = initialPointWorld.y;
+        }
+        print("visible ranges " + visibleRanges);
+        transform.GetComponent<SpriteRenderer>().material.SetVector("_Ranges", visibleRanges);
+    }
 }

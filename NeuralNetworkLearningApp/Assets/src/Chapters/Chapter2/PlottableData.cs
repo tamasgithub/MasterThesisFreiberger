@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlottableData : MonoBehaviour
 {
     private Transform inputBucket;
-    private bool draggable = true;
+    public bool draggable = true;
     private Camera cam;
     private Rigidbody2D rb;
     private bool dragging = false;
@@ -21,7 +21,7 @@ public class PlottableData : MonoBehaviour
     public int sizeCorrelatingToFeature = 1;
     public float minSize;
     public float maxSize;
-    private SpriteRenderer renderer;
+    new private SpriteRenderer renderer;
 
     // Start is called before the first frame update
     void Start()
@@ -36,8 +36,11 @@ public class PlottableData : MonoBehaviour
         {
             transform.localScale = Vector3.one * (minSize + featureValues[sizeCorrelatingToFeature] * (maxSize - minSize));
         }
-
-        inputBucket = GameObject.Find("InputBucket").transform;
+        if (GameObject.Find("InputBucket") != null)
+        {
+            inputBucket = GameObject.Find("InputBucket").transform;
+        }
+        
         cam = Camera.main;
         rb = GetComponent<Rigidbody2D>();
     }
@@ -52,24 +55,13 @@ public class PlottableData : MonoBehaviour
             transform.position = newPos;
         }
 
-        draggable = true;
-        if (IsInsideInputBucket())
-        {
-            draggable = true;
-        }
-
         if (transform.position.y < -20)
         {
-            transform.position = inputBucket.position;
-            draggable = true;
+            if (inputBucket != null)
+            {
+                transform.position = inputBucket.position;
+            }
             GetComponent<Collider2D>().enabled = true;
-        }
-
-        if (dragging)
-        {
-            Vector3 newPos = cam.ScreenToWorldPoint(Input.mousePosition);
-            newPos.z = -1;
-            transform.position = newPos;
         }
     }
 
@@ -127,6 +119,10 @@ public class PlottableData : MonoBehaviour
 
     private bool IsInsideInputBucket()
     {
+        if (inputBucket == null)
+        {
+            return false;
+        }
         return transform.position.x < inputBucket.GetChild(1).position.x
             && transform.position.x > inputBucket.GetChild(2).position.x
             && transform.position.y > inputBucket.GetChild(0).position.y;
@@ -144,8 +140,17 @@ public class PlottableData : MonoBehaviour
 
     internal void SwapToPlotSprite(Color colorOfClass)
     {
-        renderer.sprite = spriteInPlot;
-        renderer.color = colorOfClass;
+        if (renderer != null)
+        {
+            print("Color: " + colorOfClass);
+            renderer.sprite = spriteInPlot;
+            renderer.color = colorOfClass;
+        }
+    }
+
+    public Sprite GetSpriteInPlot()
+    {
+        return spriteInPlot;
     }
 }
 
