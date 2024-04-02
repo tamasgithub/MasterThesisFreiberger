@@ -2460,7 +2460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb754aa42950f143ad53fb99656216c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataDisplayDuration: 3
+  dataDisplayDuration: 1
   offset: 0.1
   decisionBoundaries:
   - {fileID: 1440465471}

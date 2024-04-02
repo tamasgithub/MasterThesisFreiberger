@@ -55,6 +55,17 @@ public class CoordinateSystem : MonoBehaviour
                 closestToDrag.SetSecondAnchor(ScreenToSystemPoint(Input.mousePosition));
             }
         } 
+
+        foreach (PlottableData plottableData in data)
+        {
+            plottableData.transform.localPosition = SystemToLocalPoint(ArrayAsVector3(plottableData.GetFeatureValues()));
+            if (plottableData.GetFeatureValues().Length < 0)
+            {
+                Vector3 localPosition = plottableData.transform.localPosition;
+                localPosition.z = -1;
+                plottableData.transform.localPosition = localPosition;
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
@@ -69,11 +80,14 @@ public class CoordinateSystem : MonoBehaviour
     {
         Vector3 endPos = DataToWorldPoint(data);
         print(endPos);
-        Vector2 endScale = Vector3.one * 0.05f;
+        Vector3 endScale = Vector3.one * 0.05f;
+
+        print("localscale: " + data.transform.localScale);
+        print("endscale : " + endScale);
         data.transform.localScale = endScale;
+        print("localscale: " + data.transform.localScale);
         data.transform.localPosition = endPos;
         data.transform.parent = transform;
-        print(data.transform.localPosition);
         if (data.featureValues.Length < 3)
         {
             data.SwapToPlotSprite(colorOfClass[data.GetDataClass()]);
@@ -210,8 +224,7 @@ public class CoordinateSystem : MonoBehaviour
             // remark: the implemented decision boundaries between two classes are a simplification for visualization purposes.
             // In practice they would emerge from the difference of two two class boundaries separating one class from all other
             // classes. In that case, classifying using those boundaries also works differently than how this simplification is
-            // implemented. This also probably doesn'
-            print("yay");
+            // implemented.
             float[] featureValues = d.GetFeatureValues();
             if (featureValues.Length != 2)
             {
@@ -238,7 +251,6 @@ public class CoordinateSystem : MonoBehaviour
             int majorityCount = 0;
             foreach (int dataClass in classes.Keys)
             {
-                print(dataClass + ":" + classes[dataClass]);
                 if (classes[dataClass] > majorityCount)
                 {
                     majorityCount = classes[dataClass];
@@ -255,7 +267,6 @@ public class CoordinateSystem : MonoBehaviour
             if (majorityClass != d.GetDataClass())
             {
                 HighlightData(d);
-                Debug.LogError("Wrong classification " + majorityClass + " " + d.GetDataClass());
             }
         }
     }
@@ -300,7 +311,7 @@ public class CoordinateSystem : MonoBehaviour
         closestToDrag = closest;
     }
 
-    private Vector3 ArrayAsVector3(float[] array)
+    protected Vector3 ArrayAsVector3(float[] array)
     {
         if (array.Length > 3)
         {
@@ -314,7 +325,7 @@ public class CoordinateSystem : MonoBehaviour
         return result;
     }
 
-    private Vector2 ArrayAsVector2(float[] array)
+    protected Vector2 ArrayAsVector2(float[] array)
     {
         if (array.Length > 2)
         {

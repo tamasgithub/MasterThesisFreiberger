@@ -160,7 +160,6 @@ public class PlottableData : MonoBehaviour
         renderer.enabled = false;
         transform.GetChild(0).gameObject.SetActive(true);
         transform.GetChild(0).GetComponent<Renderer>().material.color = colorOfClass;
-        //transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", new Color(0, 204, 102));
     }
 }
 
