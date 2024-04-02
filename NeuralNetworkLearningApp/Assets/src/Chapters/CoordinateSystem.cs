@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Jobs.LowLevel.Unsafe;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class CoordinateSystem : MonoBehaviour
     private bool draggingBoundary;
     public DecisionBoundary[] decisionBoundaries;
     public GameObject highlightPrefab;
-    public List<GameObject> highlights;
+    public List<GameObject> highlights = new List<GameObject>();
     public List<PlottableData> data;
     public Color[] colorOfClass;
     private int numOfClasses;
@@ -36,7 +37,6 @@ public class CoordinateSystem : MonoBehaviour
                 plottableData.GetComponent<PlottableData>().enabled = false;
             }
         } 
-        highlights = new List<GameObject> ();
         numOfClasses = colorOfClass.Length;
     }
 
@@ -184,30 +184,66 @@ public class CoordinateSystem : MonoBehaviour
             Destroy(highlight);
         }
         highlights.Clear();
-        if (numOfClasses > 2)
-        {
-            Debug.LogError("This method was not adjusted for more than 2 classes. The higlighting will be incorrect!");
-        }
-        //TODO: implement for more than 2 classes
-        float[] coeffs = decisionBoundaries[0].GetCoefficients();
-        if (data == null)
+        if (data == null || data.Count == 0)
         {
             return;
         }
+
         foreach (PlottableData d in data)
         {
+            // remark: the implemented decision boundaries between two classes are a simplification for visualization purposes.
+            // In practice they would emerge from the difference of two two class boundaries separating one class from all other
+            // classes. In that case, classifying using those boundaries also works differently than how this simplification is
+            // implemented
             float[] featureValues = d.GetFeatureValues();
-            if (featureValues.Length != 2 || coeffs.Length != 3)
+            if (featureValues.Length != 2)
             {
                 Debug.LogError("Dimension other than 2 not supported.");
                 return;
             }
-            float discriminant = coeffs[0] * featureValues[0] + coeffs[1] * featureValues[1] + coeffs[2];
-            if ((discriminant >= 0 ? 1 : 0) != d.GetDataClass())
+            Dictionary<int, int> classes = new Dictionary<int, int>();
+            for (int i = 0; i < colorOfClass.Length; i ++)
             {
+                classes[i] = 0;
+            }
+            foreach (DecisionBoundary boundary in decisionBoundaries)
+            {   
+                float[] coeffs = boundary.GetCoefficients();
+                if (coeffs.Length != 3)
+                {
+                    Debug.LogError("Dimension other than 2 not supported.");
+                    return;
+                }
+                float discriminant = coeffs[0] * featureValues[0] + coeffs[1] * featureValues[1] + coeffs[2];
+                print("Data " + d + ": discriminant against boundary " + boundary + ": " + discriminant);
+                classes[discriminant < 0 ? boundary.GetDecisionBetweenClasses()[0] : boundary.GetDecisionBetweenClasses()[1]]++;
+            }
+            int majorityClass = -1;
+            int majorityCount = 0;
+            foreach (int dataClass in classes.Keys)
+            {
+                if (classes[dataClass] > majorityCount)
+                {
+                    majorityCount = classes[dataClass];
+                    majorityClass = dataClass;
+                }
+            }
+            print("=> majority class: " + majorityClass);
+            if (majorityClass == -1 || majorityCount < 2)
+            {
+                Debug.LogError("Failed to classify " + data + ".");
+                HighlightData(d);
+                continue;
+            }
+            
+            if (majorityClass != d.GetDataClass())
+            {
+                print("maj: " + majorityClass + ", data class: " + d.GetDataClass() + " -> highlighting.");
                 HighlightData(d);
             }
         }
+
+        print("end of highlighting");
     }
 
     private void HighlightData(PlottableData data)
