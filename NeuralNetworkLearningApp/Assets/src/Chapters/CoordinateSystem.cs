@@ -157,12 +157,10 @@ public class CoordinateSystem : MonoBehaviour
         Vector3 systemPoint = ScreenToSystemPoint(Input.mousePosition);
         // should never be <2, unless wrongly initialized
         if (numOfClasses <= 2) {
-            print("yay");
             decisionBoundaries[0].SetFirstAnchor(systemPoint);
             draggingBoundary = true;
         } else
         {
-            print("nay");
             FindClosestDecisionBoundary(systemPoint);
             draggingBoundary = true;
         }
@@ -212,7 +210,8 @@ public class CoordinateSystem : MonoBehaviour
             // remark: the implemented decision boundaries between two classes are a simplification for visualization purposes.
             // In practice they would emerge from the difference of two two class boundaries separating one class from all other
             // classes. In that case, classifying using those boundaries also works differently than how this simplification is
-            // implemented
+            // implemented. This also probably doesn'
+            print("yay");
             float[] featureValues = d.GetFeatureValues();
             if (featureValues.Length != 2)
             {
@@ -239,24 +238,29 @@ public class CoordinateSystem : MonoBehaviour
             int majorityCount = 0;
             foreach (int dataClass in classes.Keys)
             {
+                print(dataClass + ":" + classes[dataClass]);
                 if (classes[dataClass] > majorityCount)
                 {
                     majorityCount = classes[dataClass];
                     majorityClass = dataClass;
                 }
             }
-            if (majorityClass == -1 || majorityCount < 2)
+            if (majorityClass == -1 || majorityCount == 0)
             {
                 HighlightData(d);
+                Debug.LogError("Failed to classify");
                 continue;
             }
             
             if (majorityClass != d.GetDataClass())
             {
                 HighlightData(d);
+                Debug.LogError("Wrong classification " + majorityClass + " " + d.GetDataClass());
             }
         }
     }
+
+
 
     private void HighlightData(PlottableData data)
     {
