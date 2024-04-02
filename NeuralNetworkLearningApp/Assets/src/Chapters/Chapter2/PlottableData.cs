@@ -23,10 +23,14 @@ public class PlottableData : MonoBehaviour
     public float maxSize;
     new private SpriteRenderer renderer;
 
+    private void Awake()
+    {
+        renderer = GetComponent<SpriteRenderer>();
+    }
     // Start is called before the first frame update
     void Start()
     {
-        renderer = GetComponent<SpriteRenderer>();
+        
         if (colorCorrelatingToFeature >= 0 && colorCorrelatingToFeature < featureValues.Length)
         {
             renderer.color = gradient.Evaluate(featureValues[colorCorrelatingToFeature]);
@@ -140,17 +144,23 @@ public class PlottableData : MonoBehaviour
 
     internal void SwapToPlotSprite(Color colorOfClass)
     {
-        if (renderer != null)
-        {
-            print("Color: " + colorOfClass);
-            renderer.sprite = spriteInPlot;
-            renderer.color = colorOfClass;
-        }
+        renderer.sprite = spriteInPlot;
+        renderer.color = colorOfClass;
     }
 
-    public Sprite GetSpriteInPlot()
+    public void SwapToPlotObject(Color colorOfClass)
     {
-        return spriteInPlot;
+        // disable the sprite renderer and enable the child 3D object that is displayed in the 3D coordinate system
+        if (transform.childCount == 0)
+        {
+            //fallback
+            SwapToPlotSprite(colorOfClass);
+            return;
+        }
+        renderer.enabled = false;
+        transform.GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(0).GetComponent<Renderer>().material.color = colorOfClass;
+        //transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", new Color(0, 204, 102));
     }
 }
 

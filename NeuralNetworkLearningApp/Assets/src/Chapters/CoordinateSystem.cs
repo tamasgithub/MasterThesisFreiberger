@@ -21,7 +21,7 @@ public class CoordinateSystem : MonoBehaviour
     private GameObject unseenDataCopy;
     private DecisionBoundary closestToDrag;
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         if (data == null)
         {
@@ -42,17 +42,17 @@ public class CoordinateSystem : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (draggingBoundary)
         {
             if (numOfClasses <= 2)
             {
-                decisionBoundaries[0].SetSecondAnchor(ScreenToSystemPoint(Input.mousePosition), false);
+                decisionBoundaries[0].SetSecondAnchor(ScreenToSystemPoint(Input.mousePosition));
             }
             else
             {
-                closestToDrag.SetSecondAnchor(ScreenToSystemPoint(Input.mousePosition), true);
+                closestToDrag.SetSecondAnchor(ScreenToSystemPoint(Input.mousePosition));
             }
         } 
     }
@@ -67,18 +67,31 @@ public class CoordinateSystem : MonoBehaviour
     }
     private void DisplayData(PlottableData data)
     {
-        Vector3 endPos = CalculateDataPointWorldPos(data);
+        Vector3 endPos = DataToWorldPoint(data);
+        print(endPos);
         Vector2 endScale = Vector3.one * 0.05f;
         data.transform.localScale = endScale;
         data.transform.localPosition = endPos;
         data.transform.parent = transform;
-        data.SwapToPlotSprite(colorOfClass[data.GetDataClass()]);
+        print(data.transform.localPosition);
+        if (data.featureValues.Length < 3)
+        {
+            data.SwapToPlotSprite(colorOfClass[data.GetDataClass()]);
+        } else if (data.featureValues.Length == 3)
+        {
+            data.SwapToPlotObject(colorOfClass[data.GetDataClass()]);
+        } else
+        {
+            Debug.LogError("Only up to 3-dimensional data is supported");
+        }
+
+
     }
     private IEnumerator DisplayDataWithAnimation(PlottableData data)
     {
         this.data.Add(data);
         Vector3 startPos = data.transform.position;
-        Vector3 endPos = CalculateDataPointWorldPos(data);
+        Vector3 endPos = DataToWorldPoint(data);
         Vector3 startScale = data.transform.localScale;
         Vector2 endScale = Vector3.one * 0.05f;
         float duration = 0f;
@@ -104,7 +117,7 @@ public class CoordinateSystem : MonoBehaviour
             
         }
         unseenDataCopy.transform.localScale = Vector3.one * 0.02f;
-        unseenDataCopy.transform.position = CalculateDataPointWorldPos(dataToDisplay);
+        unseenDataCopy.transform.position = DataToWorldPoint(dataToDisplay);
         if (numOfClasses > 2)
         {
             Debug.LogError("This method was not modified for more than 2 classes. The classification will not be correct.");
@@ -123,15 +136,18 @@ public class CoordinateSystem : MonoBehaviour
 
     }
 
-    private Vector3 CalculateDataPointWorldPos(PlottableData data)
+    private Vector3 DataToWorldPoint(PlottableData data)
     {
-        float localX = offset + data.featureValues[0] * 8 / 10f - 0.5f;
-        float localY = offset + data.featureValues[1] * 8 / 10f - 0.5f;
-        Vector3 localPos = new Vector3(localX, localY, -1);
-        return transform.TransformPoint(localPos);
+        Vector3 localPoint = SystemToLocalPoint(ArrayAsVector3(data.featureValues));
+        if (data.featureValues.Length < 3)
+        {
+            localPoint.z = -1;
+        }
+        
+        return transform.TransformPoint(localPoint);
     }
 
-    public void OnMouseDown()
+    protected virtual void OnMouseDown()
     { 
         // assuming that all decision boundaries are active or inactive at the same time
         if (!decisionBoundaries[0].gameObject.activeSelf)
@@ -141,10 +157,12 @@ public class CoordinateSystem : MonoBehaviour
         Vector3 systemPoint = ScreenToSystemPoint(Input.mousePosition);
         // should never be <2, unless wrongly initialized
         if (numOfClasses <= 2) {
+            print("yay");
             decisionBoundaries[0].SetFirstAnchor(systemPoint);
             draggingBoundary = true;
         } else
         {
+            print("nay");
             FindClosestDecisionBoundary(systemPoint);
             draggingBoundary = true;
         }
@@ -152,23 +170,23 @@ public class CoordinateSystem : MonoBehaviour
         
     }
 
-    public void OnMouseUp()
+    protected virtual void OnMouseUp()
     {
         draggingBoundary = false;
         draggingBoundary = false;
     }
 
-    public Vector2 LocalToSystemPoint(Vector3 localPos)
+    public virtual Vector3 LocalToSystemPoint(Vector3 localPos)
     {
-        Vector2 scaledPos = localPos / (1 - 2 * offset);
-        Vector2 shiftedPos = scaledPos + 0.5f * Vector2.one;
+        Vector3 scaledPos = localPos / (1 - 2 * offset);
+        Vector3 shiftedPos = scaledPos + 0.5f * Vector3.one;
         return shiftedPos;
     }
 
-    public Vector3 SystemToLocalPoint(Vector2 systemPos)
+    public virtual Vector3 SystemToLocalPoint(Vector3 systemPos)
     {
-        Vector2 shiftedPos = systemPos - 0.5f * Vector2.one;
-        Vector2 scaledPos = shiftedPos * (1 - 2 * offset);
+        Vector3 shiftedPos = systemPos - 0.5f * Vector3.one;
+        Vector3 scaledPos = shiftedPos * (1 - 2 * offset);
         return scaledPos;
     }
 
@@ -215,7 +233,6 @@ public class CoordinateSystem : MonoBehaviour
                     return;
                 }
                 float discriminant = coeffs[0] * featureValues[0] + coeffs[1] * featureValues[1] + coeffs[2];
-                print("Data " + d + ": discriminant against boundary " + boundary + ": " + discriminant);
                 classes[discriminant < 0 ? boundary.GetDecisionBetweenClasses()[0] : boundary.GetDecisionBetweenClasses()[1]]++;
             }
             int majorityClass = -1;
@@ -228,29 +245,24 @@ public class CoordinateSystem : MonoBehaviour
                     majorityClass = dataClass;
                 }
             }
-            print("=> majority class: " + majorityClass);
             if (majorityClass == -1 || majorityCount < 2)
             {
-                Debug.LogError("Failed to classify " + data + ".");
                 HighlightData(d);
                 continue;
             }
             
             if (majorityClass != d.GetDataClass())
             {
-                print("maj: " + majorityClass + ", data class: " + d.GetDataClass() + " -> highlighting.");
                 HighlightData(d);
             }
         }
-
-        print("end of highlighting");
     }
 
     private void HighlightData(PlottableData data)
     {
         GameObject newHighlight = Instantiate(highlightPrefab, transform);
         highlights.Add(newHighlight);
-        newHighlight.transform.position = CalculateDataPointWorldPos(data);
+        newHighlight.transform.position = DataToWorldPoint(data);
         newHighlight.transform.SetParent(transform);
     }
 
@@ -259,7 +271,7 @@ public class CoordinateSystem : MonoBehaviour
         return transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(screenPoint));
     }
 
-    private void FindClosestDecisionBoundary(Vector2 systemPos)
+    private void FindClosestDecisionBoundary(Vector3 systemPos)
     {
         float closestDistance = float.PositiveInfinity;
         DecisionBoundary closest = null;
@@ -273,7 +285,8 @@ public class CoordinateSystem : MonoBehaviour
             }
             // the coefficients should already be normalized but doesn't hurt to make sure
             float normalizationFactor = new Vector2(coefficients[0], coefficients[1]).magnitude;
-            float distance = Mathf.Abs((coefficients[0] * systemPos.x + coefficients[1] * systemPos.y + coefficients[2]) / normalizationFactor);
+            Vector3 coefficientVector = ArrayAsVector3(coefficients);
+            float distance = Mathf.Abs((Vector3.Dot(coefficientVector, systemPos) + coefficients[coefficients.Length - 1]) / normalizationFactor);
             if (distance < closestDistance)
             {
                 closest = boundary;
@@ -283,5 +296,31 @@ public class CoordinateSystem : MonoBehaviour
         closestToDrag = closest;
     }
 
+    private Vector3 ArrayAsVector3(float[] array)
+    {
+        if (array.Length > 3)
+        {
+            Debug.LogError("Array is too large, cannot fit " + array.Length + " entries into a Vector3");
+        }
+        Vector3 result = Vector3.zero;
+        for (int i = 0; i < array.Length; i++)
+        {
+            result[i] = array[i];
+        }
+        return result;
+    }
 
+    private Vector2 ArrayAsVector2(float[] array)
+    {
+        if (array.Length > 2)
+        {
+            Debug.LogError("Array is too large, cannot fit " + array.Length + " entries into a Vector2");
+        }
+        Vector2 result = Vector2.zero;
+        for (int i = 0; i < array.Length; i++)
+        {
+            result[i] = array[i];
+        }
+        return result;
+    }
 }

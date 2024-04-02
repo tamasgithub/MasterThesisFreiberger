@@ -12,8 +12,8 @@ public class DecisionBoundary : MonoBehaviour
     public Transform functionUI;
     public GameObject arrows;
     public int[] decisionBetweenClasses;
-    private Vector2 firstAnchor = new Vector2(0,0);
-    private Vector2 secondAnchor = new Vector2(1, 1);
+    private Vector2 firstAnchor = new Vector2(0.5f,0.5f);
+    private Vector2 secondAnchor;
     private float[] coeffs = new float[] { 1f, -1f, 0f };
     private Vector4 fullVisibleRanges;
     private Vector4 visibleRanges;
@@ -31,8 +31,13 @@ public class DecisionBoundary : MonoBehaviour
         arrows.transform.localPosition = Vector3.back * 3;
         arrows.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = coordSys.colorOfClass[decisionBetweenClasses[0]];
         arrows.transform.GetChild(1).GetComponent<SpriteRenderer>().material.color = coordSys.colorOfClass[decisionBetweenClasses[1]];
+
         isRay = transform.parent.GetComponentsInChildren<DecisionBoundary>().Length > 1;
-        DrawDecisionBoundary();
+        //DrawDecisionBoundary();
+        float random = Random.Range(0f, Mathf.PI / 2f);
+        secondAnchor = new Vector2(Mathf.Cos(random), Mathf.Sin(random));
+        SetFirstAnchor(firstAnchor);
+        SetSecondAnchor(secondAnchor);
         if (functionUI != null)
         {
             UpdateFunctionUI();
@@ -49,7 +54,7 @@ public class DecisionBoundary : MonoBehaviour
         firstAnchor = anchor;
     }
 
-    public void SetSecondAnchor(Vector2 anchor, bool isRay)
+    public void SetSecondAnchor(Vector2 anchor)
     {
         secondAnchor = anchor;  
 
@@ -96,7 +101,7 @@ public class DecisionBoundary : MonoBehaviour
     {
         Vector2 direction = secondAnchor - firstAnchor;
         SetFirstAnchor(initialPoint);
-        SetSecondAnchor(initialPoint + direction, true);
+        SetSecondAnchor(initialPoint + direction);
     }
 
     private void DrawDecisionBoundary()
@@ -168,13 +173,13 @@ public class DecisionBoundary : MonoBehaviour
         transform.localPosition = centerOfLine;
 
         // scaling the boundary to be exactly from one endpoint to the other
-        Vector3 localScale = transform.localScale;
+        /*Vector3 localScale = transform.localScale;
         Vector3 arrowLocalScale = transform.GetChild(0).localScale;
         float factor = Vector2.Distance(endPoint1, endPoint2) / localScale.x;
         localScale.x *= factor;
         arrowLocalScale.x /= factor;
         transform.localScale = localScale;
-        transform.GetChild(0).localScale = arrowLocalScale;
+        transform.GetChild(0).localScale = arrowLocalScale;*/
 
         transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.up, new Vector2(coeffs[0], coeffs[1]));
         coordSys.HighlightWronglyClassified();
@@ -230,6 +235,7 @@ public class DecisionBoundary : MonoBehaviour
     private void ResetVisibleRanges()
     {
         visibleRanges = fullVisibleRanges;
+        transform.GetComponent<SpriteRenderer>().material.SetVector("_Ranges", visibleRanges);
     }
     private void UpdateRayVisibleRange()
     {
