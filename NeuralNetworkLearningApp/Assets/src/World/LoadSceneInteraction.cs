@@ -41,13 +41,14 @@ public class LoadSceneInteraction : Interaction
         GetComponent<SpriteRenderer>().sprite = taskCompleted ? completedTask : newTask;
         if (transform.parent.GetSiblingIndex() == transform.parent.parent.childCount - 1)
         {
-            foreach (SpriteRenderer spriteRenderer in transform.parent.parent.GetComponentsInChildren<SpriteRenderer>())
+            foreach (LoadSceneInteraction loadScene in transform.parent.parent.GetComponentsInChildren<LoadSceneInteraction>())
             {
-                if (spriteRenderer.sprite != completedTask)
+                if (!Progress.IsTaskCompleted(loadScene.sceneToLoad))
                 {
                     return;
                 }
             }
+
             foreach (GameObject vehicle in chapterCompletionVehicles)
             {
                 if (vehicle.GetComponent<VehicleController>() != null)
