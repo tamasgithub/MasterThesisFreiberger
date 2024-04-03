@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 280920617455903675}
   - component: {fileID: 251806729106540922}
   m_Layer: 0
-  m_Name: DecisionBoundary
+  m_Name: DecisionBoundaryLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

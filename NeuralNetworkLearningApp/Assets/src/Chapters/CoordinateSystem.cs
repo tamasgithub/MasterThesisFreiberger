@@ -79,13 +79,8 @@ public class CoordinateSystem : MonoBehaviour
     private void DisplayData(PlottableData data)
     {
         Vector3 endPos = DataToWorldPoint(data);
-        print(endPos);
         Vector3 endScale = Vector3.one * 0.05f;
-
-        print("localscale: " + data.transform.localScale);
-        print("endscale : " + endScale);
         data.transform.localScale = endScale;
-        print("localscale: " + data.transform.localScale);
         data.transform.localPosition = endPos;
         data.transform.parent = transform;
         if (data.featureValues.Length < 3)
@@ -245,7 +240,7 @@ public class CoordinateSystem : MonoBehaviour
                     return;
                 }
                 float discriminant = coeffs[0] * featureValues[0] + coeffs[1] * featureValues[1] + coeffs[2];
-                classes[discriminant < 0 ? boundary.GetDecisionBetweenClasses()[0] : boundary.GetDecisionBetweenClasses()[1]]++;
+                classes[discriminant < 0 ? boundary.GetSeparatingClasses()[0] : boundary.GetSeparatingClasses()[1]]++;
             }
             int majorityClass = -1;
             int majorityCount = 0;

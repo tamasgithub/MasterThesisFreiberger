@@ -30,6 +30,7 @@ public class CoordinateSystem3D : CoordinateSystem
             
             transform.Rotate(transform.up, -Vector3.Dot(mousePosDiff, Camera.main.transform.right) / 10, Space.World);
             transform.Rotate(Camera.main.transform.right, -Vector3.Dot(mousePosDiff, -Camera.main.transform.up) / 10, Space.World);
+            //((DecisionBoundary3D)decisionBoundaries[0]).RecalculateVisibleArea();
         }
         prevMousePos = currentMousePos;
 

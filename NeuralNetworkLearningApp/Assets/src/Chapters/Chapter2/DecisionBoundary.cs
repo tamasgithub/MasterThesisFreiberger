@@ -8,16 +8,29 @@ using UnityEngine.UI;
 
 public class DecisionBoundary : MonoBehaviour
 {
+    public int dimension;
     public CoordinateSystem coordSys;
     public Transform functionUI;
     public GameObject arrows;
-    public int[] decisionBetweenClasses;
+    public int[] separatingClasses;
+
+    //for UI interaction with a boundary line in a 2D system
     private Vector2 firstAnchor = new Vector2(0.5f,0.5f);
     private Vector2 secondAnchor;
-    private float[] coeffs = new float[] { 1f, -1f, 0f };
+
+    protected float[] coeffs;
     private Vector4 fullVisibleRanges;
-    private Vector4 visibleRanges;
+    protected Vector4 visibleRanges;
     private bool isRay;
+    private bool ignoreCoefficientUpdates;
+
+    protected void Awake()
+    {
+        coeffs = new float[dimension + 2];
+        arrows = Instantiate(arrows);
+        arrows.transform.parent = transform;
+        arrows.transform.localPosition = Vector3.back;
+    }
 
     private void Start()
     {
@@ -26,18 +39,24 @@ public class DecisionBoundary : MonoBehaviour
         fullVisibleRanges = new Vector4(coordSys.transform.position.x - (halfEdge - offset), coordSys.transform.position.x + halfEdge,
             coordSys.transform.position.y - (halfEdge - offset), coordSys.transform.position.y + halfEdge);
         ResetVisibleRanges();
-        arrows = Instantiate(arrows);
-        arrows.transform.parent = transform;
-        arrows.transform.localPosition = Vector3.back * 3;
-        arrows.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = coordSys.colorOfClass[decisionBetweenClasses[0]];
-        arrows.transform.GetChild(1).GetComponent<SpriteRenderer>().material.color = coordSys.colorOfClass[decisionBetweenClasses[1]];
+        
+        
+        arrows.transform.GetChild(0).GetComponent<Renderer>().material.color = coordSys.colorOfClass[separatingClasses[0]];
+        arrows.transform.GetChild(1).GetComponent<Renderer>().material.color = coordSys.colorOfClass[separatingClasses[1]];
 
         isRay = transform.parent.GetComponentsInChildren<DecisionBoundary>().Length > 1;
-        //DrawDecisionBoundary();
+
+
+        // line is initialized as random direction but going through 0.5, 0.5, using anchors that are essential for
+        // interacting with the boundary over the coord system UI
+        // enforce a direction rather in the direction of the first diagonal, as the
+        // task requires to set the boundary to an angle around perpendicular to that
         float random = Random.Range(0f, Mathf.PI / 2f);
         secondAnchor = new Vector2(Mathf.Cos(random), Mathf.Sin(random));
         SetFirstAnchor(firstAnchor);
         SetSecondAnchor(secondAnchor);
+        
+
         if (functionUI != null)
         {
             UpdateFunctionUI();
@@ -67,7 +86,7 @@ public class DecisionBoundary : MonoBehaviour
         }
         coeffs[0] = normal.x;
         coeffs[1] = normal.y;
-        coeffs[2] = -(normal.x * firstAnchor.x + normal.y * firstAnchor.y);
+        coeffs[2] = -(Vector2.Dot(firstAnchor, normal));
         DrawDecisionBoundary();
         if (functionUI != null)
         {
@@ -78,9 +97,6 @@ public class DecisionBoundary : MonoBehaviour
             UpdateRayVisibleRange();
         }
     }
-    private void Update()
-    {
-    }
 
     public float[] GetCoefficients()
     {
@@ -89,22 +105,30 @@ public class DecisionBoundary : MonoBehaviour
 
     public void SetCoefficient(int index, float coefficient)
     {
+        if (ignoreCoefficientUpdates)
+        {
+            return;
+        }
         coeffs[index] = coefficient;
         DrawDecisionBoundary();
     }
 
-    public int[] GetDecisionBetweenClasses()
+    public int[] GetSeparatingClasses()
     {
-        return decisionBetweenClasses;
+        return separatingClasses;
     }
     public void TransformIntoRay(Vector2 initialPoint)
     {
+        if (dimension != 1)
+        {
+            Debug.LogError("Only line boundaries can be turned into rays.");
+        }
         Vector2 direction = secondAnchor - firstAnchor;
         SetFirstAnchor(initialPoint);
         SetSecondAnchor(initialPoint + direction);
     }
 
-    private void DrawDecisionBoundary()
+    protected virtual void DrawDecisionBoundary()
     {
         foreach (Renderer renderer in GetComponentsInChildren<SpriteRenderer>())
         {
@@ -173,13 +197,13 @@ public class DecisionBoundary : MonoBehaviour
         transform.localPosition = centerOfLine;
 
         // scaling the boundary to be exactly from one endpoint to the other
-        /*Vector3 localScale = transform.localScale;
+        Vector3 localScale = transform.localScale;
         Vector3 arrowLocalScale = transform.GetChild(0).localScale;
         float factor = Vector2.Distance(endPoint1, endPoint2) / localScale.x;
         localScale.x *= factor;
         arrowLocalScale.x /= factor;
         transform.localScale = localScale;
-        transform.GetChild(0).localScale = arrowLocalScale;*/
+        transform.GetChild(0).localScale = arrowLocalScale;
 
         transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.up, new Vector2(coeffs[0], coeffs[1]));
         coordSys.HighlightWronglyClassified();
@@ -218,12 +242,25 @@ public class DecisionBoundary : MonoBehaviour
         }
         return intersections.ToList();
     }
-    private void UpdateFunctionUI()
+    protected void UpdateFunctionUI()
     {
         InputField[] inputFields = functionUI.GetComponentsInChildren<InputField>();
         for (int i = 0; i < inputFields.Length; i++)
         {
-            inputFields[i].SetTextWithoutNotify(RoundCoefficient(i));
+            // can only format input if active. else first formatting will be done one start
+            if (functionUI.gameObject.activeSelf)
+            {
+                inputFields[i].text = RoundCoefficient(i);
+                // avoid rebouncing
+                ignoreCoefficientUpdates = true;
+                inputFields[i].GetComponent<CoefficientInputHandler>().OnEndEdit();
+                ignoreCoefficientUpdates = false;
+            }
+            else
+            {
+                inputFields[i].SetTextWithoutNotify(RoundCoefficient(i));
+            }
+            
         }
     }
 
@@ -235,7 +272,7 @@ public class DecisionBoundary : MonoBehaviour
     private void ResetVisibleRanges()
     {
         visibleRanges = fullVisibleRanges;
-        transform.GetComponent<SpriteRenderer>().material.SetVector("_Ranges", visibleRanges);
+        transform.GetComponent<SpriteRenderer>().material.SetVector("_XYRanges", visibleRanges);
     }
     private void UpdateRayVisibleRange()
     {
@@ -260,6 +297,6 @@ public class DecisionBoundary : MonoBehaviour
         {
             visibleRanges.w = initialPointWorld.y + buffer;
         }
-        transform.GetComponent<SpriteRenderer>().material.SetVector("_Ranges", visibleRanges);
+        transform.GetComponent<SpriteRenderer>().material.SetVector("_XYRanges", visibleRanges);
     }
 }

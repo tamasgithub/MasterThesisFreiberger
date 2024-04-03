@@ -38,7 +38,6 @@ public class LoadSceneInteraction : Interaction
     private void CheckTaskAndChapterCompletion()
     {
         bool taskCompleted = Progress.IsTaskCompleted(sceneToLoad);
-        print(sceneToLoad + " is " + (!taskCompleted ? "not" : "") + " completed");
         GetComponent<SpriteRenderer>().sprite = taskCompleted ? completedTask : newTask;
         if (transform.parent.GetSiblingIndex() == transform.parent.parent.childCount - 1)
         {

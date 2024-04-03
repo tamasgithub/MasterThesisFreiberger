@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using static Cinemachine.DocumentationSortingAttribute;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -16,10 +17,20 @@ public class PlayerControl : MonoBehaviour
     private float pitch = 0.0f;
     private Transform walkingArea;
     private TerrainData terrainData;
+    private const string PLAYER_POS = "playerPos";
+    private const string PLAYER_ROT = "playerRot";
 
     private void Start()
     {
         terrainData = Terrain.activeTerrain.terrainData;
+        if (StaticData.Get<Vector3>(PLAYER_POS) != Vector3.zero)
+        {
+            transform.position = StaticData.Get<Vector3>(PLAYER_POS);
+        }
+        if (StaticData.Get<Vector3>(PLAYER_ROT) != Vector3.zero)
+        {
+            transform.eulerAngles = StaticData.Get<Vector3>(PLAYER_ROT);
+        }
     }
 
     // Update is called once per frame
@@ -27,11 +38,18 @@ public class PlayerControl : MonoBehaviour
     {
         Move();
         LookAtMouse();
+        StaticData.Set(PLAYER_POS, transform.position);
+        StaticData.Set(PLAYER_ROT, transform.eulerAngles);
+        //print(StaticData.playerTransform.position);
     }
 
     private void Move()
     {
         input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        if (input == Vector3.zero)
+        {
+            return;
+        }
         input = input.normalized * Time.deltaTime * walkSpeed;
         transform.Translate(input);
 
@@ -55,9 +73,6 @@ public class PlayerControl : MonoBehaviour
         localPos.x = Mathf.Clamp(localPos.x, 0, scaleX);
         localPos.z = Mathf.Clamp(localPos.z, 0, scaleZ);
         transform.localPosition = localPos;
-
-
-
     }
 
     private void LookAtMouse()
@@ -67,7 +82,6 @@ public class PlayerControl : MonoBehaviour
         pitch = Mathf.Clamp(pitch, -90f, 90f);
         transform.eulerAngles = new Vector3(0, yaw, 0.0f);
         cam.transform.localEulerAngles = new Vector3(pitch, 0.0f, 0.0f);
-        
     }
 
     public void EnterVehicle(Transform vehicle)

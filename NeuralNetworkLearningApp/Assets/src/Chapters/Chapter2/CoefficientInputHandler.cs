@@ -11,10 +11,15 @@ public class CoefficientInputHandler : MonoBehaviour
     public int coefficientIndex;
     public bool trailingPlusSign;
     string pattern = @"^[-+]?((\d?([.,]\d?)?)|(\d?\d?))$";
+    private void Awake()
+    {
+        inputField = GetComponent<InputField>();
+    }
 
     private void Start()
     {
-        inputField = GetComponent<InputField>();
+        //formatting whatever was already written in by interacting with the decision boundary before start
+        OnEndEdit();
     }
     // allow one optional minus sign and one digit before and after a single separator
     public void ValidateCoefficientInput()
@@ -39,9 +44,7 @@ public class CoefficientInputHandler : MonoBehaviour
     public void OnEndEdit()
     {
         string input = inputField.text;
-        print("replace dots");
         input = input.Replace(".", ",");
-        print("input after replacing dots: " + input);
         if (input == null) return;
         if (input == "" ||  input == "-")
         {

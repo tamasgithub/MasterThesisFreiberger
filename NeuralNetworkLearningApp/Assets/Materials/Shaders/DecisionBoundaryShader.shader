@@ -4,7 +4,8 @@ Shader "Custom/DecisionBoundaryShader"
 {
     Properties
     {
-        _XRange("Ranges", Vector) = (0.0,0.0,0.0,0.0)
+        _XYRange("XYRanges", Vector) = (-1.0,1.0,-1.0,1.0)
+        _ZRange("ZRange", Vector) = (-100.0, 100.0, 0.0)
         _Color("Color", Color) = (1,0,0,1)
         _MainTex ("Texture", 2D) = "white" {}
     }
@@ -34,8 +35,10 @@ Shader "Custom/DecisionBoundaryShader"
                  float3 worldPos : TEXCOORD0;
              };
  
-             uniform float4 _Ranges;
+             uniform float4 _XYRanges;
+             uniform float3 _ZRange;
              uniform float4 _Color;
+             float4x4 _WorldToLocalMatrix;
              
  
              v2f vert(appdata v) {
@@ -49,7 +52,7 @@ Shader "Custom/DecisionBoundaryShader"
  
              fixed4 frag(v2f i) : SV_Target {
                  fixed4 col = _Color;
-                 col.a = (i.worldPos.x > _Ranges.x && i.worldPos.x < _Ranges.y && i.worldPos.y > _Ranges.z && i.worldPos.y < _Ranges.w) ? 1.0 : 0.0;
+                 col.a = (i.worldPos.x > _XYRanges.x && i.worldPos.x < _XYRanges.y && i.worldPos.y > _XYRanges.z && i.worldPos.y < _XYRanges.w && i.worldPos.z > _ZRange.x && i.worldPos.z < _ZRange.y) ? 1.0 : 0.0;
                  return col;
              }
  

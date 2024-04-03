@@ -1313,6 +1313,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 646970148}
     - target: {fileID: 251806729106540922, guid: fe7522b7273bc544687601164573a3e8, type: 3}
+      propertyPath: dimension
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 251806729106540922, guid: fe7522b7273bc544687601164573a3e8, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -6964,7 +6968,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: x           x           = 0
+  m_Text: "x\u2081          x\u2082           = 0"
 --- !u!222 &1388371993
 CanvasRenderer:
   m_ObjectHideFlags: 0

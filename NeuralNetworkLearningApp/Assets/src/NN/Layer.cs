@@ -16,6 +16,7 @@ public class Layer : MonoBehaviour
     {
         return nodes.Count;
     }
+
     public void SetSize(int size)
     {
         if (size == nodes.Count)

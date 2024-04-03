@@ -19,6 +19,8 @@ public class NN : MonoBehaviour
 
     public bool fullyConnected = false;
 
+    public GameObject layerSizeUIPrefab;
+
     List<Layer> layers = new List<Layer>();
 
     public int GetLayerSize(int index)
@@ -29,6 +31,72 @@ public class NN : MonoBehaviour
         }
         return layers[index].GetSize();
     }
+
+    public int GetLayerCount()
+    {
+        return layers.Count;
+    }
+
+    public float GetLayerDistance()
+    {
+        return layerDistance;
+    }
+
+    public float GetNodeDistance()
+    {
+        return nodeDistance;
+    }
+
+    // for UI
+    public void IncreaseLayerCount()
+    {
+        SetLayerCount(layers.Count + 1);
+
+        if (layerSizeUIPrefab != null)
+        {
+            GameObject layerSizeUI = Instantiate(layerSizeUIPrefab, transform.parent);
+            Transform plusButton = layerSizeUI.transform.GetChild(0);
+            plusButton.GetComponent<NN_UI_Control>().underLayerWithIndex = layers.Count - 1;
+            plusButton.GetComponent<NN_UI_Control>().offset = 0.5f;
+            Transform minusButton = layerSizeUI.transform.GetChild(1);
+            minusButton.GetComponent<NN_UI_Control>().underLayerWithIndex = layers.Count - 1;
+            minusButton.GetComponent<NN_UI_Control>().offset = -0.5f;
+        }
+    }
+
+    public void DecreaseLayerCount()
+    {
+        SetLayerCount(layers.Count - 1);
+
+        NN_UI_Control[] layerSizeUIs = transform.parent.GetComponentsInChildren<NN_UI_Control>();
+        if (layerSizeUIs.Length > 0)
+        {
+            Destroy(layerSizeUIs[layerSizeUIs.Length - 1].transform.parent.gameObject);
+        }
+    }
+
+    public void IncreaseLayerSize(NN_UI_Control control)
+    {
+        int layerIndex = control.underLayerWithIndex;
+        layerSizes[layerIndex]++;
+        if (layerIndex >= layers.Count)
+        {
+            return;
+        }
+        layers[layerIndex].SetSize(layers[layerIndex].GetSize() + 1);
+    }
+
+    public void DecreaseLayerSize(NN_UI_Control control)
+    {
+        int layerIndex = control.underLayerWithIndex;
+        layerSizes[layerIndex]--;
+        if (layerIndex >= layers.Count)
+        {
+            return;
+        }
+        layers[layerIndex].SetSize(layers[layerIndex].GetSize() - 1);
+    }
+    // end for UI
 
     public void UpdateEdgeListsOfLayer(int layerIndex)
     {
@@ -76,7 +144,7 @@ public class NN : MonoBehaviour
                 layers[i].SetSize(layerSizes[i]);
             }
         }
-        if (layers.Count > 1 && Vector2.Distance(transform.Find("layer" + 1).localPosition, transform.Find("layer" + 0).localPosition) != layerDistance)
+        if (layers.Count > 1 && Vector2.Distance(transform.Find("layer0").localPosition, transform.Find("layer1").localPosition) != layerDistance)
         {
             for (int i = 0; i < numLayers; i++)
             {
@@ -111,7 +179,6 @@ public class NN : MonoBehaviour
                 // destroy the last layer
                 layerSizes.RemoveAt(i);
                 layers.RemoveAt(i);
-                
             }
         }
         else if (layerCount > layerSizes.Count)
@@ -131,6 +198,7 @@ public class NN : MonoBehaviour
                 PositionLayer(i);
             }
         }
+        numLayers = layerCount;
     }
 
     private void PositionLayer(int i)
