@@ -2,18 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Node : MonoBehaviour
+public class Node : MonoBehaviour, IPointerDownHandler
 {
     public GameObject edgePrefab;
     public GameObject labelPrefab;
+    public GameObject editorPrefab;
     public bool manuallyConnectable = true;
     public float inputValue;
     public ActivationFunction activationFunction;
-    public Gradient gradient;
+    public Gradient colorGradient;
 
-    public float value;
+    private float value;
 
     private Layer layer;
     private Edge manuallyConnectingEdge;
@@ -24,7 +26,8 @@ public class Node : MonoBehaviour
     private int nodeIndex;
 
     private float bias;
-    private GameObject tempLabel;
+    private GameObject hoverLabel;
+    private GameObject editor;
     private Camera cam;
 
     public int GetIncomingSize()
@@ -141,6 +144,20 @@ public class Node : MonoBehaviour
         return value;
     }
 
+    public void SetInputValue(float inputValue)
+    {
+        this.inputValue = inputValue;
+        // format the value to two decimals
+        Text text = transform.GetChild(0).GetComponent<Text>();
+        text.text = inputValue.ToString("0.00");
+        text.color = colorGradient.Evaluate((inputValue + 1) / 2f);
+    }
+
+    public void SetBias(float bias)
+    {
+        this.bias = bias;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -151,12 +168,13 @@ public class Node : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (tempLabel != null)
+        if (hoverLabel != null)
         {
-            tempLabel.transform.position = Input.mousePosition + Vector3.up * 30;
+            hoverLabel.transform.position = Input.mousePosition + Vector3.up * 130;
         }
         transform.GetChild(0).GetComponent<RectTransform>().position = cam.WorldToScreenPoint(transform.position);
 
+        // maybe don't compute the value every frame, just when something got changed
         ComputeValue(); 
     }
 
@@ -217,7 +235,7 @@ public class Node : MonoBehaviour
 
         // format the value to two decimals
         text.text = value.ToString("0.00");
-        text.color = gradient.Evaluate((value + 1) / 2f);
+        text.color = colorGradient.Evaluate((value + 1) / 2f);
     }
 
     private void OnMouseDown()
@@ -250,25 +268,61 @@ public class Node : MonoBehaviour
     {
         if (GetLayerIndex() > 0)
         {
-            tempLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
-            tempLabel.GetComponent<RectTransform>().position = Input.mousePosition;
-            tempLabel.GetComponent<Text>().text = "Bias:\n" + bias.ToString("0.00");
+            hoverLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
+            //tempLabel.GetComponent<RectTransform>().position = Vector3.up*50;
+            hoverLabel.GetComponent<Text>().text = "Bias:\n" + bias.ToString("0.00");
         }   
     }
 
     private void OnMouseExit()
     {
-        if (tempLabel != null)
+        if (hoverLabel != null)
         {
-            Destroy(tempLabel);
+            Destroy(hoverLabel);
+        }
+        if (editor != null)
+        {
+            Destroy(editor);
         }
     }
 
     private void OnDestroy()
     {
-        if (tempLabel != null)
+        if (hoverLabel != null)
         {
-            Destroy(tempLabel);
+            Destroy(hoverLabel);
+        }
+        if (editor != null)
+        {
+            Destroy(editor);
+        }
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        print("down");
+        // right click
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (hoverLabel != null)
+            {
+                Destroy(hoverLabel);
+            }
+            InputField input;
+            if (editor != null)
+            {
+                input = editor.GetComponentInChildren<InputField>();
+                input.Select();
+                return;
+            }
+            Vector3 position = cam.WorldToScreenPoint(transform.position) + Vector3.up * 100;
+            editor = Instantiate(editorPrefab, position, Quaternion.identity, transform);
+            Text label = editor.transform.GetChild(0).GetComponent<Text>();
+            label.text = GetLayerIndex() == 0 ? "Input" : "Bias";
+            input = editor.GetComponentInChildren<InputField>();
+            input.Select();
+            input.SetTextWithoutNotify(GetLayerIndex() == 0 ? inputValue.ToString("0.00") : bias.ToString("0.00"));
+            // how to fucus? input.MoveTextStart(true);
         }
     }
 }

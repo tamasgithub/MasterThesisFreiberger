@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,14 +10,16 @@ using UnityEngine.EventSystems;
  */
 public class CoordinateSystem3D : CoordinateSystem
 {
+    // the parameter is the distance the mouse moved over the screen while rotating
+    public event Action<float> rotatedEvent;
     private bool rotating;
-    private Vector3 rotationPivot;
+    //private Vector3 rotationPivot;
     private Vector3 prevMousePos;
 
     protected new void Start()
     {
         base.Start();
-        rotationPivot = transform.TransformPoint(new Vector3(0.4f, 0.4f, -0.4f));
+        //rotationPivot = transform.TransformPoint(new Vector3(0.4f, 0.4f, -0.4f));
     }
 
     // Update is called once per frame
@@ -31,6 +34,10 @@ public class CoordinateSystem3D : CoordinateSystem
             transform.Rotate(transform.up, -Vector3.Dot(mousePosDiff, Camera.main.transform.right) / 10, Space.World);
             transform.Rotate(Camera.main.transform.right, -Vector3.Dot(mousePosDiff, -Camera.main.transform.up) / 10, Space.World);
             //((DecisionBoundary3D)decisionBoundaries[0]).RecalculateVisibleArea();
+            if (rotatedEvent != null)
+            {
+                rotatedEvent(mousePosDiff.magnitude);
+            }
         }
         prevMousePos = currentMousePos;
 
@@ -61,6 +68,7 @@ public class CoordinateSystem3D : CoordinateSystem
     protected override void OnMouseDown()
     {
         rotating = true;
+        prevMousePos = Input.mousePosition;
     }
 
     protected override void OnMouseUp()

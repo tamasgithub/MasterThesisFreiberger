@@ -181,6 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgePrefab: {fileID: 214758128186768929, guid: 29765390854547946ae5ab8f5902f009, type: 3}
   labelPrefab: {fileID: 1165006118037552983, guid: 2cc444e5d0c21c54a92bf05be6befd18, type: 3}
+  editorPrefab: {fileID: 6544354662010603848, guid: a4010baf640486d40b7c601e2d3b03ef, type: 3}
   manuallyConnectable: 1
   inputValue: 0
   activationFunction: 0

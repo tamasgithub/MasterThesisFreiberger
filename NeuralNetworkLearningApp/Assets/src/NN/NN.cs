@@ -11,9 +11,9 @@ public class NN : MonoBehaviour
     [Range(0, 10)]
     public int numLayers = 1;
     public List<int> layerSizes = new List<int>();
-    [Range(1, 10)]
+    [Range(1.5f, 10)]
     public float layerDistance = 1.0f;
-    [Range(1, 10)]
+    [Range(1.5f, 10)]
     public float nodeDistance = 1.0f;
     private float _nodeDistance = 1;
 
@@ -57,10 +57,8 @@ public class NN : MonoBehaviour
             GameObject layerSizeUI = Instantiate(layerSizeUIPrefab, transform.parent);
             Transform plusButton = layerSizeUI.transform.GetChild(0);
             plusButton.GetComponent<NN_UI_Control>().underLayerWithIndex = layers.Count - 1;
-            plusButton.GetComponent<NN_UI_Control>().offset = 0.5f;
             Transform minusButton = layerSizeUI.transform.GetChild(1);
             minusButton.GetComponent<NN_UI_Control>().underLayerWithIndex = layers.Count - 1;
-            minusButton.GetComponent<NN_UI_Control>().offset = -0.5f;
         }
     }
 

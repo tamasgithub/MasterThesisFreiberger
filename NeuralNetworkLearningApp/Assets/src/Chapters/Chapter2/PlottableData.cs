@@ -22,6 +22,7 @@ public class PlottableData : MonoBehaviour
     public float minSize;
     public float maxSize;
     new private SpriteRenderer renderer;
+    private bool alreadyPlotted = false;
 
     private void Awake()
     {
@@ -30,7 +31,10 @@ public class PlottableData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (alreadyPlotted)
+        {
+            return;
+        }
         if (colorCorrelatingToFeature >= 0 && colorCorrelatingToFeature < featureValues.Length)
         {
             renderer.color = gradient.Evaluate(featureValues[colorCorrelatingToFeature]);
@@ -149,8 +153,13 @@ public class PlottableData : MonoBehaviour
 
     internal void SwapToPlotSprite(Color colorOfClass)
     {
+        if (renderer == null)
+        {
+            renderer = GetComponent<SpriteRenderer>();
+        }
         renderer.sprite = spriteInPlot;
         renderer.color = colorOfClass;
+        alreadyPlotted = true;
     }
 
     public void SwapToPlotObject(Color colorOfClass)

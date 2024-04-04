@@ -10,6 +10,7 @@ public class BoundaryClassificationTask : Task
     public Button nextButton;
     public override void StartTask()
     {
+        print("subscribing to event");
         coordSys.classificationEvent += DataClassified;
     }
 
@@ -22,6 +23,8 @@ public class BoundaryClassificationTask : Task
     public void Next()
     {
         nextButton.gameObject.SetActive(false);
+        print("unsubscribing to event");
+        coordSys.classificationEvent -= DataClassified;
         TaskFinished();
     }
 }

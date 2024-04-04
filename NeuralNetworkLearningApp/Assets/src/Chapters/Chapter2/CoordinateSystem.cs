@@ -281,7 +281,11 @@ public class CoordinateSystem : MonoBehaviour
         }
         if (classificationEvent != null)
         {
+            print("classification event fired with " + highlights.Count);
             classificationEvent(highlights.Count);
+        } else
+        {
+            print("classification event is null");
         }
     }
 
