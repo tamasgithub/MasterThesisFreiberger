@@ -1,11 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.Jobs.LowLevel.Unsafe;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class CoordinateSystem : MonoBehaviour
 {
@@ -20,6 +16,12 @@ public class CoordinateSystem : MonoBehaviour
     private int numOfClasses;
     private GameObject unseenDataCopy;
     private DecisionBoundary closestToDrag;
+
+    // events the coordinate system fires
+    public event Action dataPlottedEvent;
+    // this event has as parameter the number of misclassified data points
+    public event Action<int> classificationEvent;
+
     // Start is called before the first frame update
     protected void Start()
     {
@@ -93,9 +95,12 @@ public class CoordinateSystem : MonoBehaviour
         {
             Debug.LogError("Only up to 3-dimensional data is supported");
         }
-
-
+        if (dataPlottedEvent != null)
+        {
+            dataPlottedEvent();
+        }
     }
+
     private IEnumerator DisplayDataWithAnimation(PlottableData data)
     {
         this.data.Add(data);
@@ -111,19 +116,28 @@ public class CoordinateSystem : MonoBehaviour
             duration += Time.deltaTime;
             yield return null;
         }
+        // if dataDisplayDuration was 0
+        data.transform.localScale = endScale;
+        data.transform.localPosition = endPos;
         data.transform.parent = transform;
         data.SwapToPlotSprite(colorOfClass[data.GetDataClass()]);
+        if (dataPlottedEvent != null)
+        {
+            dataPlottedEvent();
+        }
     }
 
-    public void DisplayAndClassifyData(PlottableData dataToDisplay)
+    public int DisplayAndClassifyData(PlottableData dataToDisplay)
     {
         if (unseenDataCopy == null)
         {
             unseenDataCopy = Instantiate(dataToDisplay.gameObject);
             // I don't know why with a smaller local scale, this point is still bigger than those
             // that get dropped onto the coord system
-            unseenDataCopy.transform.parent = transform;
-            
+            unseenDataCopy.transform.SetParent(transform);
+            Destroy(unseenDataCopy.GetComponent<Rigidbody2D>());
+            Destroy(unseenDataCopy.GetComponent<Collider2D>());
+
         }
         unseenDataCopy.transform.localScale = Vector3.one * 0.02f;
         unseenDataCopy.transform.position = DataToWorldPoint(dataToDisplay);
@@ -137,12 +151,13 @@ public class CoordinateSystem : MonoBehaviour
         if (featureValues.Length != 2 || decisionBoundaryCoeffs.Length != 3)
         {
             Debug.LogError("Dimension other than 2 not supported.");
-            return;
+            return -1;
         }
         float discriminant = decisionBoundaryCoeffs[0] * featureValues[0] + decisionBoundaryCoeffs[1] * featureValues[1] + decisionBoundaryCoeffs[2];
         int classifiedAs = discriminant <= 0 ? 0 : 1;
         unseenDataCopy.GetComponent<PlottableData>().SwapToPlotSprite(colorOfClass[classifiedAs]);
-
+        unseenDataCopy.transform.localScale = Vector3.one * 0.02f;
+        return classifiedAs;
     }
 
     private Vector3 DataToWorldPoint(PlottableData data)
@@ -263,6 +278,10 @@ public class CoordinateSystem : MonoBehaviour
             {
                 HighlightData(d);
             }
+        }
+        if (classificationEvent != null)
+        {
+            classificationEvent(highlights.Count);
         }
     }
 

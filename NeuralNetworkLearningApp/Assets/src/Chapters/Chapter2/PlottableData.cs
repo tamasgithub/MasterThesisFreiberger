@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlottableData : MonoBehaviour
 {
     private Transform inputBucket;
-    public bool draggable = true;
+    public bool draggable = false;
     private Camera cam;
     private Rigidbody2D rb;
     private bool dragging = false;
@@ -91,6 +91,11 @@ public class PlottableData : MonoBehaviour
         {
             transform.localScale = Vector3.one * (minSize + featureValues[sizeCorrelatingToFeature] * (maxSize - minSize));
         }
+    }
+
+    public void SetDraggable(bool draggable)
+    {
+        this.draggable = draggable;
     }
 
     private void OnMouseUp()

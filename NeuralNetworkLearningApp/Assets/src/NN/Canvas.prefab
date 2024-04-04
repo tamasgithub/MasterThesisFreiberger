@@ -4870,8 +4870,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 49, y: 0}
+  m_SizeDelta: {x: 78, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3136826254289001505
 CanvasRenderer:
@@ -5972,6 +5972,7 @@ MonoBehaviour:
   layerDistance: 2
   nodeDistance: 2
   fullyConnected: 1
+  layerSizeUIPrefab: {fileID: 0}
 --- !u!1 &3136826254872628514
 GameObject:
   m_ObjectHideFlags: 0
@@ -9249,9 +9250,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   network: {fileID: 0}
-  nextToLayer: 0
   nextToLastLayer: 1
-  underLayer: 0
+  underLayerWithIndex: 0
+  offset: 0
 --- !u!1 &8150386215624380391
 GameObject:
   m_ObjectHideFlags: 0
@@ -10088,9 +10089,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   network: {fileID: 0}
-  nextToLayer: 0
   nextToLastLayer: 1
-  underLayer: 0
+  underLayerWithIndex: 0
+  offset: 0
 --- !u!1 &8920646514577646788
 GameObject:
   m_ObjectHideFlags: 0
