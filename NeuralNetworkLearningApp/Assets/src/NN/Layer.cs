@@ -1,15 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Layer : MonoBehaviour
 {
+    private NN network;
     private int layerIndex;
     private float nodeDistance = 1.0f;
     private bool fullyConnected = false;
     public GameObject nodePrefab;
 
     private List<Node> nodes = new List<Node>();
+
+    public void SetNetwork(NN network)
+    {
+        this.network = network;
+    }
 
     // TODO: fancy c# property instead
     public int GetSize()
@@ -156,6 +163,74 @@ public class Layer : MonoBehaviour
         }
     }
 
+
+    public bool AreNodesConnected(int nodeIndex, int neighborNodeIndex, bool incoming)
+    {
+        Node node = nodes[nodeIndex];
+        return incoming ? node.HasIncomingEdge(neighborNodeIndex) : node.HasOutgoingEdge(neighborNodeIndex);
+    }
+
+    public void SetUISettings(bool showValue, bool colorEdges, bool edgeHoveringEnabled, bool nodeHoveringEnabled, bool editingEnabled)
+    {
+        foreach (Node node in nodes)
+        {
+            node.SetUISettings(showValue, colorEdges, edgeHoveringEnabled, nodeHoveringEnabled, editingEnabled);
+        }
+    }
+
+    public bool GetColorEdges()
+    {
+        return network.colorEdges;
+    }
+
+    public bool GetEdgeHoveringEnabled()
+    {
+        return network.edgeHoveringEnabled;
+    }
+    public int GetNodeCount()
+    {
+        return nodes.Count;
+    }
+
+    public bool IsFullyConnected(bool incoming)
+    {
+        foreach (Node node in nodes)
+        {
+            if (incoming)
+            {
+                int incomingSize = node.GetIncomingSize();
+                for (int i = 0; i < incomingSize; i++)
+                {
+                    if (!node.HasIncomingEdge(i))
+                    {
+                        return false;
+                    }
+                }
+            } else
+            {
+                int ougoingSize = node.GetOutgoingSize();
+                for (int i = 0; i < ougoingSize; i++)
+                {
+                    if (!node.HasOutgoingEdge(i))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public void EdgeHovered()
+    {
+        network.EdgeHovered();
+    }
+
+    public void NodeHovered()
+    {
+        network.NodeHovered();
+    }
+
     private void CreateNewNode(int index, int leftLayerSize, int rightLayerSize)
     {
         GameObject newNode = Instantiate(nodePrefab, transform);
@@ -166,6 +241,7 @@ public class Layer : MonoBehaviour
         node.SetNodeIndex(index);
         node.SetIncomingSize(leftLayerSize);
         node.SetOutgoingSize(rightLayerSize);
+        node.SetUISettings(network.showValues, network.colorEdges, network.edgeHoveringEnabled, network.nodeHoveringEnabled, network.editingEnabled);
     }
 
     private void PositionNode(Node node)

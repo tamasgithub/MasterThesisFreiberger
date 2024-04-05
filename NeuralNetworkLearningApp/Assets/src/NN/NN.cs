@@ -18,7 +18,18 @@ public class NN : MonoBehaviour
     private float _nodeDistance = 1;
 
     public bool fullyConnected = false;
+    public bool showValues = false;
+    public bool colorEdges = false;
+    public bool edgeHoveringEnabled = false;
+    public bool nodeHoveringEnabled = false;
+    public bool editingEnabled = false;
 
+    // events fired by the NN
+    public event Action edgeHovered;
+    public event Action nodeHovered;
+
+
+    private Dictionary<String, bool> uiSettings = new Dictionary<String, bool>();
     public GameObject layerSizeUIPrefab;
 
     List<Layer> layers = new List<Layer>();
@@ -67,15 +78,14 @@ public class NN : MonoBehaviour
         SetLayerCount(layers.Count - 1);
 
         NN_UI_Control[] layerSizeUIs = transform.parent.GetComponentsInChildren<NN_UI_Control>();
-        if (layerSizeUIs.Length > 0)
+        if (layerSizeUIs.Length > 2)
         {
             Destroy(layerSizeUIs[layerSizeUIs.Length - 1].transform.parent.gameObject);
         }
     }
 
-    public void IncreaseLayerSize(NN_UI_Control control)
+    public void IncreaseLayerSize(int layerIndex)
     {
-        int layerIndex = control.underLayerWithIndex;
         layerSizes[layerIndex]++;
         if (layerIndex >= layers.Count)
         {
@@ -84,9 +94,8 @@ public class NN : MonoBehaviour
         layers[layerIndex].SetSize(layers[layerIndex].GetSize() + 1);
     }
 
-    public void DecreaseLayerSize(NN_UI_Control control)
+    public void DecreaseLayerSize(int layerIndex)
     {
-        int layerIndex = control.underLayerWithIndex;
         layerSizes[layerIndex]--;
         if (layerIndex >= layers.Count)
         {
@@ -121,6 +130,70 @@ public class NN : MonoBehaviour
     public void ConnectEdgeToDestination(Edge edge, int destinationLayer, int destinationNode, int sourceNode)
     {
         layers[destinationLayer].ConnectEdgeToDestination(edge, destinationLayer, destinationNode, sourceNode);
+    }
+
+    // the network can be fully connected manually while the setting is not set
+    // in this case, if onlyReturnSetting is true then return false, else return true
+    public bool IsFullyConnected(bool onlyReturnSetting)
+    {
+        foreach (Layer layer in layers)
+        {
+            if (!layer.IsFullyConnected(true))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool AreNodesConnected(int leftLayer, int rightLayer, int leftNode, int rightNode)
+    {
+        if (leftLayer != rightLayer - 1)
+        {
+            return false;
+        }
+        return layers[leftLayer].AreNodesConnected(leftNode, rightNode, false);
+    }
+
+    public void SetUISettings(bool showValues, bool colorEdges, bool edgeHoveringEnabled, bool nodeHoveringEnabled, bool editingEnabled)
+    {
+        print("Setting to " + showValues + colorEdges + edgeHoveringEnabled + nodeHoveringEnabled + editingEnabled);
+        this.showValues = showValues;
+        this.colorEdges = colorEdges;
+        this.edgeHoveringEnabled = edgeHoveringEnabled;
+        this.nodeHoveringEnabled = nodeHoveringEnabled;
+        this.editingEnabled = editingEnabled;
+        print("New Values " + this.showValues + this.colorEdges + this.edgeHoveringEnabled + this.nodeHoveringEnabled + this.editingEnabled);
+        foreach (Layer layer in layers)
+        {
+            layer.SetUISettings(showValues, colorEdges, edgeHoveringEnabled, nodeHoveringEnabled, editingEnabled);
+        }
+    }
+
+    public int GetNodeCount()
+    {
+        int sum = 0;
+        foreach (Layer layer in layers)
+        {
+            sum += layer.GetNodeCount();
+        }
+        return sum;
+    }
+
+    public void EdgeHovered()
+    {
+        if (edgeHovered != null)
+        {
+            edgeHovered();
+        }
+    }
+
+    public void NodeHovered()
+    {
+        if (nodeHovered != null)
+        {
+            nodeHovered();
+        }
     }
 
     // Start is called before the first frame update
@@ -189,10 +262,12 @@ public class NN : MonoBehaviour
                 newLayer.name = "layer" + i;
                 Layer layer = newLayer.GetComponent<Layer>();
                 layers.Add(layer);
+                layer.SetNetwork(this);
                 layer.SetLayerIndex(i);
                 layer.SetSize(1);
                 layer.SetNodeDistance(nodeDistance);
                 layer.SetFullyConnected(fullyConnected);
+                
                 PositionLayer(i);
             }
         }

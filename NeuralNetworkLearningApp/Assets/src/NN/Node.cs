@@ -16,18 +16,21 @@ public class Node : MonoBehaviour, IPointerDownHandler
     public Gradient colorGradient;
 
     private float value;
-
     private Layer layer;
     private Edge manuallyConnectingEdge;
     // these lists are taylored to simple NNs, where nodes can only be connected to nodes from neighboring layers!
     private List<Edge> incomingEdges = new List<Edge>();
     private List<Edge> outgoingEdges = new List<Edge>();
+
+
     // inside its layer
     private int nodeIndex;
 
     private float bias;
     private GameObject hoverLabel;
+    private bool hoveringEnabled;
     private GameObject editor;
+    private bool editingEnabled;
     private Camera cam;
 
     public int GetIncomingSize()
@@ -108,6 +111,8 @@ public class Node : MonoBehaviour, IPointerDownHandler
             if (incomingEdges[i] == null)
             {
                 Edge edge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
+                edge.SetColorEdges(layer.GetColorEdges());
+                edge.SetHoveringEnabled(layer.GetEdgeHoveringEnabled());
                 edge.SetFirstNode(this);
                 layer.ConnectEdgeToSource(edge, layer.GetLayerIndex() - 1, i, nodeIndex);
                 
@@ -119,6 +124,8 @@ public class Node : MonoBehaviour, IPointerDownHandler
             if (outgoingEdges[i] == null)
             {
                 Edge edge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
+                edge.SetColorEdges(layer.GetColorEdges());
+                edge.SetHoveringEnabled(layer.GetEdgeHoveringEnabled());
                 edge.SetFirstNode(this);
                 layer.ConnectEdgeToDestination(edge, layer.GetLayerIndex() + 1, i, nodeIndex);
                 
@@ -158,6 +165,43 @@ public class Node : MonoBehaviour, IPointerDownHandler
         this.bias = bias;
     }
 
+    public void SetUISettings(bool showValue, bool colorEdges, bool edgeHoveringEnabled, bool nodeHoveringEnabled, bool editingEnabled)
+    {
+        transform.GetChild(0).gameObject.SetActive(showValue);
+        foreach (Edge edge in incomingEdges)
+        {
+            if (edge == null)
+            {
+                continue;
+            }
+            edge.SetColorEdges(colorEdges);
+            edge.SetHoveringEnabled(edgeHoveringEnabled);
+        }
+        foreach (Edge edge in outgoingEdges) {
+            if (edge == null)
+            {
+                continue;
+            }
+            edge.SetColorEdges(colorEdges);
+            edge.SetHoveringEnabled(edgeHoveringEnabled);
+        }
+        this.hoveringEnabled = nodeHoveringEnabled;
+        if (hoverLabel != null)
+        {
+            hoverLabel.SetActive(nodeHoveringEnabled);
+        }
+        this.editingEnabled = editingEnabled;
+        if (editor != null)
+        {
+            editor.SetActive(editingEnabled);
+        }
+    }
+
+    public void EdgeHovered()
+    {
+        layer.EdgeHovered();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -168,13 +212,14 @@ public class Node : MonoBehaviour, IPointerDownHandler
     // Update is called once per frame
     void Update()
     {
+        // recalculate position every frame bc the text is a UI element. TODO: replace with a textmesh, then setting localposition to zero once.
+        transform.GetChild(0).GetComponent<RectTransform>().position = cam.WorldToScreenPoint(transform.position);
+
         if (hoverLabel != null)
         {
             hoverLabel.transform.position = Input.mousePosition + Vector3.up * 130;
         }
-        transform.GetChild(0).GetComponent<RectTransform>().position = cam.WorldToScreenPoint(transform.position);
 
-        // maybe don't compute the value every frame, just when something got changed
         ComputeValue(); 
     }
 
@@ -249,6 +294,8 @@ public class Node : MonoBehaviour, IPointerDownHandler
     private void ManuallyConnect()
     {
         manuallyConnectingEdge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
+        manuallyConnectingEdge.SetColorEdges(layer.GetColorEdges());
+        manuallyConnectingEdge.SetHoveringEnabled(layer.GetEdgeHoveringEnabled());
         manuallyConnectingEdge.isManuallyConnecting = true;
         manuallyConnectingEdge.SetFirstNode(this);
         manuallyConnectingEdge.transform.name = "edge";
@@ -266,11 +313,12 @@ public class Node : MonoBehaviour, IPointerDownHandler
     }
     private void OnMouseEnter()
     {
-        if (GetLayerIndex() > 0)
+        if (GetLayerIndex() > 0 && hoveringEnabled)
         {
             hoverLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
             //tempLabel.GetComponent<RectTransform>().position = Vector3.up*50;
             hoverLabel.GetComponent<Text>().text = "Bias:\n" + bias.ToString("0.00");
+            layer.NodeHovered();
         }   
     }
 
@@ -298,11 +346,13 @@ public class Node : MonoBehaviour, IPointerDownHandler
         }
     }
 
+    // only registers on UI elements, that means the value of the node has to be displayed to
+    // edit the input value or the bias
     public void OnPointerDown(PointerEventData eventData)
     {
         print("down");
         // right click
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && editingEnabled)
         {
             if (hoverLabel != null)
             {

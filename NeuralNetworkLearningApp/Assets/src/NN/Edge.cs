@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Edge : MonoBehaviour
 {
@@ -14,13 +15,18 @@ public class Edge : MonoBehaviour
     private Node leftNode;
     private Node rightNode;
     private GameObject tempLabel;
+    private bool hoveringEnabled;
     new private SpriteRenderer renderer;
+    private void Awake()
+    {
+        renderer = transform.GetComponent<SpriteRenderer>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         weight = UnityEngine.Random.value * 2 - 1;
-        renderer = transform.GetComponent<SpriteRenderer>();
+        
     }
 
     // Update is called once per frame
@@ -42,13 +48,16 @@ public class Edge : MonoBehaviour
 
         if (leftNode == null || rightNode == null)
         {
-            print("Self destruction");
             Destroy(gameObject);
         }
         else
         {
             UpdatePosition(leftNode.transform.position, rightNode.transform.position);
-            renderer.color = gradient.Evaluate(weight);
+            if (transform.parent.parent.parent.GetComponent<NN>().colorEdges)
+            {
+                renderer.color = gradient.Evaluate(weight);
+            }
+            
             if (Input.GetMouseButtonDown(1))
             {
                 RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
@@ -111,6 +120,20 @@ public class Edge : MonoBehaviour
         rightNode.SetIncomingEdge(this, leftNode.GetNodeIndex());
     }
 
+    public void SetColorEdges(bool colorEdges)
+    {
+        renderer.color = colorEdges ? gradient.Evaluate(weight) : Color.black;
+    }
+
+    public void SetHoveringEnabled(bool hoveringEnabled)
+    {
+        this.hoveringEnabled = hoveringEnabled;
+        if(!hoveringEnabled)
+        {
+            Destroy(tempLabel);
+        }
+    }
+
     private void UpdatePosition(Vector2 leftAnchor, Vector2 rightAnchor)
     {
         // set z to 1 so that nodes are in foreground and take priority for clicks
@@ -121,9 +144,13 @@ public class Edge : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        tempLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
-        tempLabel.GetComponent<RectTransform>().position = Input.mousePosition;
-        tempLabel.GetComponent<Text>().text = "Weight:\n" + weight.ToString("0.00");
+        if (hoveringEnabled)
+        {
+            tempLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
+            tempLabel.GetComponent<RectTransform>().position = Input.mousePosition;
+            tempLabel.GetComponent<Text>().text = "Weight:\n" + weight.ToString("0.00");
+            rightNode.EdgeHovered();
+        }   
     }
 
     private void OnMouseExit()

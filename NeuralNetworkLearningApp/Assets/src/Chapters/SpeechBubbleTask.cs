@@ -17,6 +17,10 @@ public class SpeechBubbleTask: Task, IPointerDownHandler
     }
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (clickedEvent != null)
+        {
+            clickedEvent();
+        }
         if (removedByClick)
         {
             TaskFinished();
@@ -39,6 +43,8 @@ public class SpeechBubbleTask: Task, IPointerDownHandler
 
     private void Update()
     {
+        // this doesn't work if the speech bubble waits for the very last task to finish, to deactivate
+        // just put in a last final toughts speech bubble task
         if (removedAfterFinishedTasks > 0 && transform.parent.
             GetChild(siblingIndex + removedAfterFinishedTasks + 1).gameObject.activeSelf) {
             gameObject.SetActive(false);

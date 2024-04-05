@@ -8,6 +8,7 @@ public abstract class Task : MonoBehaviour
 
     public virtual void TaskFinished()
     {
+        print("Task finished!");
         transform.parent.GetComponent<TaskManager>().TaskFinished();
     }
 }
