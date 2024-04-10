@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Networking.Types;
 using UnityEngine.UI;
 
 public class TalkInteraction : Interaction
@@ -11,7 +12,7 @@ public class TalkInteraction : Interaction
     private int currentTextIndex = 0;
     public GameObject textUI;
     private bool interacting = false;
-    public bool hasNewText;
+    public bool hasNewText = true;
     public int characterIndex = 0;
     public GameObject chapterEntryPoints;
     private int questState = 0;
@@ -24,11 +25,11 @@ public class TalkInteraction : Interaction
         {
             new string[] { "Hello, I'm Alice! How can I help you?",
                 "You want to climb the mountain? I see. I guess you heard about the rumor that\nwhoever climbs to the top gains the most secret knowledge about Neural Networks.",
-                "By foot, it would take ages.... Of couse you could use my balloons!\nBut you have to do me a favour first I'm affraid.",
+                "By foot, it would take ages.... Of couse you could use one of my balloons!\nBut you have to do me a favour first I'm afraid.",
                 "I want to build a function machine that helps me estimate the weight limit of my balloons.",
                 "I practised with my function machines that you can see here. But I just can't get it right.",
                 "If you would do the tasks too, maybe I could learn a thing\nor too by looking over your shoulder.",
-                "It would also benefit you in your quest, as Neural Networks are also just just functions.",
+                "It would also benefit you in your quest, as Neural Networks are also just functions.",
                 "However, these functions convert inputs into outputs in\nhigher dimensions, if you are not familiar, then the tasks will help you a lot!",
                 "You can also learn about encoding and decoding techniques\nthat are essential for Neural networks.",
                 "Don't worry, I'll share my knowledge with you as you go."},
@@ -53,20 +54,33 @@ public class TalkInteraction : Interaction
                 "What is that face? You thought I'll take you all the way to the top?",
                 "You have to earn things like that. Like in my younger days. Ah you wouldn't understand.",
                 "Now get in, or I leave you here. Some of us have to make a living." }
+        },
+        new string[][] // texts of Charlie
+        {
+            new string[] { "Hello traveller! You must be on your way to\nthe top of the mountain. Rest here for a moment!",
+                "Seeking knowledge about Neural Networks?\nWell, you are in good company here.",
+                "You see, the structure of Neural Networks, the endless\npossibilites of connections, fascinates me,",
+                "That's why in my spare time, I come to this spot and\nbuild networks for fun, while enjoying the amazing view.",
+                "If you'd like, I can show you everything I know.",
+                "Take a closer look at the networks that I've built\nat the clearing. I'll help you build your own!" },
+            new string[] {"What do you say? It is not that hard is it?",
+                "Complete the second task too!"},
+            new string[] { "I'm afraid that's all I know. There is no way to get higher on the\nmountain so far. But I'm sure that changes in the near future!" }
         }
     };
     private const string hasNewTextKey = "hasNewText";
     private const string questStateKey = "questState";
 
-    private void Start()
+    protected override void Start()
     {
         base.Start();
-        if (StaticData.HasKey(hasNewTextKey + characterIndex));
+        if (StaticData.HasKey(hasNewTextKey + characterIndex))
         {
             hasNewText = StaticData.Get<bool>(hasNewTextKey + characterIndex);
+            print(transform.name + " has loaded, has new text " + hasNewText);
         }
         CheckTaskCompletion();
-        
+        print(transform.name + " has finally new text? " + hasNewText);
         exclamationMark.SetActive(hasNewText);
         texts = allTexts[characterIndex][questState];
     }
@@ -74,7 +88,7 @@ public class TalkInteraction : Interaction
     protected override void Update()
     {
         base.Update();
-        if (interacting && (GetDistanceFromPlayer() > 3f || Input.GetKeyDown(KeyCode.Escape)))
+        if (interacting && (GetDistanceFromPlayer() > 3f))
         {
             StopInteraction();
         }
@@ -82,11 +96,10 @@ public class TalkInteraction : Interaction
     }
     public override void StartInteraction()
     {
-
         transform.LookAt(player.position);
+
         transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
         interacting = true;
-        print("start interaction " + transform.name);
         if (texts.Length == currentTextIndex)
         {
             hasNewText = false;
@@ -102,7 +115,6 @@ public class TalkInteraction : Interaction
 
     public override void StopInteraction()
     {
-        print("stop interaction " + transform.name);
         textUI.SetActive(false);
         currentTextIndex = 0;
         interacting = false;

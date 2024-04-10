@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Edge : MonoBehaviour
 {
@@ -14,19 +12,20 @@ public class Edge : MonoBehaviour
 
     private Node leftNode;
     private Node rightNode;
-    private GameObject tempLabel;
+    private GameObject hoverLabel;
     private bool hoveringEnabled;
+    public GameObject editorPrefab;
+    private GameObject editor;
+    private bool editingEnabled;
     new private SpriteRenderer renderer;
     private void Awake()
     {
         renderer = transform.GetComponent<SpriteRenderer>();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void RandomizeWeight()
     {
         weight = UnityEngine.Random.value * 2 - 1;
-        
     }
 
     // Update is called once per frame
@@ -55,30 +54,55 @@ public class Edge : MonoBehaviour
             UpdatePosition(leftNode.transform.position, rightNode.transform.position);
             if (transform.parent.parent.parent.GetComponent<NN>().colorEdges)
             {
-                renderer.color = gradient.Evaluate(weight);
+                renderer.color = gradient.Evaluate((weight + 1) / 2f);
             }
             
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) && editingEnabled)
             {
+                // right click
                 RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
                 if (hit.collider != null && hit.collider.gameObject == gameObject)
                 {
-                    leftNode.RemoveOutgoingEdge(rightNode.GetNodeIndex());
-                    rightNode.RemoveIncomingEdge(leftNode.GetNodeIndex());
-                    Destroy(gameObject);
+                    if (hoverLabel != null)
+                    {
+                        Destroy(hoverLabel);
+                    }
+                    InputField input;
+                    if (editor != null)
+                    {
+                        input = editor.GetComponentInChildren<InputField>();
+                        input.Select();
+                        return;
+                    }
+                    Vector3 position = Camera.main.WorldToScreenPoint(transform.position) + Vector3.up * 100;
+                    editor = Instantiate(editorPrefab, position, Quaternion.identity, GameObject.Find("Canvas").transform);
+                    editor.GetComponent<NNEditor>().SetEditedEdge(this);
+                    Text label = editor.transform.GetChild(0).GetComponent<Text>();
+                    label.text = "Weight:";
+                    input = editor.GetComponentInChildren<InputField>();
+                    input.Select();
+                    input.SetTextWithoutNotify(weight.ToString("0.00"));
+                    // how to fucus? input.MoveTextStart(true);
                 }
             }
-            if (tempLabel != null)
+            if (hoverLabel != null)
             {
                 // TODO: this is duplicate logic with the nodes' display of their bias
-                tempLabel.transform.position = Input.mousePosition + Vector3.up * 30;
+                hoverLabel.transform.position = Input.mousePosition + Vector3.up * 80;
             }
         }
     }
 
-    public float GetWeight()
+
+
+        public float GetWeight()
     {
         return weight;
+    }
+
+    public void SetWeight(float weight)
+    {
+        this.weight = weight;
     }
 
     public float GetLeftNodeValue()
@@ -128,9 +152,18 @@ public class Edge : MonoBehaviour
     public void SetHoveringEnabled(bool hoveringEnabled)
     {
         this.hoveringEnabled = hoveringEnabled;
-        if(!hoveringEnabled)
+        if(!hoveringEnabled && hoverLabel != null)
         {
-            Destroy(tempLabel);
+            Destroy(hoverLabel);
+        }
+    }
+
+    public void SetEditingEnabled(bool editingEnabled)
+    {
+        this.editingEnabled = editingEnabled;
+        if (!editingEnabled && editor != null)
+        {
+            Destroy(editor);
         }
     }
 
@@ -139,30 +172,43 @@ public class Edge : MonoBehaviour
         // set z to 1 so that nodes are in foreground and take priority for clicks
         transform.position = new Vector3((leftAnchor.x + rightAnchor.x) / 2, (leftAnchor.y + rightAnchor.y) / 2, 1);
         transform.localScale = new Vector3(Vector2.Distance(leftAnchor, rightAnchor), transform.localScale.y, transform.localScale.z);
-        transform.eulerAngles = Vector3.forward * Vector2.SignedAngle(Vector2.right, rightAnchor - leftAnchor);
+
+        float angle = Vector2.SignedAngle(Vector2.right, rightAnchor - leftAnchor);
+        transform.eulerAngles = Vector3.forward * angle;        
     }
 
     private void OnMouseEnter()
     {
         if (hoveringEnabled)
         {
-            tempLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
-            tempLabel.GetComponent<RectTransform>().position = Input.mousePosition;
-            tempLabel.GetComponent<Text>().text = "Weight:\n" + weight.ToString("0.00");
+            hoverLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
+            hoverLabel.GetComponent<RectTransform>().position = Input.mousePosition;
+            hoverLabel.GetComponentInChildren<Text>().text = "Weight:\n" + weight.ToString("0.00");
             rightNode.EdgeHovered();
         }   
     }
 
     private void OnMouseExit()
     {
-        Destroy(tempLabel);
+        if (hoverLabel != null)
+        {
+            Destroy(hoverLabel);
+        }
+        if (editor != null)
+        {
+            Destroy(editor);
+        }
     }
 
     private void OnDestroy()
     {
-        if (tempLabel != null)
+        if (hoverLabel != null)
         {
-            Destroy(tempLabel);
+            Destroy(hoverLabel);
+        }
+        if (editor != null)
+        {
+            Destroy(editor);
         }
     }
 }

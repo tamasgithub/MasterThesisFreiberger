@@ -12,9 +12,11 @@ public class PlayerControl : MonoBehaviour
     public Camera cam;
     public float speedH = 1.0f;
     public float speedV = 1.0f;
-
+    public GameObject menu;
     private float yaw = 0.0f;
     private float pitch = 0.0f;
+    // mouse locked means camera moves with hidden mouse
+    private bool mouseLocked = true;
     private Transform walkingArea;
     private TerrainData terrainData;
     private const string PLAYER_POS = "playerPos";
@@ -23,21 +25,35 @@ public class PlayerControl : MonoBehaviour
     private void Start()
     {
         terrainData = Terrain.activeTerrain.terrainData;
+        
         if (StaticData.Get<Vector3>(PLAYER_POS) != Vector3.zero)
         {
             transform.position = StaticData.Get<Vector3>(PLAYER_POS);
         }
         if (StaticData.Get<Vector3>(PLAYER_ROT) != Vector3.zero)
         {
+            print("player rot " + StaticData.Get<Vector3>(PLAYER_ROT));
             transform.eulerAngles = StaticData.Get<Vector3>(PLAYER_ROT);
+            yaw = transform.eulerAngles.y;
+            pitch = transform.localEulerAngles.x;
         }
+        Vector3 localPos = transform.localPosition;
+        localPos.y = Terrain.activeTerrain.SampleHeight(transform.position) + heightAboveGround;
+        transform.localPosition = localPos;
     }
 
     // Update is called once per frame
     void Update()
     {
         Move();
-        LookAtMouse();
+        if (mouseLocked)
+        {
+            LookAtMouse();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ToggleMenu();
+        }
         StaticData.Set(PLAYER_POS, transform.position);
         StaticData.Set(PLAYER_ROT, transform.eulerAngles);
         //print(StaticData.playerTransform.position);
@@ -97,5 +113,13 @@ public class PlayerControl : MonoBehaviour
         walkingArea = null;
         transform.Translate(6 * Vector3.forward);
         transform.Rotate(Vector3.up * 90);
+    }
+
+    public void ToggleMenu()
+    {
+        bool menuActive = menu.activeSelf;
+        menu.SetActive(!menuActive);
+        Cursor.visible = !menuActive;
+        this.mouseLocked = menuActive;
     }
 }

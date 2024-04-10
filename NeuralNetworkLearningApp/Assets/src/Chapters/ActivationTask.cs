@@ -10,13 +10,18 @@ public class ActivationTask: Task
     public GameObject[] objectsToDeactivate;
     public Behaviour[] behavioursToActivate;
     public Behaviour[] behavioursToDeactivate;
-    //public bool activateAllBehavioursOfTypes;
+    public bool activateAllBehavioursOfTypes;
+    public bool deactivateAllBehavioursOfTypes;
+    public bool enableBehaviourGOs;
+    public bool disableBehaviourGOs;
+
     //public bool activateHierarchyAboveBehaviours;
     public override void StartTask()
     {
         foreach (GameObject obj in objectsToActivate)
         {
-            obj.SetActive(true);
+            //obj.SetActive(true);
+            ActivateHierarchy(obj);
         }
         foreach (GameObject obj in objectsToDeactivate)
         {
@@ -25,31 +30,54 @@ public class ActivationTask: Task
         foreach (Behaviour behaviour in behavioursToActivate)
         {
             behaviour.enabled = true;
-            /*if (activateAllBehavioursOfTypes)
+            if (enableBehaviourGOs)
             {
+                behaviour.gameObject.SetActive(true);
+            }
+            if (activateAllBehavioursOfTypes)
+            {
+                print(Resources.FindObjectsOfTypeAll(behaviour.GetType()).Length);
                 foreach(Behaviour sameTypedBehaviour in Resources.FindObjectsOfTypeAll(behaviour.GetType())) {
                     sameTypedBehaviour.enabled = true;
+                    if (enableBehaviourGOs)
+                    {
+                        ActivateHierarchy(sameTypedBehaviour.gameObject);
+                    }
                 }
-            } else
-            {
-                behaviour.enabled = true;
-            }
-
-            if (activateHierarchyAboveBehaviours)
-            {
-                GameObject parent = behaviour.gameObject;
-                while (!parent.activeInHierarchy && !parent.activeSelf)
-                {
-                    parent.SetActive(true);
-                    parent = parent.transform.parent.gameObject;
-                }
-            }*/
-            
+            }            
         }
         foreach (Behaviour behaviour in behavioursToDeactivate)
         {
             behaviour.enabled = false;
+            if (disableBehaviourGOs)
+            {
+                behaviour.gameObject.SetActive(false);
+            }
+            if (deactivateAllBehavioursOfTypes)
+            {
+                foreach (Behaviour sameTypedBehaviour in Resources.FindObjectsOfTypeAll(behaviour.GetType()))
+                {
+                    sameTypedBehaviour.enabled = false;
+                    if (disableBehaviourGOs)
+                    {
+                        sameTypedBehaviour.gameObject.SetActive(false);
+                    }
+                }
+            }
+            
         }
         TaskFinished();
+    }
+
+    private void ActivateHierarchy(GameObject go)
+    {
+        go.SetActive(true);
+        GameObject parent = go;
+        while (!go.activeInHierarchy)
+        {
+            parent = parent.transform.parent.gameObject;
+            parent.SetActive(true);
+
+        }
     }
 }

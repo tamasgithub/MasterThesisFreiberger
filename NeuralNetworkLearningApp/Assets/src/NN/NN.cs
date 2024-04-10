@@ -18,6 +18,8 @@ public class NN : MonoBehaviour
     private float _nodeDistance = 1;
 
     public bool fullyConnected = false;
+    public bool randomWeights = false;
+    public bool randomBiases = false;
     public bool showValues = false;
     public bool colorEdges = false;
     public bool edgeHoveringEnabled = false;
@@ -27,9 +29,11 @@ public class NN : MonoBehaviour
     // events fired by the NN
     public event Action edgeHovered;
     public event Action nodeHovered;
+    // sending info about which one or to what not needed atm
+    public event Action nodeValueChanged;
+    public event Action nodeBiasChanged;
+    public event Action edgeWeightChanged;
 
-
-    private Dictionary<String, bool> uiSettings = new Dictionary<String, bool>();
     public GameObject layerSizeUIPrefab;
 
     List<Layer> layers = new List<Layer>();
@@ -157,13 +161,11 @@ public class NN : MonoBehaviour
 
     public void SetUISettings(bool showValues, bool colorEdges, bool edgeHoveringEnabled, bool nodeHoveringEnabled, bool editingEnabled)
     {
-        print("Setting to " + showValues + colorEdges + edgeHoveringEnabled + nodeHoveringEnabled + editingEnabled);
         this.showValues = showValues;
         this.colorEdges = colorEdges;
         this.edgeHoveringEnabled = edgeHoveringEnabled;
         this.nodeHoveringEnabled = nodeHoveringEnabled;
         this.editingEnabled = editingEnabled;
-        print("New Values " + this.showValues + this.colorEdges + this.edgeHoveringEnabled + this.nodeHoveringEnabled + this.editingEnabled);
         foreach (Layer layer in layers)
         {
             layer.SetUISettings(showValues, colorEdges, edgeHoveringEnabled, nodeHoveringEnabled, editingEnabled);
@@ -178,6 +180,21 @@ public class NN : MonoBehaviour
             sum += layer.GetNodeCount();
         }
         return sum;
+    }
+
+    public float GetNodeValue(int layerIndex, int nodeIndexInLayer)
+    {
+        return layers[layerIndex].GetNodeValue(nodeIndexInLayer);
+    }
+
+    public float GetNodeBias(int layerIndex, int nodeIndexInLayer)
+    {
+        return layers[layerIndex].GetNodeBias(nodeIndexInLayer);
+    }
+
+    public float GetEdgeWeight(int leftLayerIndex, int leftNodeIndex, int rightNodeIndex)
+    {
+        return layers[leftLayerIndex].GetEdgeWeight(leftNodeIndex, rightNodeIndex, false);
     }
 
     public void EdgeHovered()
@@ -267,7 +284,6 @@ public class NN : MonoBehaviour
                 layer.SetSize(1);
                 layer.SetNodeDistance(nodeDistance);
                 layer.SetFullyConnected(fullyConnected);
-                
                 PositionLayer(i);
             }
         }

@@ -1605,9 +1605,9 @@ PrefabInstance:
       propertyPath: m_Text
       value: 'Great, you doubled the input!
 
-        Proceed to feed the  other
+        Proceed to feed the other
 
-        input
+        inputs
         into the machine!'
       objectReference: {fileID: 0}
     - target: {fileID: 8023599413687977937, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
@@ -3159,7 +3159,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Simple Functions
+  m_Text: Functions - The Function Machine Model
 --- !u!222 &1469357800
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3538,7 +3538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6466233018966496251, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 6466233018966496251, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_SizeDelta.x

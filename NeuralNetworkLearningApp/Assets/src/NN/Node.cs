@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -110,26 +111,16 @@ public class Node : MonoBehaviour, IPointerDownHandler
         {
             if (incomingEdges[i] == null)
             {
-                Edge edge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
-                edge.SetColorEdges(layer.GetColorEdges());
-                edge.SetHoveringEnabled(layer.GetEdgeHoveringEnabled());
-                edge.SetFirstNode(this);
+                Edge edge = CreateNewEdge();
                 layer.ConnectEdgeToSource(edge, layer.GetLayerIndex() - 1, i, nodeIndex);
-                
-                edge.transform.name = "edge";
             }
         }
         for (int i = 0; i < outgoingEdges.Count; i++)
         {
             if (outgoingEdges[i] == null)
             {
-                Edge edge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
-                edge.SetColorEdges(layer.GetColorEdges());
-                edge.SetHoveringEnabled(layer.GetEdgeHoveringEnabled());
-                edge.SetFirstNode(this);
+                Edge edge = CreateNewEdge();
                 layer.ConnectEdgeToDestination(edge, layer.GetLayerIndex() + 1, i, nodeIndex);
-                
-                edge.transform.name = "edge";
             }
         }
     }
@@ -149,6 +140,11 @@ public class Node : MonoBehaviour, IPointerDownHandler
     public float GetValue()
     {
         return value;
+    }
+
+    public float GetBias()
+    {
+        return bias;
     }
 
     public void SetInputValue(float inputValue)
@@ -202,11 +198,25 @@ public class Node : MonoBehaviour, IPointerDownHandler
         layer.EdgeHovered();
     }
 
+    public float GetWeightTo(int neighborNodeIndex, bool incoming)
+    {
+        if (incoming)
+        {
+            return incomingEdges[neighborNodeIndex].GetWeight();
+        } else
+        {
+            return outgoingEdges[neighborNodeIndex].GetWeight();
+        }
+    }
+    public void RandomizeBias()
+    {
+        bias = UnityEngine.Random.value * 2 - 1;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         cam = Camera.main;
-        bias = UnityEngine.Random.value * 2 - 1;
     }
 
     // Update is called once per frame
@@ -217,7 +227,7 @@ public class Node : MonoBehaviour, IPointerDownHandler
 
         if (hoverLabel != null)
         {
-            hoverLabel.transform.position = Input.mousePosition + Vector3.up * 130;
+            hoverLabel.transform.position = Input.mousePosition + Vector3.up * 80;
         }
 
         ComputeValue(); 
@@ -293,12 +303,23 @@ public class Node : MonoBehaviour, IPointerDownHandler
 
     private void ManuallyConnect()
     {
-        manuallyConnectingEdge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
-        manuallyConnectingEdge.SetColorEdges(layer.GetColorEdges());
-        manuallyConnectingEdge.SetHoveringEnabled(layer.GetEdgeHoveringEnabled());
+        manuallyConnectingEdge = CreateNewEdge();
         manuallyConnectingEdge.isManuallyConnecting = true;
-        manuallyConnectingEdge.SetFirstNode(this);
-        manuallyConnectingEdge.transform.name = "edge";
+    }
+
+    private Edge CreateNewEdge()
+    {
+        Edge edge = Instantiate(edgePrefab, transform).GetComponent<Edge>();
+        edge.SetColorEdges(layer.GetColorEdges());
+        if (layer.AreWeightsRandom())
+        {
+            edge.RandomizeWeight();
+        }
+        edge.SetEditingEnabled(layer.GetEditingEnabled());
+        edge.SetHoveringEnabled(layer.GetEdgeHoveringEnabled());
+        edge.SetFirstNode(this);
+        edge.transform.name = "edge";
+        return edge;
     }
 
     private void OnMouseUp()
@@ -317,7 +338,7 @@ public class Node : MonoBehaviour, IPointerDownHandler
         {
             hoverLabel = Instantiate(labelPrefab, GameObject.Find("Canvas").transform);
             //tempLabel.GetComponent<RectTransform>().position = Vector3.up*50;
-            hoverLabel.GetComponent<Text>().text = "Bias:\n" + bias.ToString("0.00");
+            hoverLabel.GetComponentInChildren<Text>().text = "Bias:\n" + bias.ToString("0.00");
             layer.NodeHovered();
         }   
     }
@@ -350,7 +371,6 @@ public class Node : MonoBehaviour, IPointerDownHandler
     // edit the input value or the bias
     public void OnPointerDown(PointerEventData eventData)
     {
-        print("down");
         // right click
         if (Input.GetMouseButtonDown(1) && editingEnabled)
         {

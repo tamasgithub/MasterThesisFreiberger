@@ -204,11 +204,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.09
+      value: -5.87
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.07
+      value: 2.67
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -448,7 +448,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6466233018966496251, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 6466233018966496251, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2965,9 +2965,11 @@ PrefabInstance:
         Outputs: 1 letter
 
         This machine returns
-        the letter of the alphabet
+        the letter
 
-        corresponding to the input number.'
+        of the alphabet corresponding
+
+        to the input number.'
       objectReference: {fileID: 0}
     - target: {fileID: 4293985437752406675, guid: dd2669104c2c78c4d9b5a9dd852581ce, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3471,11 +3473,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.09
+      value: -5.92
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.07
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4176,11 +4178,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.09
+      value: -6.87
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.07
+      value: 2.98
       objectReference: {fileID: 0}
     - target: {fileID: 46535768405637051, guid: fb28eed1a29f31e428a57bd376dbaa2b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4601,7 +4603,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Simple Functions
+  m_Text: Functions - Input and Output Types
 --- !u!222 &1469357800
 CanvasRenderer:
   m_ObjectHideFlags: 0

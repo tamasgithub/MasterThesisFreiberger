@@ -14,6 +14,7 @@ public class FunctionMachine : MonoBehaviour
     public event Action hoverEvent;
     public event Action inputsAcceptedEvent;
     public event Action inputsProcessedEvent;
+    public event Action failedToPrecessInputsEvent;
 
     private FMInputHole[] inputHoles;
     private DataPrefabHolder dataPrefabHolder;
@@ -106,8 +107,19 @@ public class FunctionMachine : MonoBehaviour
         {
             inputValues[i] = inputHoles[i].LetInputIn();
         }
-        object[] outputValues = FunctionDetails.GetImplementation(function)(inputValues);
-        StartCoroutine(CreateOutputs(outputValues));
+        try
+        {
+            object[] outputValues = FunctionDetails.GetImplementation(function)(inputValues);
+            StartCoroutine(CreateOutputs(outputValues));
+        } catch (Exception ex)
+        {
+            if (failedToPrecessInputsEvent != null)
+            {
+                failedToPrecessInputsEvent();
+            }
+        }
+        
+        
         foreach (FMInputHole inputHole in inputHoles)
         {
             inputHole.SetInputInHole(null);

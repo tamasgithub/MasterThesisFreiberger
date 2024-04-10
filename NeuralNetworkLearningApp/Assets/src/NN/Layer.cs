@@ -183,10 +183,20 @@ public class Layer : MonoBehaviour
         return network.colorEdges;
     }
 
+    public bool AreWeightsRandom()
+    {
+        return network.randomWeights;
+    }
+
     public bool GetEdgeHoveringEnabled()
     {
         return network.edgeHoveringEnabled;
     }
+    public bool GetEditingEnabled()
+    {
+        return network.editingEnabled;
+    }
+
     public int GetNodeCount()
     {
         return nodes.Count;
@@ -221,6 +231,21 @@ public class Layer : MonoBehaviour
         return true;
     }
 
+    public float GetNodeValue(int nodeIndex)
+    {
+        return nodes[nodeIndex].GetValue();
+    }
+
+    public float GetNodeBias(int nodeIndex)
+    {
+        return nodes[nodeIndex].GetBias();
+    }
+
+    public float GetEdgeWeight(int nodeIndex, int neighborNodeIndex, bool incoming)
+    {
+        return nodes[nodeIndex].GetWeightTo(neighborNodeIndex, incoming);
+    }
+
     public void EdgeHovered()
     {
         network.EdgeHovered();
@@ -242,6 +267,10 @@ public class Layer : MonoBehaviour
         node.SetIncomingSize(leftLayerSize);
         node.SetOutgoingSize(rightLayerSize);
         node.SetUISettings(network.showValues, network.colorEdges, network.edgeHoveringEnabled, network.nodeHoveringEnabled, network.editingEnabled);
+        if (network.randomBiases)
+        {
+            node.RandomizeBias();
+        }
     }
 
     private void PositionNode(Node node)

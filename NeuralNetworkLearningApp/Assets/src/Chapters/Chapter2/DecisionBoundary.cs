@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,7 +49,7 @@ public class DecisionBoundary : MonoBehaviour
         // enforce a direction rather in the direction of the first diagonal, as the
         // task requires to set the boundary to an angle around perpendicular to that
         float random = Random.Range(0f, Mathf.PI / 2f);
-        secondAnchor = new Vector2(Mathf.Cos(random), Mathf.Sin(random));
+        secondAnchor = firstAnchor + new Vector2(Mathf.Cos(random), Mathf.Sin(random));
         SetFirstAnchor(firstAnchor);
         SetSecondAnchor(secondAnchor);
         

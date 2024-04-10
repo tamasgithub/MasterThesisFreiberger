@@ -15,7 +15,7 @@ Chapter 4	Chapter 4	Kapitel 4
 Chapter 5	Chapter 5	Kapitel 5
 Chapter 6	Chapter 6	Kapitel 6
 Chapter 7	Chapter 7	Kapitel 7
-DescriptionChapter1	The terms input and output of a NN are introduced and you learn that NNs are functions that generate outputs from inputs. At the end of this chapter you will be able to determine the dimensions of inputs and outputs based on the problem	DE
+DescriptionChapter1	The terms inputs and outputs of functions are introduced and you learn that NNs are functions that generate outputs from inputs. At the end of this chapter you will be able to determine the dimensions of inputs and outputs based on the problem.	DE
 DescriptionChapter2	Decision boundaries are introduced and you learn how to classify data using one. The calculation performed here is the basis for the NN's structure.	DE
 DescriptionChapter3	In this chapter you learn how the structure of a NN resembles the computation done via decision boundaries. At the end of a chapter your first functional NN will be able to classify simple data.	DE
 DescriptionChapter4	EN	DE

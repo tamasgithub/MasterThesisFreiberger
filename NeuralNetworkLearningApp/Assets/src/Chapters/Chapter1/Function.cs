@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public enum Function
@@ -105,8 +103,8 @@ public static class FunctionDetails
         if (mapping.TryGetValue(animalName, out mappedClass)) {
             classes.TryGetValue(mappedClass, out encodedClass);
             return encodedClass;
-        } else { 
-            throw new ArgumentException("Unknown animal name");
+        } else {
+            throw new Exception("Unknown input");
         }
     }
 

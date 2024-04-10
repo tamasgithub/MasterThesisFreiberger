@@ -8,11 +8,20 @@ public class SpeechBubbleTask: Task, IPointerDownHandler
     public bool removedByClick = true;
     public int removedAfterFinishedTasks;
     private int siblingIndex;
+
+    private void Start()
+    {
+        print("start with sibling index " + transform.GetSiblingIndex());
+    }
+
     public override void StartTask()
     {
+        print("starttask with sibling index " + transform.GetSiblingIndex());
         if (!clickRequiredToFinish)
         {
             TaskFinished();
+            // remove arrow
+            transform.GetChild(transform.childCount - 1).gameObject.SetActive(false);
         }
     }
     public void OnPointerDown(PointerEventData eventData)
@@ -33,22 +42,15 @@ public class SpeechBubbleTask: Task, IPointerDownHandler
         if (removedAfterFinishedTasks == 0)
         {
             gameObject.SetActive(false);
+        } else
+        {
+            print("setting listener to " + transform.parent.GetChild(transform.GetSiblingIndex() + removedAfterFinishedTasks).name);
+            transform.parent.GetChild(transform.GetSiblingIndex() + removedAfterFinishedTasks)
+                .GetComponent<Task>().taskFinishedEvent += () =>
+                {
+                    gameObject.SetActive(false);
+                    print("set to false");
+                };
         }
     }
-
-    private void Start()
-    {
-        siblingIndex = transform.GetSiblingIndex();
-    }
-
-    private void Update()
-    {
-        // this doesn't work if the speech bubble waits for the very last task to finish, to deactivate
-        // just put in a last final toughts speech bubble task
-        if (removedAfterFinishedTasks > 0 && transform.parent.
-            GetChild(siblingIndex + removedAfterFinishedTasks + 1).gameObject.activeSelf) {
-            gameObject.SetActive(false);
-        }
-    }
-
 }

@@ -119,7 +119,10 @@ public class CoefficientInputHandler : MonoBehaviour
         try
         {
             float value = float.Parse(inputString);
-            decisionBoundary.SetCoefficient(coefficientIndex, value);
+            if (decisionBoundary != null)
+            {
+                decisionBoundary.SetCoefficient(coefficientIndex, value);
+            } 
         } catch
         {
             print("Unable to parse input " + inputString + " or no decison boundary found, decision boundary not updated.");
