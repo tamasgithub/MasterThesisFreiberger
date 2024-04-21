@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 using static Cinemachine.DocumentationSortingAttribute;
 
 public class PlayerControl : MonoBehaviour
@@ -13,6 +14,7 @@ public class PlayerControl : MonoBehaviour
     public float speedH = 1.0f;
     public float speedV = 1.0f;
     public GameObject menu;
+    public GameObject controlsUI;
     private float yaw = 0.0f;
     private float pitch = 0.0f;
     // mouse locked means camera moves with hidden mouse
@@ -50,9 +52,13 @@ public class PlayerControl : MonoBehaviour
         {
             LookAtMouse();
         }
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.M))
         {
             ToggleMenu();
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            ToggleControlsUI();
         }
         StaticData.Set(PLAYER_POS, transform.position);
         StaticData.Set(PLAYER_ROT, transform.eulerAngles);
@@ -121,5 +127,13 @@ public class PlayerControl : MonoBehaviour
         menu.SetActive(!menuActive);
         Cursor.visible = !menuActive;
         this.mouseLocked = menuActive;
+    }
+
+    public void ToggleControlsUI()
+    {
+        bool uiActive = controlsUI.transform.GetChild(1).gameObject.activeSelf;
+        controlsUI.transform.GetChild(1).gameObject.SetActive(!uiActive);
+        controlsUI.transform.GetChild(0).GetComponent<RectTransform>().localPosition = uiActive ? new Vector2(30, 10) : new Vector2(30, 240);
+        controlsUI.transform.GetChild(0).GetChild(1).GetComponent<Text>().text = uiActive ? "Show Controls" : "Hide Controls";
     }
 }

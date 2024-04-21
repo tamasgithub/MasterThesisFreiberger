@@ -39,7 +39,7 @@ public static class FunctionDetails
         { Function.LETTER_TO_NUMBER, new Type[]{typeof(char) } },
         { Function.ADD, new Type[]{typeof(int), typeof(int) } },
         { Function.SEPARATE_FIRST_LETTER, new Type[]{typeof(string) } },
-        { Function.BAD_ANIMAL_CLASSIFIER, new Type[]{typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int) } },
+        { Function.BAD_ANIMAL_CLASSIFIER, new Type[]{typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(int)} },
         { Function.BETTER_ANIMAL_CLASSIFIER, new Type[]{typeof(int), typeof(int), typeof(int), typeof(int) } },
     };
 
@@ -86,7 +86,7 @@ public static class FunctionDetails
             {"dog", "mammal" },
             {"eagle", "bird" },
             {"frog", "amphibian" },
-            {"paddlefish", "fish" },
+            {"salmon", "fish" },
         };
 
         string animalName = "";

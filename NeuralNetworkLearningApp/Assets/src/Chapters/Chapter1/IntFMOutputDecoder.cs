@@ -20,11 +20,13 @@ public class IntFMOutputDecoder : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             int value = (int)input.GetValue();
-            
+            if (value != 0 )
+            {
+                GameObject charPrefab = dataPrefabHolder.GetDataPrefabForType(typeof(char));
+                GameObject charInput = Instantiate(charPrefab, transform.position, Quaternion.identity);
+                charInput.GetComponentInChildren<TextMesh>().text = ((char)(value + 96)).ToString();    
+            }
 
-            GameObject charPrefab = dataPrefabHolder.GetDataPrefabForType(typeof(char));
-            GameObject charInput = Instantiate(charPrefab, transform.position, Quaternion.identity);
-            charInput.GetComponentInChildren<TextMesh>().text = ((char)(value + 96)).ToString();
             if (decodedEvent != null)
             {
                 decodedEvent();

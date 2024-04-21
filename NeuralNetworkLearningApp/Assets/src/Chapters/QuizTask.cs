@@ -57,7 +57,6 @@ public class QuizTask : Task
 
     public void Next()
     {
-        GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.QUIZES_SOLVED, 1);
         gameObject.SetActive(false);
         TaskFinished();
     }

@@ -17,6 +17,7 @@ public class LoadSceneInteraction : Interaction
     protected override void Start()
     {
         base.Start();
+        // start is also called when returning to the world from a task
         CheckTaskAndChapterCompletion();
     }
 
@@ -47,6 +48,11 @@ public class LoadSceneInteraction : Interaction
                 {
                     return;
                 }
+            }
+
+            int chapter = int.Parse(sceneToLoad.Replace("Task", "").Split(".")[0]);
+            if (!Progress.IsChapterCompleted(chapter)) {
+                Progress.CompleteChapter(chapter);
             }
 
             foreach (GameObject vehicle in chapterCompletionVehicles)

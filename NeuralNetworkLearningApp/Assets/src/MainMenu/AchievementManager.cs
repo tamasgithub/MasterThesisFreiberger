@@ -17,18 +17,22 @@ public class AchievementManager : MonoBehaviour
         requirements = new Dictionary<AchievementReqType, float>();
         initRequirements();
         // some test requirements
-        achievementList.Add(new Achievement("First quiz solved", "Answer a quiz correctly.",
-            (object o) => requirements[AchievementReqType.QUIZES_SOLVED] > 0));
-        achievementList.Add(new Achievement("First chapter completed", "Complete a chapter.",
+        achievementList.Add(new Achievement("First chapter completed", "Complete all tasks of any chapter.",
             (object o) => requirements[AchievementReqType.CHAPTERS_COMPLETED] > 0));
-        achievementList.Add(new Achievement("First task completed", "Complete a task.",
+        achievementList.Add(new Achievement("First task completed", "Complete a task of any chapter.",
             (object o) => requirements[AchievementReqType.TASKS_COMPLETED] > 0));
         achievementList.Add(new Achievement("First connection", "Connect two nodes of a network with an edge by hand.", 
             (object o) => requirements[AchievementReqType.MANUAL_CONNECTIONS] > 0));
-        achievementList.Add(new Achievement("Large layer", "Create a layer with at least 5 nodes.",
-            (object o) => requirements[AchievementReqType.MAX_NODES_IN_LAYER] >= 5));
+        achievementList.Add(new Achievement("Large layer", "Create a layer with at least 4 nodes.",
+            (object o) => requirements[AchievementReqType.MAX_NODES_IN_LAYER] >= 4));
         achievementList.Add(new Achievement("Deep network", "Create a network with at least 5 layers.",
             (object o) => requirements[AchievementReqType.MAX_LAYERS_IN_NETWORK] >= 5));
+        achievementList.Add(new Achievement("Nice view", "Visit 3 different viewing platforms.",
+            (object o) => requirements[AchievementReqType.VISITED_VIEWING_PLATFORMS] >= 3));
+        achievementList.Add(new Achievement("Not all hot air", "Travel from chapter 1 to 2 or back 3 times.",
+            (object o) => requirements[AchievementReqType.TRAVELED_BY_BALLOON] >= 3));
+        achievementList.Add(new Achievement("Train lover", "Travel from chapter 2 to 3 or back 5 times.",
+            (object o) => requirements[AchievementReqType.TRAVELED_BY_TRAIN] >= 5));
 
     }
 
