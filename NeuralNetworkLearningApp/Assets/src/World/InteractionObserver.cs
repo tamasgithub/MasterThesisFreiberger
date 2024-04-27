@@ -5,6 +5,7 @@ using UnityEngine;
 public class InteractionObserver : MonoBehaviour
 {
     private List<Interaction> subscribers;
+    private Interaction interactionWithVisibleUI;
 
 
     public void Subscribe(Interaction interaction)
@@ -16,7 +17,6 @@ public class InteractionObserver : MonoBehaviour
         if (!subscribers.Contains(interaction))
         {
             subscribers.Add(interaction);
-            print("interaction subscribed");
         }
         
     }
@@ -46,19 +46,25 @@ public class InteractionObserver : MonoBehaviour
                 minDistanceInteraction = interaction;
             }
         }
+
         transform.GetChild(0).gameObject.SetActive(minDistance < minDistanceInteraction.GetRange());
+
         
         if (minDistance < minDistanceInteraction.GetRange())
         {
-            minDistanceInteraction.DisplayUIToInteract();
-        }
-        foreach (Interaction interaction in subscribers)
-        {
-            if (interaction == minDistanceInteraction)
+            if (interactionWithVisibleUI != minDistanceInteraction && interactionWithVisibleUI != null)
             {
-                continue;
+                interactionWithVisibleUI.RemoveUIToInteract();
+                print("removing interaction UI from " + interactionWithVisibleUI);
+                print("adding interaction UI (every frame) to " + minDistanceInteraction);
             }
-            interaction.RemoveUIToInteract();
+            
+            minDistanceInteraction.DisplayUIToInteract();
+            interactionWithVisibleUI = minDistanceInteraction;
+
         }
+        
+            
+        
     }
 }

@@ -23,7 +23,7 @@ public class FMHandle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetComponent<Collider2D>().enabled = !machine.gearsTurning;
+        GetComponent<Collider2D>().enabled = !machine.AreGearsTurning();
      
         if (rotating)
         {

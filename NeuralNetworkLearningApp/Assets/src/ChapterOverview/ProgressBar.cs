@@ -5,9 +5,18 @@ using UnityEngine.UI;
 
 public class ProgressBar : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject[] checkmarks;
 
     private void Start()
     {
-        transform.GetChild(0).GetComponent<RectTransform>().localScale = new Vector3(Progress.GetCompletedChaptersCount(), 1, 0);
+        for (int i = 0; i < checkmarks.Length; i++) {
+            if (Progress.IsChapterCompleted(i+1))
+            {
+                checkmarks[i].SetActive(true);
+                transform.GetChild(0).GetComponent<RectTransform>().localScale += Vector3.right;
+            }    
+        }
+        
     }
 }

@@ -95,6 +95,15 @@ public class DecisionBoundary : MonoBehaviour
         }
     }
 
+    public Vector2 GetDirectionVector()
+    {
+        return (secondAnchor - firstAnchor).normalized;
+    }
+
+    public Vector2 GetFirstAnchor() {
+        return firstAnchor;
+    }
+
     public float[] GetCoefficients()
     {
         return coeffs;

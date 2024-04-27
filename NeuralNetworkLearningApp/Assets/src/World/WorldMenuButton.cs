@@ -9,7 +9,7 @@ public class WorldMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
 {
     public Text label;
     public string description;
-    
+
     public void Resume()
     {
         GameObject.Find("Player").GetComponent<PlayerControl>().ToggleMenu();
@@ -21,7 +21,7 @@ public class WorldMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void ExitToDesktop()
     {
-        Application.Quit();
+            Application.Quit();
     }
 
     public void OnPointerExit(PointerEventData eventData)

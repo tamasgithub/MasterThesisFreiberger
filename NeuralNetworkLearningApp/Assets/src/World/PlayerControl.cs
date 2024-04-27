@@ -15,10 +15,10 @@ public class PlayerControl : MonoBehaviour
     public float speedV = 1.0f;
     public GameObject menu;
     public GameObject controlsUI;
+    [SerializeField]
+    private VehicleControlUI vehicleControlUI;
     private float yaw = 0.0f;
     private float pitch = 0.0f;
-    // mouse locked means camera moves with hidden mouse
-    private bool mouseLocked = true;
     private Transform walkingArea;
     private TerrainData terrainData;
     private const string PLAYER_POS = "playerPos";
@@ -26,6 +26,7 @@ public class PlayerControl : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         terrainData = Terrain.activeTerrain.terrainData;
         
         if (StaticData.Get<Vector3>(PLAYER_POS) != Vector3.zero)
@@ -48,7 +49,7 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         Move();
-        if (mouseLocked)
+        if (Cursor.lockState == CursorLockMode.Locked)
         {
             LookAtMouse();
         }
@@ -62,7 +63,6 @@ public class PlayerControl : MonoBehaviour
         }
         StaticData.Set(PLAYER_POS, transform.position);
         StaticData.Set(PLAYER_ROT, transform.eulerAngles);
-        //print(StaticData.playerTransform.position);
     }
 
     private void Move()
@@ -125,8 +125,7 @@ public class PlayerControl : MonoBehaviour
     {
         bool menuActive = menu.activeSelf;
         menu.SetActive(!menuActive);
-        Cursor.visible = !menuActive;
-        this.mouseLocked = menuActive;
+        Cursor.lockState = menuActive ? CursorLockMode.Locked : CursorLockMode.None;
     }
 
     public void ToggleControlsUI()

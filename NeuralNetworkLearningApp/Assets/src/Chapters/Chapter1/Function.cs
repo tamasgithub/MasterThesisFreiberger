@@ -123,21 +123,22 @@ public static class FunctionDetails
         {
             mappedClass = 0;
         }
-        else if (features[1])
+        else if (features[3])
+        {
+            mappedClass = 2;
+        }
+        else if (!features[1]) {
+            mappedClass = 4;
+        }
+        else
         {
             if (features[2])
             {
                 mappedClass = 1;
-            } else if (features[3])
-            {
-                mappedClass = 2;
             } else
             {
                 mappedClass = 3;
             }
-        } else
-        {
-            mappedClass = 4;
         }
         object[] encodedClass = new object[] { 0, 0, 0, 0, 0 };
         encodedClass[mappedClass] = 1;

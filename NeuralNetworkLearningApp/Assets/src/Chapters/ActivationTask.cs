@@ -36,7 +36,7 @@ public class ActivationTask: Task
             }
             if (activateAllBehavioursOfTypes)
             {
-                print(Resources.FindObjectsOfTypeAll(behaviour.GetType()).Length);
+                // need Resources.Find..All to activate deactivated ones
                 foreach(Behaviour sameTypedBehaviour in Resources.FindObjectsOfTypeAll(behaviour.GetType())) {
                     sameTypedBehaviour.enabled = true;
                     if (enableBehaviourGOs)
@@ -55,7 +55,8 @@ public class ActivationTask: Task
             }
             if (deactivateAllBehavioursOfTypes)
             {
-                foreach (Behaviour sameTypedBehaviour in Resources.FindObjectsOfTypeAll(behaviour.GetType()))
+                // don't use Resources.Find..All !!! bc it disables stuff in prefabs
+                foreach (Behaviour sameTypedBehaviour in GameObject.FindObjectsOfType(behaviour.GetType()))
                 {
                     sameTypedBehaviour.enabled = false;
                     if (disableBehaviourGOs)

@@ -75,6 +75,12 @@ public class Layer : MonoBehaviour
                 nodes[i].FullyConnect();
             } 
         }
+
+        AchievementManager achManager = GameObject.Find("AchievementManager").GetComponent<AchievementManager>();
+        if (achManager.GetRequirement(AchievementReqType.MAX_NODES_IN_LAYER) < size)
+        {
+            achManager.SetRequirement(AchievementReqType.MAX_NODES_IN_LAYER, size);
+        }
     }
 
     public void SetNodesIncomingSizes(int size)

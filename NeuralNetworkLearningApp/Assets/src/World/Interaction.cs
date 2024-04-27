@@ -8,17 +8,23 @@ using UnityEngine.UI;
 public abstract class Interaction : MonoBehaviour
 {
     protected Transform player;
-    public KeyCode keyToInteract;
-    public string interactionInfo;
-    public float interanctionRange = 3f;
-    public Vector3 interactUIOffset;
+    [SerializeField]
+    private KeyCode keyToInteract;
+    [SerializeField]
+    private string interactionInfo;
+    [SerializeField]
+    private float interactionRange = 3f;
+    [SerializeField]
+    private Vector3 interactUIOffset;
     protected Camera cam;
     protected Transform interactUI;
+    
 
     // not interactable in general, but in the sense of "could interaction in this exact frame trigger
     // on this object because this is the closest Interaction holding gameobject in the scene
     // that is subscribed to InteractionObserver"
-    private bool interactable = false;
+    protected bool interactable = false;
+    protected bool interacting = false;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -31,7 +37,12 @@ public abstract class Interaction : MonoBehaviour
 
     private void OnDisable()
     {
-        interactUI.GetComponent<InteractionObserver>().Unsubscribe(this);
+        if (interactUI != null && interactUI.GetComponent<InteractionObserver>() != null)
+        {
+            interactUI.GetComponent<InteractionObserver>().Unsubscribe(this);
+        }
+        
+        RemoveUIToInteract();
     }
 
     protected virtual void Start()
@@ -46,25 +57,33 @@ public abstract class Interaction : MonoBehaviour
         if (interactable && Input.GetKeyDown(keyToInteract))
         {
             StartInteraction();
-        }   
+        }
+        if (interacting && Vector3.Distance(transform.position, player.position) > interactionRange)
+        {
+            StopInteraction();
+        }
     }
 
     
 
     public float GetDistanceFromPlayer()
     {
+        if (!this.enabled || player == null)
+        {
+            return float.PositiveInfinity;
+        }
         return Vector3.Distance(player.position, transform.position);
     }
 
-    public void DisplayUIToInteract()
+    public virtual void DisplayUIToInteract()
     {
-        //Vector3 localPos = player.TransformPoint(transform.position - player.position + interactUIOffset);
         interactUI.position = cam.WorldToScreenPoint(transform.position + player.TransformDirection(interactUIOffset));
-        interactUI.GetComponentInChildren<Text>().text = keyToInteract.ToString() + interactionInfo;
+        interactUI.GetComponentsInChildren<Text>()[0].text = keyToInteract.ToString();
+        interactUI.GetComponentsInChildren<Text>()[1].text = interactionInfo;
         interactable = true;
     }
 
-    public void RemoveUIToInteract()
+    public virtual void RemoveUIToInteract()
     {
         interactable = false;
     }
@@ -75,6 +94,6 @@ public abstract class Interaction : MonoBehaviour
 
     public float GetRange()
     {
-        return interanctionRange;
+        return interactionRange;
     }
 }

@@ -57,7 +57,10 @@ public class FMProcessInputsTask : FMTask
         base.StartTask();
         foreach (FMInput input in inputs)
         {
-            input.gameObject.SetActive(true);
+            if (input != null)
+            {
+                input.gameObject.SetActive(true);
+            }
         }
         outputBuckets.SetActive(true);
         foreach (FunctionMachine machine in machines)

@@ -21,18 +21,21 @@ public class FMImageDisplay : MonoBehaviour
         for (int i = 0; i < inputs; i++)
         {
             GameObject hole = new GameObject("inputHole" + i);
+            
             hole.AddComponent<SpriteRenderer>().sprite = fmHole;
             Vector3 position = network.transform.position;
             position.z = 5;
             position.y = (- (inputs - 1) / 2f + i) * nodeDist;
             hole.transform.position = position;
             hole.transform.eulerAngles = new Vector3(0, 0, 90);
-            hole.transform.localScale = new Vector3(0.2f, 0.25f, 1f); 
+            hole.transform.localScale = new Vector3(0.2f, 0.25f, 1f);
+            hole.transform.parent = transform;
         }
 
         for (int i = 0; i < outputs; i++)
         {
             GameObject hole = new GameObject("inputHole" + i);
+            
             hole.AddComponent<SpriteRenderer>().sprite = fmHole;
             Vector3 position = network.transform.position;
             position.z = 5;
@@ -41,6 +44,7 @@ public class FMImageDisplay : MonoBehaviour
             hole.transform.position = position;
             hole.transform.eulerAngles = new Vector3(0, 0, -90);
             hole.transform.localScale = new Vector3(0.2f, 0.25f, 1f);
+            hole.transform.parent = transform;
         }
     }
 

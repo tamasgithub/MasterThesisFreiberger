@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class FunctionMachine : MonoBehaviour
 {
-    public bool gearsTurning = true;
-    public Transform[] gears = new Transform[3];
-    public GameObject[] outputHoles;
-    public Function function;
-    public bool outputDecodable = false;
+    [SerializeField]
+    private bool gearsTurning = true;
+    [SerializeField]
+    private Transform[] gears = new Transform[3];
+    [SerializeField]
+    private GameObject[] outputHoles;
+    [SerializeField]
+    private Function function;
+    [SerializeField]
+    private bool outputDecodable = false;
+    [SerializeField]
+    private bool outputVolatile = false;
 
     // events the FM fires
     public event Action hoverEvent;
@@ -72,6 +79,11 @@ public class FunctionMachine : MonoBehaviour
         gearsRotatedThisFrame = 0;
     }
 
+    public bool AreGearsTurning()
+    {
+        return gearsTurning;
+    }
+
     public void RotateGears(float angle)
     {
 
@@ -111,7 +123,7 @@ public class FunctionMachine : MonoBehaviour
         {
             object[] outputValues = FunctionDetails.GetImplementation(function)(inputValues);
             StartCoroutine(CreateOutputs(outputValues));
-        } catch (Exception ex)
+        } catch
         {
             if (failedToPrecessInputsEvent != null)
             {
@@ -149,6 +161,10 @@ public class FunctionMachine : MonoBehaviour
             if (outputType == typeof(int) && outputDecodable)
             {
                 outputData.AddComponent<IntFMOutputDecoder>();
+            }
+            if (outputVolatile)
+            {
+                outputData.AddComponent<FMVolatileOutput>();
             }
         }
         if (inputsProcessedEvent != null)

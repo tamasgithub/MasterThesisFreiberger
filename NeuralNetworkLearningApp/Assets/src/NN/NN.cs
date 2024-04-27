@@ -29,7 +29,7 @@ public class NN : MonoBehaviour
     // events fired by the NN
     public event Action edgeHovered;
     public event Action nodeHovered;
-    // sending info about which one or to what not needed atm
+    // TODO: sending info about which one or to what, not needed atm
     public event Action nodeValueChanged;
     public event Action nodeBiasChanged;
     public event Action edgeWeightChanged;
@@ -288,6 +288,12 @@ public class NN : MonoBehaviour
             }
         }
         numLayers = layerCount;
+
+        AchievementManager achManager = GameObject.Find("AchievementManager").GetComponent<AchievementManager>();
+        if (achManager.GetRequirement(AchievementReqType.MAX_LAYERS_IN_NETWORK) < layerCount)
+        {
+            achManager.SetRequirement(AchievementReqType.MAX_LAYERS_IN_NETWORK, layerCount);
+        }
     }
 
     private void PositionLayer(int i)

@@ -21,10 +21,7 @@ public class StringFMInputSplitter : MonoBehaviour
             string value = (string)input.GetValue();
             Type remainingType = value.Length > 2 ? typeof(string) : typeof(char);
             Destroy(gameObject);
-            GameObject firstCharPrefab = dataPrefabHolder.GetDataPrefabForType(typeof(char));
-            GameObject firstChar = Instantiate(firstCharPrefab, transform.position + Vector3.left * 0.1f, Quaternion.identity);
-            /*
-            
+            GameObject firstCharPrefab = dataPrefabHolder.GetDataPrefabForType(typeof(char)); 
             GameObject firstChar = Instantiate(firstCharPrefab, transform.position + Vector3.left * 0.1f, Quaternion.identity);
             
             firstChar.GetComponentInChildren<TextMesh>().text = value[0].ToString();
@@ -40,7 +37,7 @@ public class StringFMInputSplitter : MonoBehaviour
                 remainder.AddComponent<CharFMInputEncoder>();
             }
             Destroy(gameObject);
-*/
+
         }
     }
 

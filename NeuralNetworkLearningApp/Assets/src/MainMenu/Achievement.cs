@@ -25,8 +25,17 @@ public class Achievement
         return complete;
     }
 
+    public bool IsComplete()
+    {
+        return complete;
+    }
     public string GetTitle()
     {
         return title;
+    }
+
+    public string GetInstruction()
+    {
+        return instruction;
     }
 }

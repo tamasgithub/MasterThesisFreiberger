@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
-    public int chapterIndex = 0;
+    // for the tasks inside this task
     private int taskIndex = 0;
     //private Dictionary<, GameObject> instructions;
     
@@ -22,7 +22,6 @@ public class TaskManager : MonoBehaviour
             {
                 GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.TASKS_COMPLETED, 1);
             }
-            //SceneManager.LoadScene("World");
         }
     }
     
@@ -33,7 +32,7 @@ public class TaskManager : MonoBehaviour
         transform.GetChild(0).GetComponent<Task>().StartTask();
     }
 
-    public void BackToChapterOverview()
+    public void BackToWorld()
     {
         SceneManager.LoadScene("World");
     }

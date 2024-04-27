@@ -435,6 +435,10 @@ MonoBehaviour:
   - {fileID: 646970147}
   behavioursToActivate: []
   behavioursToDeactivate: []
+  activateAllBehavioursOfTypes: 0
+  deactivateAllBehavioursOfTypes: 0
+  enableBehaviourGOs: 0
+  disableBehaviourGOs: 0
 --- !u!1 &44781111
 GameObject:
   m_ObjectHideFlags: 0
@@ -6125,8 +6129,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1764654098}
-        m_TargetAssemblyTypeName: ChapterManager, Assembly-CSharp
-        m_MethodName: BackToChapterOverview
+        m_TargetAssemblyTypeName: TaskManager, Assembly-CSharp
+        m_MethodName: BackToWorld
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10539,6 +10543,10 @@ MonoBehaviour:
   objectsToDeactivate: []
   behavioursToActivate: []
   behavioursToDeactivate: []
+  activateAllBehavioursOfTypes: 0
+  deactivateAllBehavioursOfTypes: 0
+  enableBehaviourGOs: 0
+  disableBehaviourGOs: 0
 --- !u!1 &1144469630
 GameObject:
   m_ObjectHideFlags: 0
@@ -10600,6 +10608,10 @@ MonoBehaviour:
   - {fileID: 480689173}
   behavioursToActivate: []
   behavioursToDeactivate: []
+  activateAllBehavioursOfTypes: 0
+  deactivateAllBehavioursOfTypes: 0
+  enableBehaviourGOs: 0
+  disableBehaviourGOs: 0
 --- !u!1 &1166874589
 GameObject:
   m_ObjectHideFlags: 0
@@ -14581,6 +14593,10 @@ MonoBehaviour:
   objectsToDeactivate: []
   behavioursToActivate: []
   behavioursToDeactivate: []
+  activateAllBehavioursOfTypes: 0
+  deactivateAllBehavioursOfTypes: 0
+  enableBehaviourGOs: 0
+  disableBehaviourGOs: 0
 --- !u!1 &1758167340
 GameObject:
   m_ObjectHideFlags: 0
@@ -15067,10 +15083,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -15136,7 +15152,7 @@ GameObject:
   - component: {fileID: 1764654099}
   - component: {fileID: 1764654098}
   m_Layer: 0
-  m_Name: ChapterManager
+  m_Name: TaskManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16236,6 +16252,10 @@ MonoBehaviour:
   objectsToDeactivate: []
   behavioursToActivate: []
   behavioursToDeactivate: []
+  activateAllBehavioursOfTypes: 0
+  deactivateAllBehavioursOfTypes: 0
+  enableBehaviourGOs: 0
+  disableBehaviourGOs: 0
 --- !u!224 &1906941323 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6466233018966496251, guid: 079a9a07e845c4d488a79e174e854dec, type: 3}

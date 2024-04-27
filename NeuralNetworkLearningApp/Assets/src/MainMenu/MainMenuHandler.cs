@@ -10,6 +10,11 @@ public class MainMenuHandler : MonoBehaviour
     public GameObject achievementsPanel;
     public GameObject settingsPanel;
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
+
     public void OpenChapters()
     {
         SceneManager.LoadSceneAsync("ChaptersOverview");

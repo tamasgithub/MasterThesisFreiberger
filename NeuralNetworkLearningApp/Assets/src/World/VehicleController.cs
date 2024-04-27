@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public abstract class VehicleController : MonoBehaviour
@@ -9,11 +10,20 @@ public abstract class VehicleController : MonoBehaviour
     public event Action startEvent;
 
     protected int direction = -1;
-    public float haltingTime = 5f;
+    [SerializeField]
+    private float haltingTime = 5f;
     private float remainingHaltingTime;
-    public float speed = 1;
+    [SerializeField]
+    private float speed = 1;
     private bool halting = true;
     private float progress = 0;
+    [SerializeField]
+    private KeyCode speedUpKey = KeyCode.X;
+    [SerializeField]
+    private KeyCode startTravelKey = KeyCode.Y;
+    [SerializeField]
+    private int speedUpMulti = 5;
+
     // Start is called before the first frame update
 
     protected virtual void Start()
@@ -33,9 +43,15 @@ public abstract class VehicleController : MonoBehaviour
     {
         if (halting)
         {
+            if (Input.GetKey(startTravelKey))
+            {
+                remainingHaltingTime = 0;
+            }
             return;
         }
-        progress += Time.deltaTime * speed * direction;
+        
+        int speedUp = Input.GetKey(speedUpKey) ? speedUpMulti : 1;
+        progress += Time.deltaTime * speed * direction * speedUp; ;
         if (progress < 0 || progress >= 1)
         {
             // reset the track progress to last frame's value so that the wagons reading the value
@@ -53,6 +69,11 @@ public abstract class VehicleController : MonoBehaviour
         ProgressTo(progress);
     }
 
+    public bool IsPlayerInside()
+    {
+        return transform.GetChild(0).GetChild(transform.GetChild(0).childCount - 1).childCount > 1;
+    }
+
     protected virtual void ProgressTo(float progress)
     {
         return;
@@ -62,14 +83,12 @@ public abstract class VehicleController : MonoBehaviour
     {
         while (remainingHaltingTime > 0)
         {
-            print(remainingHaltingTime);
             remainingHaltingTime -= Time.deltaTime;
             yield return null;
         }
         remainingHaltingTime = haltingTime;
         halting = false;
         direction *= -1;
-        print(direction);
         if (startEvent != null)
         {
             startEvent();
@@ -77,10 +96,16 @@ public abstract class VehicleController : MonoBehaviour
         
     }
 
+    public float GetRemainingHaltingTime()
+    {
+        return remainingHaltingTime;
+    }
+
     public float GetProgress()
     {
         return progress;
     }
+
     protected void SetProgress(float progress)
     {
         this.progress = progress;

@@ -9,14 +9,8 @@ public class SpeechBubbleTask: Task, IPointerDownHandler
     public int removedAfterFinishedTasks;
     private int siblingIndex;
 
-    private void Start()
-    {
-        print("start with sibling index " + transform.GetSiblingIndex());
-    }
-
     public override void StartTask()
     {
-        print("starttask with sibling index " + transform.GetSiblingIndex());
         if (!clickRequiredToFinish)
         {
             TaskFinished();

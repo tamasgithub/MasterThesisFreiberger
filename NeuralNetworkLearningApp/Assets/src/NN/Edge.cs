@@ -142,6 +142,7 @@ public class Edge : MonoBehaviour
         // TODO: maybe sort inside the hierarchy
         leftNode.SetOutgoingEdge(this, rightNode.GetNodeIndex());
         rightNode.SetIncomingEdge(this, leftNode.GetNodeIndex());
+        GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.MANUAL_CONNECTIONS, 1);
     }
 
     public void SetColorEdges(bool colorEdges)

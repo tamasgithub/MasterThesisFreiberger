@@ -304,22 +304,30 @@ public class CoordinateSystem : MonoBehaviour
         return transform.InverseTransformPoint(Camera.main.ScreenToWorldPoint(screenPoint));
     }
 
-    private void FindClosestDecisionBoundary(Vector3 systemPos)
+    private void FindClosestDecisionBoundary(Vector2 systemPos)
     {
         float closestDistance = float.PositiveInfinity;
         DecisionBoundary closest = null;
         foreach (DecisionBoundary boundary in decisionBoundaries)
         {
-            float[] coefficients = boundary.GetCoefficients();
-            if (coefficients.Length != 3)
+            float distance;
+            // check for "wrong" side of the line
+            if (Vector2.Dot(boundary.GetDirectionVector(), systemPos - boundary.GetFirstAnchor()) < 0)
             {
-                Debug.LogError("Dimension other than 2 not supported.");
-                return;
+                distance = Vector2.Distance(boundary.GetFirstAnchor() + boundary.GetDirectionVector(), systemPos);
+            } else {
+
+                float[] coefficients = boundary.GetCoefficients();
+                if (coefficients.Length != 3)
+                {
+                    Debug.LogError("Dimension other than 2 not supported.");
+                    return;
+                }
+                // the coefficients should already be normalized but doesn't hurt to make sure
+                float normalizationFactor = new Vector2(coefficients[0], coefficients[1]).magnitude;
+                Vector3 coefficientVector = ArrayAsVector3(coefficients);
+                distance = Mathf.Abs((Vector3.Dot(coefficientVector, systemPos) + coefficients[coefficients.Length - 1]) / normalizationFactor);
             }
-            // the coefficients should already be normalized but doesn't hurt to make sure
-            float normalizationFactor = new Vector2(coefficients[0], coefficients[1]).magnitude;
-            Vector3 coefficientVector = ArrayAsVector3(coefficients);
-            float distance = Mathf.Abs((Vector3.Dot(coefficientVector, systemPos) + coefficients[coefficients.Length - 1]) / normalizationFactor);
             if (distance < closestDistance)
             {
                 closest = boundary;
