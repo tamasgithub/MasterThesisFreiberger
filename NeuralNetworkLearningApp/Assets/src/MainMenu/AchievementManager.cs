@@ -136,9 +136,9 @@ public class AchievementManager : MonoBehaviour
     IEnumerator ShowAchievementPopup(GameObject popup)
     {
         RectTransform rect = popup.GetComponent<RectTransform>();
-        while (rect.anchoredPosition.y < 150)
+        while (rect.anchoredPosition.y > -150)
         {
-            rect.anchoredPosition += Vector2.up * Time.deltaTime * 100;
+            rect.anchoredPosition += Vector2.down * Time.deltaTime * 100;
             yield return null;
         }
         float upTime = Time.time;
@@ -146,9 +146,9 @@ public class AchievementManager : MonoBehaviour
         {
             yield return null;
         }
-        while (rect.anchoredPosition.y > 0)
+        while (rect.anchoredPosition.y < 0)
         {
-            rect.anchoredPosition += Vector2.down * Time.deltaTime * 100;
+            rect.anchoredPosition += Vector2.up * Time.deltaTime * 100;
             yield return null;
         }
     }

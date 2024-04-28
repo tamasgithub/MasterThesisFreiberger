@@ -2806,7 +2806,7 @@ PrefabInstance:
 
         inputs together.
 
-        Short: f(x,  y) = x+y'
+        Short: f(x, y) = x+y'
       objectReference: {fileID: 0}
     - target: {fileID: 4293985437752406675, guid: dd2669104c2c78c4d9b5a9dd852581ce, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4383,7 +4383,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c415bc49a14622428ca6923f348af2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapterIndex: 2
 --- !u!224 &1764654099
 RectTransform:
   m_ObjectHideFlags: 0

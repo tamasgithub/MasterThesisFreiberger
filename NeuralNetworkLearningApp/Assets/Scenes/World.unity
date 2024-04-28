@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: e1036c4e063c9994fa5f1a7bee7259c6, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 171032a6e8681e64d986499d8e633a7c, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -394,15 +394,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 45528144}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 968.38, y: 0, z: 944.02}
+  m_LocalRotation: {x: 0, y: -0.99083054, z: 0, w: 0.13511062}
+  m_LocalPosition: {x: 967.85, y: 0.6, z: 944.02}
   m_LocalScale: {x: 1, y: 1.05, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 379308632}
   m_Father: {fileID: 559621471}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 635.4, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 555.53, z: 0}
 --- !u!136 &45528147
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -7373,7 +7373,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1613727108}
   m_OnClick:
     m_PersistentCalls:

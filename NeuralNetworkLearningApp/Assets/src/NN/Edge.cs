@@ -59,10 +59,12 @@ public class Edge : MonoBehaviour
             
             if (Input.GetMouseButtonDown(1) && editingEnabled)
             {
+                print("editing edge");
                 // right click
                 RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
                 if (hit.collider != null && hit.collider.gameObject == gameObject)
                 {
+                    print("ray hit");
                     if (hoverLabel != null)
                     {
                         Destroy(hoverLabel);
@@ -82,7 +84,6 @@ public class Edge : MonoBehaviour
                     input = editor.GetComponentInChildren<InputField>();
                     input.Select();
                     input.SetTextWithoutNotify(weight.ToString("0.00"));
-                    // how to fucus? input.MoveTextStart(true);
                 }
             }
             if (hoverLabel != null)

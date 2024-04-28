@@ -31,10 +31,10 @@ public class TalkInteraction : Interaction
                 "me estimate the weight limit of my balloons.",
                 "I practised with my function machines that you can see here.\n" +
                 "But I just can't get it right.",
-                "If you would do the tasks too, maybe I could learn a thing\n" +
-                "or too by looking over your shoulder.",
-                "It would also benefit you in your quest, as Neural Networks\n" +
-                "are also just functions.",
+                "If you would do the tasks too, maybe I could learn\n" +
+                "a thing or too by looking over your shoulder.",
+                "It would also benefit you in your quest, as\n" +
+                "Neural Networks are also just functions.",
                 "However, these functions convert inputs into outputs in\n" +
                 "higher dimensions, if you are not familiar, then the\n" +
                 "tasks will help you a lot!",
@@ -56,21 +56,26 @@ public class TalkInteraction : Interaction
         new string[][] // texts of Bob
         {
             new string[] { "Greetings! I'm Bob, the train driver along these tracks.",
-                "You want to go higher? You are not the only one! But the coal and" +
-                "\nthe gravel rocks got mixed together. No idea how that happened.",
-                "I am doing my best to separate them so that my old steam locomotive" +
-                "\ncan be on her way again, but I have a hard time telling them apart.",
+                "You want to go higher? You are not the only one!",
+                "But the coal and the gravel rocks got mixed together.\n" +
+                "No idea how that happened.",
+                "I am doing my best to separate them so that my old" +
+                "steam locomotive can be on her way again, but I\n" +
+                "have a hard time telling them apart.",
                 "You can help me with that. In the end, classifying objects\n" +
                 "is one of the most common use cases for Neural Networks.",
-                "If you make yourself familiar with the problem, you will understand" +
-                "\nbetter why and how Neural Networks can solve it.",
+                "If you make yourself familiar with the problem, you will\n" +
+                "understand better why and how Neural Networks can solve it.",
                 "Come back when you have separated enough coal for me." },
-            new string[] { "Great! with this much coal, we can make it to the next station.\n" +
-                "Which is the only other station, the terrain gets too steep afterwards.",
-                "What is that face? You thought I'll take you all the way to the top?",
-                "You have to earn things like that. Like in my younger days...\n" +
-                "Ah you wouldn't understand.",
-                "Now get in, or I leave you here. Some of us have to make a living." }
+            new string[] { "Great! with this much coal, we can make it to the next\n" +
+                "station... which is the only other station to be honest.\n" +
+                "The terrain gets too steep afterwards.",
+                "What is that face? You thought I'll\n" +
+                "take you all the way to the top?",
+                "You have to earn things like that. Like in my\n" +
+                "younger days... Ah you wouldn't understand.",
+                "Now get in, or I leave you here,\n" +
+                "some of us have to make a living." }
         },
         new string[][] // texts of Charlie
         {
@@ -79,7 +84,7 @@ public class TalkInteraction : Interaction
                 "Seeking knowledge about Neural Networks?\n" +
                 "Well, you are in good company here.",
                 "You see, the structure of Neural Networks, the endless\n" +
-                "possibilites of connections, fascinates me,",
+                "possibilites of connections, fascinates me.",
                 "That's why in my spare time, I come to this spot and\n" +
                 "build networks for fun, while enjoying the amazing view.",
                 "If you'd like, I can show you everything I know.",

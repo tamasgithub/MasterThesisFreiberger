@@ -217,12 +217,18 @@ public class CoordinateSystem : MonoBehaviour
         return LocalToSystemPoint(ScreenToLocalPoint(screenPos));
     }
 
-    public void HighlightWronglyClassified()
+    public void ClearHighlights()
     {
-        foreach(GameObject highlight in highlights)
+        foreach (GameObject highlight in highlights)
         {
             Destroy(highlight);
         }
+        print("cleared highlights");
+    }
+
+    public void HighlightWronglyClassified()
+    {
+        ClearHighlights();
         highlights.Clear();
         if (data == null || data.Count == 0)
         {

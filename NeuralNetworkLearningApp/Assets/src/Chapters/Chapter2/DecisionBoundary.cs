@@ -73,7 +73,7 @@ public class DecisionBoundary : MonoBehaviour
     public void SetSecondAnchor(Vector2 anchor)
     {
         secondAnchor = anchor;  
-
+        print("first anchor " + firstAnchor + " second " + secondAnchor);
         // calculate the coefficients of the straight line a x1 + b x2 + c = 0 using the two given points
         Vector2 direction = secondAnchor - firstAnchor;
         Vector2 normal = new Vector2(-direction.y, direction.x).normalized;
@@ -149,6 +149,7 @@ public class DecisionBoundary : MonoBehaviour
             {
                 renderer.enabled = false;
             }
+            coordSys.ClearHighlights();
             return;
         }
 
@@ -191,10 +192,12 @@ public class DecisionBoundary : MonoBehaviour
         }
         if (Vector2.Distance(endPoint1, endPoint2) <= 0.00001f)
         {
+            print("too close");
             foreach (Renderer renderer in GetComponentsInChildren<SpriteRenderer>())
             {
                 renderer.enabled = false;
             }
+            coordSys.ClearHighlights();
             return;
         }
         endPoint1 = coordSys.SystemToLocalPoint(endPoint1);

@@ -172,6 +172,7 @@ public class Node : MonoBehaviour, IPointerDownHandler
             }
             edge.SetColorEdges(colorEdges);
             edge.SetHoveringEnabled(edgeHoveringEnabled);
+            edge.SetEditingEnabled(editingEnabled);
         }
         foreach (Edge edge in outgoingEdges) {
             if (edge == null)
@@ -180,6 +181,7 @@ public class Node : MonoBehaviour, IPointerDownHandler
             }
             edge.SetColorEdges(colorEdges);
             edge.SetHoveringEnabled(edgeHoveringEnabled);
+            edge.SetEditingEnabled(editingEnabled);
         }
         this.hoveringEnabled = nodeHoveringEnabled;
         if (hoverLabel != null)

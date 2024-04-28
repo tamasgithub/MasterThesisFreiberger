@@ -15170,7 +15170,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c415bc49a14622428ca6923f348af2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapterIndex: 2
 --- !u!224 &1764654099
 RectTransform:
   m_ObjectHideFlags: 0

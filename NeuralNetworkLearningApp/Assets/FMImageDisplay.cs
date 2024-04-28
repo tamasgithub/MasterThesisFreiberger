@@ -25,7 +25,7 @@ public class FMImageDisplay : MonoBehaviour
             hole.AddComponent<SpriteRenderer>().sprite = fmHole;
             Vector3 position = network.transform.position;
             position.z = 5;
-            position.y = (- (inputs - 1) / 2f + i) * nodeDist;
+            position.y = (- (inputs - 1) / 2f + i) * nodeDist + transform.position.y;
             hole.transform.position = position;
             hole.transform.eulerAngles = new Vector3(0, 0, 90);
             hole.transform.localScale = new Vector3(0.2f, 0.25f, 1f);
@@ -39,7 +39,7 @@ public class FMImageDisplay : MonoBehaviour
             hole.AddComponent<SpriteRenderer>().sprite = fmHole;
             Vector3 position = network.transform.position;
             position.z = 5;
-            position.y = (-(outputs - 1) / 2f + i) * nodeDist;
+            position.y = (-(outputs - 1) / 2f + i) * nodeDist + transform.position.y;
             position.x = (layerCount - 1) / 2f * layerDist;
             hole.transform.position = position;
             hole.transform.eulerAngles = new Vector3(0, 0, -90);

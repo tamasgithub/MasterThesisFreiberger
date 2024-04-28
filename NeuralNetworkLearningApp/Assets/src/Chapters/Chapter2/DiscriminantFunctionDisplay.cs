@@ -5,8 +5,11 @@ using UnityEngine.UI;
 
 public class DiscriminantFunctionDisplay : MonoBehaviour
 {
+    [SerializeField] 
     public DecisionBoundary decisionBoundary;
+    [SerializeField]
     public PlottableData stone;
+    [SerializeField]
     public NN network;
     public int boundaryIndex;
     private Text[] texts;
@@ -80,8 +83,8 @@ public class DiscriminantFunctionDisplay : MonoBehaviour
         coeffs = GetDecisionBoundaryCoeffsFromNN();
         float[] featureValues = GetInputValuesFromNN();
         if (inputFields.Length != featureValues.Length + 1) {
-            Debug.LogError("Dimensions don't match");
-            return;
+            //Dimensions don't match
+            coeffs = null;
         }
         if (coeffs == null)
         {
@@ -93,8 +96,14 @@ public class DiscriminantFunctionDisplay : MonoBehaviour
         {
             for (int i = 0; i < coeffs.Length; i++)
             {
-                string coeffString = coeffs[i].ToString("0.00");
-                texts[i].text = (i > 0 && char.IsDigit(coeffString[0])) ? "+" + coeffString : coeffString;
+                if (coeffs[i] == float.NaN)
+                {
+                    texts[i].text = "--";
+                } else
+                {
+                    string coeffString = coeffs[i].ToString("0.00");
+                    texts[i].text = (i > 0 && char.IsDigit(coeffString[0])) ? "+" + coeffString : coeffString;
+                }
             }
         }
         float result = 0f;
@@ -121,7 +130,15 @@ public class DiscriminantFunctionDisplay : MonoBehaviour
         coeffs = new float[network.GetLayerSize(0) + 1];
         for (int i = 0; i < coeffs.Length - 1; i++)
         {
-            coeffs[i] = network.GetEdgeWeight(0, i, boundaryIndex);
+            try
+            {
+                // throws NullReferenceException when edge doesn't exist
+                coeffs[i] = network.GetEdgeWeight(0, i, boundaryIndex);
+            } catch
+            {
+                coeffs[i] = float.NaN;
+            }
+            
         }
         coeffs[coeffs.Length - 1] = network.GetNodeBias(1, boundaryIndex);
         return coeffs;
