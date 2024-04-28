@@ -93,7 +93,8 @@ public class TalkInteraction : Interaction
             new string[] { "I'm afraid that's all I know. There is no way to get higher on\n" +
                 "the mountain so far. But I'm sure that changes in the near future!",
                 "If you already have at least a Bachelor's degreee, you can take\n" +
-                "the questionnair down below. Thank you for participating!"}
+                "the questionnair on the website below the game.\n" + 
+                "Thank you for participating!"}
         }
     };
 
