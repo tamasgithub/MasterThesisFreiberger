@@ -1934,7 +1934,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 144260980, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 144260983, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: player
@@ -2484,7 +2484,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &455650757
 Transform:
   m_ObjectHideFlags: 0
@@ -3435,7 +3435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &647350812
 Transform:
   m_ObjectHideFlags: 0
@@ -4375,6 +4375,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Alice
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d0b2aa8ad535938498ca3bbd82697549, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7976531564915063290, guid: d0b2aa8ad535938498ca3bbd82697549, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.16498272
+      objectReference: {fileID: 0}
+    - target: {fileID: 7976531564915063290, guid: d0b2aa8ad535938498ca3bbd82697549, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0103267785
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0b2aa8ad535938498ca3bbd82697549, type: 3}
 --- !u!1 &902458459
@@ -4537,7 +4549,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3354115785019695552, guid: 0edddb07f07924544bbb41cb2bab5ae5, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3354115785019695554, guid: 0edddb07f07924544bbb41cb2bab5ae5, type: 3}
       propertyPath: shortcut
@@ -5452,7 +5464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyToInteract: 101
-  interactionInfo: ' Get on'
+  interactionInfo: ' Get on/off'
   interactionRange: 3
   interactUIOffset: {x: 0, y: 1.5, z: 0}
   controller: {fileID: 1188088017}
@@ -7163,7 +7175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 144260980, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 144260983, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: player
@@ -7598,11 +7610,15 @@ PrefabInstance:
       objectReference: {fileID: 1465270013}
     - target: {fileID: 840450959070076203, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
       propertyPath: interactionInfo
-      value: ' Get in'
+      value: ' Get on/off'
       objectReference: {fileID: 0}
     - target: {fileID: 840450959070076203, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
       propertyPath: interactionRange
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 840450959070076203, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
+      propertyPath: interactUIOffset.y
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 840450959070076205, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
       propertyPath: m_RootOrder
@@ -8422,7 +8438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyToInteract: 101
-  interactionInfo: ' Get on'
+  interactionInfo: ' Get on/off'
   interactionRange: 3
   interactUIOffset: {x: 0, y: 1.5, z: 0}
   controller: {fileID: 1822331857}
@@ -8896,7 +8912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 144260980, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 144260983, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: player
@@ -9975,11 +9991,15 @@ PrefabInstance:
       objectReference: {fileID: 1937711001}
     - target: {fileID: 840450959070076203, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
       propertyPath: interactionInfo
-      value: ' Get in'
+      value: ' Get on/off'
       objectReference: {fileID: 0}
     - target: {fileID: 840450959070076203, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
       propertyPath: interactionRange
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 840450959070076203, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
+      propertyPath: interactUIOffset.y
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 840450959070076204, guid: 78adf7a5240b4a74daa59afe09b642df, type: 3}
       propertyPath: locController
@@ -10165,7 +10185,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3354115785019695552, guid: 0edddb07f07924544bbb41cb2bab5ae5, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3354115785019695554, guid: 0edddb07f07924544bbb41cb2bab5ae5, type: 3}
       propertyPath: shortcut
@@ -10235,7 +10255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 144260980, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 144260983, guid: 20e9bdbb94ee1ca4993aa2527a21e3c9, type: 3}
       propertyPath: player

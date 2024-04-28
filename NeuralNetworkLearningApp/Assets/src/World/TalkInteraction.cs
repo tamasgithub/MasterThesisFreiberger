@@ -90,8 +90,8 @@ public class TalkInteraction : Interaction
                 "If you'd like, I can show you everything I know.",
                 "Take a closer look at the networks that I've built\n" +
                 "at the clearing. I'll help you build your own!" },
-            new string[] { "I'm afraid that's all I know. There is no way to get higher on the\n" +
-                "mountain so far. But I'm sure that changes in the near future!",
+            new string[] { "I'm afraid that's all I know. There is no way to get higher on\n" +
+                "the mountain so far. But I'm sure that changes in the near future!",
                 "If you already have at least a Bachelor's degreee, you can take\n" +
                 "the questionnair down below. Thank you for participating!"}
         }
@@ -120,16 +120,8 @@ public class TalkInteraction : Interaction
     private void UpdateQuestState()
     {
         questState = StaticData.Get<int>(questStateKey + characterIndex);
-        if (questState > 0)
-        {
-            foreach (GameObject taskDescription in taskDescriptions)
-            {
-                taskDescription.SetActive(true);
-            }
-        }
-        CheckTaskCompletion();
 
-        
+        CheckTaskCompletion();
 
         int monologIndex = -1;
         for (int i = 0; i < allTexts[characterIndex].Length; i++)
@@ -145,6 +137,11 @@ public class TalkInteraction : Interaction
             }
         }
         sentences = allTexts[characterIndex][monologIndex];
+
+        foreach (GameObject taskDescription in taskDescriptions)
+        {
+            taskDescription.SetActive(questState > 0);
+        }
     }
 
     protected override void Update()
@@ -162,7 +159,6 @@ public class TalkInteraction : Interaction
         {
             if (exclamationMark.activeSelf)
             {
-                print("queststate++");
                 IncreaseQuestState();
                 exclamationMark.SetActive(false);
             }
@@ -186,19 +182,15 @@ public class TalkInteraction : Interaction
     private void CheckTaskCompletion()
     {
         questState = StaticData.Get<int>(questStateKey + characterIndex);
-        print("loaded quest state " + questState);
 
         if (questState == 0 || questState == 1)
         {
-            print("qs 0 1");
             bool anyTaskCompleted = false;
             foreach (LoadSceneInteraction loadScene in chapterEntryPoints.GetComponentsInChildren<LoadSceneInteraction>())
             {
-                print("any task comnpleted?");
                 if (Progress.IsTaskCompleted(loadScene.GetSceneToLoad()))
                 {
                     anyTaskCompleted = true;
-                    print("any task comnpleted");
                     break;
                 }
             }
@@ -206,7 +198,7 @@ public class TalkInteraction : Interaction
             {
                 if (questState == 0)
                 {
-                    IncreaseQuestState();
+                    questState++;
                 }
                 IncreaseQuestState();
             }
@@ -227,6 +219,10 @@ public class TalkInteraction : Interaction
                 IncreaseQuestState();
             }
         }
+        if (questState > talkQuests[talkQuests.Length - 1])
+        {
+            UnlockVehicles();
+        }
     }
     public int GetQuestState()
     {
@@ -237,7 +233,6 @@ public class TalkInteraction : Interaction
     {
         questState++;
         StaticData.Set(questStateKey + characterIndex, questState);
-        print("saved quest state " + questState);
 
         // assuming the last quest is always talking to the npc
         if (questState > talkQuests[talkQuests.Length - 1])
@@ -246,20 +241,25 @@ public class TalkInteraction : Interaction
             print("Chapter complete!");
             GameObject.Find("AchievementManager").GetComponent<AchievementManager>().IncreaseRequirement(AchievementReqType.CHAPTERS_COMPLETED, 1);
 
-            foreach (GameObject vehicle in chapterCompletionVehicles)
-            {
-                if (vehicle.GetComponent<VehicleController>() != null)
-                {
-                    vehicle.GetComponent<VehicleController>().enabled = true;
-                }
-                if (vehicle.GetComponent<Interaction>() != null)
-                {
-                    vehicle.GetComponent<Interaction>().enabled = true;
-                }
-            }
+            UnlockVehicles();
         } else
         {
             UpdateQuestState();
+        }
+    }
+
+    private void UnlockVehicles()
+    {
+        foreach (GameObject vehicle in chapterCompletionVehicles)
+        {
+            if (vehicle.GetComponent<VehicleController>() != null)
+            {
+                vehicle.GetComponent<VehicleController>().enabled = true;
+            }
+            if (vehicle.GetComponent<Interaction>() != null)
+            {
+                vehicle.GetComponent<Interaction>().enabled = true;
+            }
         }
     }
 }

@@ -116,8 +116,8 @@ public class AchievementManager : MonoBehaviour
         achievements.Add(new Achievement("Layering specialist", "Create a layer with at least 4 nodes.",
             (object o) => requirements[AchievementReqType.MAX_NODES_IN_LAYER] >= 4));
         //not possible atm
-        achievements.Add(new Achievement("Deep network user", "Create a network with at least 6 layers.",
-            (object o) => requirements[AchievementReqType.MAX_LAYERS_IN_NETWORK] >= 6));
+        /*achievements.Add(new Achievement("Deep network user", "Create a network with at least 6 layers.",
+            (object o) => requirements[AchievementReqType.MAX_LAYERS_IN_NETWORK] >= 6));*/
         /* Not yet implemented
         achievements.Add(new Achievement("Nice view", "Visit 3 different viewing platforms.",
             (object o) => requirements[AchievementReqType.VISITED_VIEWING_PLATFORMS] >= 3));
