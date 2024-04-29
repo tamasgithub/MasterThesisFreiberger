@@ -60,29 +60,6 @@ public static class Progress
         data.completedTasks = completedTasks;
         data.completedChapters = completedChapters;
         return JsonUtility.ToJson(data);
-        /*string result = "Chapters:";
-        foreach (int chapterId in completedChapters)
-        {
-            result += chapterId.ToString() + "-";
-        }
-        if (result[result.Length - 1] == '-')
-        {
-            result = result.Substring(0, result.Length - 1) + "_";
-        }
-        else
-        {
-            result += "_";
-        }
-        result += "Tasks:";
-        foreach (string task in completedTasks)
-        {
-            result += task + "-";
-        }
-        if (result[result.Length - 1] == '-')
-        {
-            result = result.Substring(0, result.Length - 1);
-        }
-        return result;*/
     }
 
     public static void LoadProgressFromString(string progress)
@@ -102,12 +79,6 @@ public static class Progress
         {
             Debug.LogError("Loading progress from cookies failed");
         }
-        
-        /*string pattern = @"Chapters:(\d+(?:-\d+)*)_Tasks:(\d+\.\d+(?:-\d+\.\d+)*)";
-        
-        string chapters = progress.Split('_')[0].Replace("Chapters:", "");
-        string tasks = progress.Split('_')[1].Replace("Tasks:", "");*/
-
     }
 }
 

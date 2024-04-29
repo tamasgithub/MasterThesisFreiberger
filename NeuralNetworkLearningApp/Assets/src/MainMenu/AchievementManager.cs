@@ -16,7 +16,6 @@ public class AchievementManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        print("Start");
         if (requirements == null)
         {
             requirements = new Dictionary<AchievementReqType, float>();
