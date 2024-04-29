@@ -59,7 +59,7 @@ public class TalkInteraction : Interaction
                 "You want to go higher? You are not the only one!",
                 "But the coal and the gravel rocks got mixed together.\n" +
                 "No idea how that happened.",
-                "I am doing my best to separate them so that my old" +
+                "I am doing my best to separate them so that my old\n" +
                 "steam locomotive can be on her way again, but I\n" +
                 "have a hard time telling them apart.",
                 "You can help me with that. In the end, classifying objects\n" +

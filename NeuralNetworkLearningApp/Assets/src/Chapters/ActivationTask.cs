@@ -73,11 +73,12 @@ public class ActivationTask: Task
     private void ActivateHierarchy(GameObject go)
     {
         go.SetActive(true);
-        GameObject parent = go;
-        while (!go.activeInHierarchy)
+        Transform parent = go.transform.parent;
+        while (parent != null && !parent.gameObject.activeInHierarchy)
         {
-            parent = parent.transform.parent.gameObject;
-            parent.SetActive(true);
+            parent.gameObject.SetActive(true);
+            parent = parent.parent;
+            
 
         }
     }

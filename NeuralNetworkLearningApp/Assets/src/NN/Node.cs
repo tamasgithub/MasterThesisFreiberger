@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Node : MonoBehaviour, IPointerDownHandler
+public class Node : MonoBehaviour
 {
     public GameObject edgePrefab;
     public GameObject labelPrefab;
@@ -151,7 +151,7 @@ public class Node : MonoBehaviour, IPointerDownHandler
     {
         this.inputValue = inputValue;
         // format the value to two decimals
-        Text text = transform.GetChild(0).GetComponent<Text>();
+        TextMesh text = transform.GetChild(0).GetComponent<TextMesh>();
         text.text = inputValue.ToString("0.00");
         text.color = colorGradient.Evaluate((inputValue + 1) / 2f);
     }
@@ -224,15 +224,40 @@ public class Node : MonoBehaviour, IPointerDownHandler
     // Update is called once per frame
     void Update()
     {
-        // recalculate position every frame bc the text is a UI element. TODO: replace with a textmesh, then setting localposition to zero once.
-        transform.GetChild(0).GetComponent<RectTransform>().position = cam.WorldToScreenPoint(transform.position);
-
         if (hoverLabel != null)
         {
-            hoverLabel.transform.position = Input.mousePosition + Vector3.up * 80;
+            hoverLabel.transform.position = Input.mousePosition + Vector3.up * 60;
         }
 
-        ComputeValue(); 
+        ComputeValue();
+
+        if (Input.GetMouseButtonDown(1) && editingEnabled)
+        {
+            // right click
+            RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
+            if (hit.collider != null && hit.collider.gameObject == gameObject)
+            {
+                if (hoverLabel != null)
+                {
+                    Destroy(hoverLabel);
+                }
+                InputField input;
+                if (editor != null)
+                {
+                    input = editor.GetComponentInChildren<InputField>();
+                    input.Select();
+                    return;
+                }
+                Vector3 position = cam.WorldToScreenPoint(transform.position) + Vector3.up * 60;
+                editor = Instantiate(editorPrefab, position, Quaternion.identity, GameObject.Find("Canvas").transform);
+                editor.GetComponent<NNEditor>().SetEditedNode(this);
+                Text label = editor.transform.GetChild(0).GetComponent<Text>();
+                label.text = GetLayerIndex() == 0 ? "Input" : "Bias";
+                input = editor.GetComponentInChildren<InputField>();
+                input.Select();
+                input.SetTextWithoutNotify(GetLayerIndex() == 0 ? inputValue.ToString("0.00") : bias.ToString("0.00"));
+            }
+        }
     }
 
     private void SetEdgeListSize(List<Edge> list, int size)
@@ -259,7 +284,7 @@ public class Node : MonoBehaviour, IPointerDownHandler
 
     private void ComputeValue()
     {
-        Text text = transform.GetChild(0).GetComponent<Text>();
+        TextMesh text = transform.GetChild(0).GetComponent<TextMesh>();
         if (GetLayerIndex() == 0)
         {
             value = inputValue;
@@ -366,35 +391,6 @@ public class Node : MonoBehaviour, IPointerDownHandler
         if (editor != null)
         {
             Destroy(editor);
-        }
-    }
-
-    // only registers on UI elements, that means the value of the node has to be displayed to
-    // edit the input value or the bias
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        // right click
-        if (Input.GetMouseButtonDown(1) && editingEnabled)
-        {
-            if (hoverLabel != null)
-            {
-                Destroy(hoverLabel);
-            }
-            InputField input;
-            if (editor != null)
-            {
-                input = editor.GetComponentInChildren<InputField>();
-                input.Select();
-                return;
-            }
-            Vector3 position = cam.WorldToScreenPoint(transform.position) + Vector3.up * 100;
-            editor = Instantiate(editorPrefab, position, Quaternion.identity, transform);
-            Text label = editor.transform.GetChild(0).GetComponent<Text>();
-            label.text = GetLayerIndex() == 0 ? "Input" : "Bias";
-            input = editor.GetComponentInChildren<InputField>();
-            input.Select();
-            input.SetTextWithoutNotify(GetLayerIndex() == 0 ? inputValue.ToString("0.00") : bias.ToString("0.00"));
-            // how to fucus? input.MoveTextStart(true);
         }
     }
 }

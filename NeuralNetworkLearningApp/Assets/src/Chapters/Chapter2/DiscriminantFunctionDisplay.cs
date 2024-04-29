@@ -42,7 +42,7 @@ public class DiscriminantFunctionDisplay : MonoBehaviour
             UpdateValuesFromStoneFeatures();
         } else if (network != null)
         {
-            rect.localPosition = new Vector2(rect.localPosition.x, -20 + (network.GetLayerSize(network.GetLayerCount() - 1) - 1) * 170 / 2f - boundaryIndex * 170);
+            rect.localPosition = new Vector2(rect.localPosition.x, 10 + (network.GetLayerSize(network.GetLayerCount() - 1) - 1) * 170 / 2f - boundaryIndex * 170);
             UpdateValuesFromNN();
         }
         

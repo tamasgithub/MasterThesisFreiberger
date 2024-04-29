@@ -16,19 +16,20 @@ public class NNEditor : MonoBehaviour
         inputField = GetComponentInChildren<InputField>();
     }
 
-    private void Start()
-    {
-        // one of these two is null
-        node = GetComponentInParent<Node>();
-    }
-
     public void SetEditedEdge(Edge edge)
     {
         this.edge = edge;
     }
+
+    public void SetEditedNode(Node node)
+    {
+        this.node = node;
+    }
+
     // allow one optional minus sign and one digit before and after a single separator
     public void ValidateInput()
     {
+        print("validate input");
         string input = inputField.text;
         if (input == null || input == "") return;
 
@@ -51,7 +52,7 @@ public class NNEditor : MonoBehaviour
 
     public void OnEndEdit()
     {
-        print("end edit on " + edge);
+        print("end edit");
         string input = inputField.text;
         if (input == null) return;
         input = input.Replace(".", ",").Replace("+", "");

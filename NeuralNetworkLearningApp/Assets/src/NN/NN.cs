@@ -29,7 +29,8 @@ public class NN : MonoBehaviour
     // events fired by the NN
     public event Action edgeHovered;
     public event Action nodeHovered;
-    // TODO: sending info about which one or to what, not needed atm
+    // TODO: s
+    // ing info about which one or to what, not needed atm
     public event Action nodeValueChanged;
     public event Action nodeBiasChanged;
     public event Action edgeWeightChanged;
@@ -69,7 +70,7 @@ public class NN : MonoBehaviour
 
         if (layerSizeUIPrefab != null)
         {
-            GameObject layerSizeUI = Instantiate(layerSizeUIPrefab, transform.parent);
+            GameObject layerSizeUI = Instantiate(layerSizeUIPrefab, GameObject.Find("Canvas").transform);
             Transform plusButton = layerSizeUI.transform.GetChild(0);
             plusButton.GetComponent<NN_UI_Control>().underLayerWithIndex = layers.Count - 1;
             Transform minusButton = layerSizeUI.transform.GetChild(1);
@@ -81,10 +82,20 @@ public class NN : MonoBehaviour
     {
         SetLayerCount(layers.Count - 1);
 
-        NN_UI_Control[] layerSizeUIs = transform.parent.GetComponentsInChildren<NN_UI_Control>();
+        NN_UI_Control[] layerSizeUIs = FindObjectsOfType<NN_UI_Control>();
         if (layerSizeUIs.Length > 2)
         {
-            Destroy(layerSizeUIs[layerSizeUIs.Length - 1].transform.parent.gameObject);
+
+            foreach (NN_UI_Control uiControl in layerSizeUIs)
+            {
+                if (uiControl.nextToLastLayer) {
+                    continue;
+                }
+                if (uiControl.underLayerWithIndex >= layers.Count) {
+                    Destroy(uiControl.transform.parent.gameObject);
+                }
+            }
+            
         }
     }
 

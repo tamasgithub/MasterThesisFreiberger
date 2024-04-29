@@ -59,12 +59,11 @@ public class Edge : MonoBehaviour
             
             if (Input.GetMouseButtonDown(1) && editingEnabled)
             {
-                print("editing edge");
                 // right click
                 RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), Mathf.Infinity);
                 if (hit.collider != null && hit.collider.gameObject == gameObject)
                 {
-                    print("ray hit");
+                    print("hit node");
                     if (hoverLabel != null)
                     {
                         Destroy(hoverLabel);
@@ -76,7 +75,7 @@ public class Edge : MonoBehaviour
                         input.Select();
                         return;
                     }
-                    Vector3 position = Camera.main.WorldToScreenPoint(transform.position) + Vector3.up * 100;
+                    Vector3 position = Camera.main.WorldToScreenPoint(transform.position) + Vector3.up * 60;
                     editor = Instantiate(editorPrefab, position, Quaternion.identity, GameObject.Find("Canvas").transform);
                     editor.GetComponent<NNEditor>().SetEditedEdge(this);
                     Text label = editor.transform.GetChild(0).GetComponent<Text>();
@@ -89,7 +88,7 @@ public class Edge : MonoBehaviour
             if (hoverLabel != null)
             {
                 // TODO: this is duplicate logic with the nodes' display of their bias
-                hoverLabel.transform.position = Input.mousePosition + Vector3.up * 80;
+                hoverLabel.transform.position = Input.mousePosition + Vector3.up * 60;
             }
         }
     }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class NN_UI_Control : MonoBehaviour
 {
-    public NN network;
+    private NN network;
     public bool nextToLastLayer;
     public int underLayerWithIndex;
     public float offset;
@@ -18,7 +18,7 @@ public class NN_UI_Control : MonoBehaviour
     void Start()
     {
         counterpart = transform.parent.GetChild(1 - transform.GetSiblingIndex()).GetComponent<NN_UI_Control>();
-
+        network = FindObjectOfType<NN>();
     }
 
     // Update is called once per frame
@@ -38,7 +38,7 @@ public class NN_UI_Control : MonoBehaviour
         {
             int layerSize = network.GetLayerSize(underLayerWithIndex);
             if (layerSize == maxLayerSize && add || layerSize == minLayerSize && !add)
-            {
+            {   
                 gameObject.SetActive(false);
             }
             worldPos = network.transform.position + Vector3.right * underLayerWithIndex * network.GetLayerDistance() 
