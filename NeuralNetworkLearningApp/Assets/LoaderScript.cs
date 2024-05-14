@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -8,11 +9,6 @@ using UnityEngine.UI;
 
 public class LoaderScript : MonoBehaviour
 {
-    [SerializeField]
-    private TextAsset questionnaireResults;
-    private string path = @"C:\Users\Tamás Freiberger\Desktop\results.txt";
-
-
     // persistance for WegGL builds in form of cookies (on load is before this script's Start)
     public void CookiesReadOnLoad(string allCookies)
     {
@@ -33,25 +29,5 @@ public class LoaderScript : MonoBehaviour
         string achievements;
         cookies.TryGetValue("achievements", out achievements);
         AchievementManager.LoadAchievementsFromString(achievements);
-    }
-
-    public void SaveQuestionnaireResult(string result)
-    {
-        try
-        {
-            Debug.Log("Recieved result: " + result);
-            // Write the text to the file
-            using (StreamWriter writer = new StreamWriter(path, true))
-            {
-                writer.WriteLine(result);
-                writer.Close();
-            }
-
-            Debug.Log("Result stored succesfully");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError("Error writing to file: " + e.Message);
-        }
     }
 }

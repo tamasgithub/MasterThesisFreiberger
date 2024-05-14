@@ -21,7 +21,7 @@ public static class Progress
         completedChapters.Add(chapterId);
         // persistance for WegGL builds in form of cookies
 #if UNITY_WEBGL && !UNITY_EDITOR
-        JSHook.SetCookie("progress=" + GetProgressAsString() + ";SameSite=lax");
+        JSHook.SetCookie("progress=" + GetProgressAsString() + ";SameSite=lax;max-age=31536000");
 #endif
         return true;
     }
@@ -35,7 +35,7 @@ public static class Progress
         completedTasks.Add(task);
         // persistance for WegGL builds in form of cookies
 #if UNITY_WEBGL && !UNITY_EDITOR
-        JSHook.SetCookie("progress=" + GetProgressAsString() + ";SameSite=lax");
+        JSHook.SetCookie("progress=" + GetProgressAsString() + ";SameSite=lax;max-age=31536000");
 #endif
         return true;
     }

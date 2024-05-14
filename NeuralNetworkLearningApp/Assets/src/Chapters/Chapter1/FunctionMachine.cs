@@ -164,6 +164,7 @@ public class FunctionMachine : MonoBehaviour
             }
             if (outputVolatile)
             {
+                Destroy(outputData.GetComponent<FMInput>());
                 outputData.AddComponent<FMVolatileOutput>();
             }
         }

@@ -43,7 +43,7 @@ public class AchievementManager : MonoBehaviour
                 popup.transform.GetChild(0).GetComponent<Text>().text = "New achievement: " + achievement.GetTitle();
                 StartCoroutine(ShowAchievementPopup(popup));
 #if UNITY_WEBGL && !UNITY_EDITOR
-                JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax");
+                JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax;max-age=31536000");
 #endif
             }
         }
@@ -53,7 +53,7 @@ public class AchievementManager : MonoBehaviour
     {
         requirements[type] = value;
 #if UNITY_WEBGL && !UNITY_EDITOR
-        JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax");
+        JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax;max-age=31536000");
 #endif
     }
 
@@ -61,7 +61,7 @@ public class AchievementManager : MonoBehaviour
     {
         requirements[type] += value;
 #if UNITY_WEBGL && !UNITY_EDITOR
-        JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax");
+        JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax;max-age=31536000");
 #endif
     }
 
@@ -100,7 +100,7 @@ public class AchievementManager : MonoBehaviour
             requirements.Add(reqType, 0f);
         }
 #if UNITY_WEBGL && !UNITY_EDITOR
-            JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax");
+            JSHook.SetCookie("achievements=" + GetAchievementsAsString() + ";SameSite=lax;max-age=31536000");
 #endif
     }
 

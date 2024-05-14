@@ -92,9 +92,8 @@ public class TalkInteraction : Interaction
                 "at the clearing. I'll help you build your own!" },
             new string[] { "I'm afraid that's all I know. There is no way to get higher on\n" +
                 "the mountain so far. But I'm sure that changes in the near future!",
-                "If you already have at least a Bachelor's degreee, you can take\n" +
-                "the questionnair on the website below the game.\n" + 
-                "Thank you for participating!"}
+                "If you completed all chapters, you can take the questionnaire on the\n" +
+                "website below the game. Thank you for participating!"}
         }
     };
 

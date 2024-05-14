@@ -156,6 +156,7 @@ MonoBehaviour:
     m_NumColorKeys: 5
     m_NumAlphaKeys: 2
   weight: 0.4095105
+  editorPrefab: {fileID: 0}
 --- !u!1 &744761798252948107
 GameObject:
   m_ObjectHideFlags: 0
@@ -5972,6 +5973,13 @@ MonoBehaviour:
   layerDistance: 2
   nodeDistance: 2
   fullyConnected: 1
+  randomWeights: 0
+  randomBiases: 0
+  showValues: 0
+  colorEdges: 0
+  edgeHoveringEnabled: 0
+  nodeHoveringEnabled: 0
+  editingEnabled: 0
   layerSizeUIPrefab: {fileID: 0}
 --- !u!1 &3136826254872628514
 GameObject:
@@ -6230,7 +6238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c415bc49a14622428ca6923f348af2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapterIndex: 2
 --- !u!1 &3136826255037766791
 GameObject:
   m_ObjectHideFlags: 0
@@ -7348,24 +7355,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgePrefab: {fileID: 214758128186768929, guid: 29765390854547946ae5ab8f5902f009, type: 3}
   labelPrefab: {fileID: 1165006118037552983, guid: 2cc444e5d0c21c54a92bf05be6befd18, type: 3}
+  editorPrefab: {fileID: 0}
   manuallyConnectable: 1
   inputValue: 0
   activationFunction: 0
-  gradient:
+  colorGradient:
     serializedVersion: 2
-    key0: {r: 0.2028302, g: 0.2028302, b: 1, a: 1}
-    key1: {r: 0.75, g: 0.75, b: 1, a: 1}
-    key2: {r: 1, g: 1, b: 1, a: 0}
-    key3: {r: 1, g: 0.75, b: 0.75, a: 0}
-    key4: {r: 1, g: 0.10849059, b: 0.13296345, a: 0}
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 29491
-    ctime2: 32754
-    ctime3: 35979
-    ctime4: 65535
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
     ctime5: 0
     ctime6: 0
     ctime7: 0
@@ -7378,9 +7386,8 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 5
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  value: 0
 --- !u!58 &5685487971120621009
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -8579,6 +8586,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb4d769dc7be4e3499ea2a0f4d0d2758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectsToActivate: []
+  objectsToDeactivate: []
+  behavioursToActivate: []
+  behavioursToDeactivate: []
+  activateAllBehavioursOfTypes: 0
+  deactivateAllBehavioursOfTypes: 0
+  enableBehaviourGOs: 0
+  disableBehaviourGOs: 0
 --- !u!1 &7442632559772149683
 GameObject:
   m_ObjectHideFlags: 0
@@ -8681,24 +8696,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgePrefab: {fileID: 214758128186768929, guid: 29765390854547946ae5ab8f5902f009, type: 3}
   labelPrefab: {fileID: 1165006118037552983, guid: 2cc444e5d0c21c54a92bf05be6befd18, type: 3}
+  editorPrefab: {fileID: 0}
   manuallyConnectable: 1
   inputValue: 0
   activationFunction: 0
-  gradient:
+  colorGradient:
     serializedVersion: 2
-    key0: {r: 0.2028302, g: 0.2028302, b: 1, a: 1}
-    key1: {r: 0.75, g: 0.75, b: 1, a: 1}
-    key2: {r: 1, g: 1, b: 1, a: 0}
-    key3: {r: 1, g: 0.75, b: 0.75, a: 0}
-    key4: {r: 1, g: 0.10849059, b: 0.13296345, a: 0}
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 29491
-    ctime2: 32754
-    ctime3: 35979
-    ctime4: 65535
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
     ctime5: 0
     ctime6: 0
     ctime7: 0
@@ -8711,9 +8727,8 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 5
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  value: 0.9463599
 --- !u!58 &1324573790146576930
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -9249,10 +9264,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1f78e170a258a43b6954d3b782c0ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  network: {fileID: 0}
   nextToLastLayer: 1
   underLayerWithIndex: 0
   offset: 0
+  add: 0
+  maxLayerCount: 0
+  minLayerCount: 0
+  maxLayerSize: 0
+  minLayerSize: 0
 --- !u!1 &8150386215624380391
 GameObject:
   m_ObjectHideFlags: 0
@@ -10088,10 +10107,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb1f78e170a258a43b6954d3b782c0ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  network: {fileID: 0}
   nextToLastLayer: 1
   underLayerWithIndex: 0
   offset: 0
+  add: 0
+  maxLayerCount: 0
+  minLayerCount: 0
+  maxLayerSize: 0
+  minLayerSize: 0
 --- !u!1 &8920646514577646788
 GameObject:
   m_ObjectHideFlags: 0
